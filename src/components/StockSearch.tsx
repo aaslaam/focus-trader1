@@ -273,7 +273,7 @@ const StockSearch: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <SimpleOptionSelector
-                label="2 DIRECTION A"
+                label="DIRECTION A"
                 selectedValue={searchData.stock2}
                 onValueChange={(value) => setSearchData(prev => ({ ...prev, stock2: value }))}
                 baseOptions={['CG UP', 'CG IN', 'CG DOWN', 'CR UP', 'CR IN', 'CR DOWN']}
@@ -599,7 +599,7 @@ const StockSearch: React.FC = () => {
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label className="text-xl font-extrabold">2 DIRECTION A</Label>
+                          <Label className="text-xl font-extrabold">DIRECTION A</Label>
                           <div className="px-3 py-2 rounded-md text-xl font-extrabold" style={{ backgroundColor: '#ffe3e2' }}>
                             {formatValue(entry.stock2)}
                           </div>

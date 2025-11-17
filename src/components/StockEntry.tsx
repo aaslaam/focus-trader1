@@ -898,7 +898,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <SimpleOptionSelector
-                label="2 DIRECTION A"
+                label="DIRECTION A"
                 selectedValue={formData.stock2}
                 onValueChange={(value) => setFormData(prev => ({ ...prev, stock2: value }))}
                 baseOptions={['CG UP', 'CG IN', 'CG DOWN', 'CR UP', 'CR IN', 'CR DOWN']}
