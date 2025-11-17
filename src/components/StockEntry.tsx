@@ -20,15 +20,11 @@ interface StockEntryData {
   stock2b: string;
   stock2bColor?: string;
   stock3: string;
-  openb: string;
   stock4: string;
-  stock4b: string;
   stock1Date: Date | null;
   stock2Date: Date | null;
   stock3Date: Date | null;
   stock4Date: Date | null;
-  stock4bDate?: Date | null;
-  openbDate?: Date | null;
   dropdown1Date?: Date | null;
   dropdown2Date?: Date | null;
   dropdown3Date?: Date | null;
@@ -55,9 +51,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     stock2b: '',
     stock2bColor: '',
     stock3: '',
-    openb: '',
     stock4: '',
-    stock4b: '',
     classification: '' as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL' | '',
     notes: ''
   });
@@ -86,8 +80,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     stock2Date: Date | null;
     stock3Date: Date | null;
     stock4Date: Date | null;
-    stock4bDate: Date | null;
-    openbDate: Date | null;
     dropdown1Date: Date | null;
     dropdown2Date: Date | null;
     dropdown3Date: Date | null;
@@ -97,8 +89,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     stock2Date: new Date(),
     stock3Date: new Date(),
     stock4Date: new Date(),
-    stock4bDate: new Date(),
-    openbDate: new Date(),
     dropdown1Date: new Date(),
     dropdown2Date: new Date(),
     dropdown3Date: new Date(),
@@ -109,8 +99,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     stock2Date: boolean;
     stock3Date: boolean;
     stock4Date: boolean;
-    stock4bDate: boolean;
-    openbDate: boolean;
     dropdown1Date: boolean;
     dropdown2Date: boolean;
     dropdown3Date: boolean;
@@ -120,8 +108,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     stock2Date: false,
     stock3Date: false,
     stock4Date: false,
-    stock4bDate: false,
-    openbDate: false,
     dropdown1Date: false,
     dropdown2Date: false,
     dropdown3Date: false,
@@ -205,14 +191,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     // Check for missing fields, but exclude fields with "NILL" value
     const isFieldMissing = (value: string) => !value || value.trim() === '';
     
-    if (isFieldMissing(formData.stock2) || isFieldMissing(formData.stock2b) || isFieldMissing(formData.stock3) || isFieldMissing(formData.openb) || isFieldMissing(formData.stock4) || isFieldMissing(formData.stock4b) || !formData.classification) {
+    if (isFieldMissing(formData.stock2) || isFieldMissing(formData.stock2b) || isFieldMissing(formData.stock3) || isFieldMissing(formData.stock4) || !formData.classification) {
       const missing = [];
       if (isFieldMissing(formData.stock2)) missing.push("A DIRECTION");
       if (isFieldMissing(formData.stock2b)) missing.push("B");
       if (isFieldMissing(formData.stock3)) missing.push("OPEN A");
-      if (isFieldMissing(formData.openb)) missing.push("OPEN B");
       if (isFieldMissing(formData.stock4)) missing.push("CLOSE A");
-      if (isFieldMissing(formData.stock4b)) missing.push("CLOSE B");
       if (!formData.classification) missing.push("Classification");
       
       setMissingFields(missing);
@@ -235,9 +219,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock1Date: fmt(selectedDates.stock1Date),
       stock2Date: fmt(selectedDates.stock2Date),
       stock3Date: fmt(selectedDates.stock3Date),
-      stock4Date: fmt(selectedDates.stock4Date),
-      stock4bDate: selectedDates.stock4bDate ? fmt(selectedDates.stock4bDate) : null,
-      openbDate: selectedDates.openbDate ? fmt(selectedDates.openbDate) : null,
+      stock4Date: fmt(selectedDates.stock4Date)
     };
     
     // Find duplicate entry (checking field values and notes, not dates)
@@ -247,9 +229,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         entry.stock2 === formData.stock2 &&
         entry.stock2b === formData.stock2b &&
         entry.stock3 === formData.stock3 &&
-        entry.openb === formData.openb &&
         entry.stock4 === formData.stock4 &&
-        (entry.stock4b || '') === (formData.stock4b || '') &&
         entry.classification === formData.classification &&
         (entry.notes || '') === (formData.notes || '')
       );
@@ -312,9 +292,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock2b: '',
       stock2bColor: '',
       stock3: '',
-      openb: '',
       stock4: '',
-      stock4b: '',
       classification: '',
       notes: ''
     });
@@ -333,8 +311,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock2Date: new Date(),
       stock3Date: new Date(),
       stock4Date: new Date(),
-      stock4bDate: new Date(),
-      openbDate: new Date(),
       dropdown1Date: new Date(),
       dropdown2Date: new Date(),
       dropdown3Date: new Date(),
@@ -345,8 +321,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock2Date: false,
       stock3Date: false,
       stock4Date: false,
-      stock4bDate: false,
-      openbDate: false,
       dropdown1Date: false,
       dropdown2Date: false,
       dropdown3Date: false,
@@ -367,9 +341,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock2b: '',
       stock2bColor: '',
       stock3: '',
-      openb: '',
       stock4: '',
-      stock4b: '',
       classification: '',
       notes: ''
     });
@@ -388,8 +360,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock2Date: new Date(),
       stock3Date: new Date(),
       stock4Date: new Date(),
-      stock4bDate: new Date(),
-      openbDate: new Date(),
       dropdown1Date: new Date(),
       dropdown2Date: new Date(),
       dropdown3Date: new Date(),
@@ -400,8 +370,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock2Date: false,
       stock3Date: false,
       stock4Date: false,
-      stock4bDate: false,
-      openbDate: false,
       dropdown1Date: false,
       dropdown2Date: false,
       dropdown3Date: false,
@@ -426,9 +394,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock2b: 'NILL',
       stock2bColor: 'NILL',
       stock3: 'NILL',
-      openb: 'NILL',
       stock4: 'NILL',
-      stock4b: 'NILL',
       classification: 'NILL' as 'NILL'
     }));
     
@@ -449,9 +415,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         stock2b: 'NILL',
         stock2bColor: 'NILL',
         stock3: 'NILL',
-        openb: 'NILL',
         stock4: 'NILL',
-        stock4b: 'NILL',
         ...selectedDates,
         classification: 'NILL',
         notes: formData.notes,
@@ -484,9 +448,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         stock2b: '',
         stock2bColor: '',
         stock3: '',
-        openb: '',
         stock4: '',
-        stock4b: '',
         classification: '',
         notes: ''
       });
@@ -505,8 +467,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         stock2Date: new Date(),
         stock3Date: new Date(),
         stock4Date: new Date(),
-        stock4bDate: new Date(),
-        openbDate: new Date(),
         dropdown1Date: new Date(),
         dropdown2Date: new Date(),
         dropdown3Date: new Date(),
@@ -517,8 +477,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         stock2Date: false,
         stock3Date: false,
         stock4Date: false,
-        stock4bDate: false,
-        openbDate: false,
         dropdown1Date: false,
         dropdown2Date: false,
         dropdown3Date: false,
@@ -975,7 +933,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               label="OPEN A"
               selectedValue={formData.stock3}
               onValueChange={(value) => setFormData(prev => ({ ...prev, stock3: value }))}
-              baseOptions={['CG+', 'CG-', 'CGB', 'CR+', 'CR-', 'CRB', 'OG+', 'OG-', 'OGB', 'OR+', 'OR-', 'ORB', 'NILL']}
+              baseOptions={['CG+', 'CG-', 'CGB', 'CR+', 'CR-', 'CRB', 'OG+', 'OG-', 'OGB', 'OR+', 'OR-', 'ORB', 'SD CG-', 'SD CG+', 'SD CGB', 'SD CR-', 'SD CR+', 'SD CRB', 'NILL']}
               hideModifier={true}
             />
               <div className="flex gap-2">
@@ -1025,61 +983,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                 </Button>
               </div>
             </div>
-            <div className="space-y-2">
-              <SimpleOptionSelector
-                label="OPEN B"
-                selectedValue={formData.openb}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, openb: value }))}
-                baseOptions={['SD CG-', 'SD CG+', 'SD CGB', 'SD CR-', 'SD CR+', 'SD CRB', 'NILL']}
-                hideModifier={true}
-              />
-              <div className="flex gap-2">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className={cn(
-                        "flex-1 justify-start text-left font-normal",
-                        (!selectedDates.openbDate || dateChanged.openbDate) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200",
-                        !selectedDates.openbDate && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {selectedDates.openbDate ? format(selectedDates.openbDate, "PPP") : <span>No date (NILL)</span>}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={selectedDates.openbDate || undefined}
-                      onSelect={(date) => {
-                        if (date) {
-                          setSelectedDates(prev => ({ ...prev, openbDate: date }));
-                          setDateChanged(prev => ({ ...prev, openbDate: true }));
-                        }
-                      }}
-                      initialFocus
-                      className={cn("p-3 pointer-events-auto")}
-                    />
-                  </PopoverContent>
-                </Popover>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedDates(prev => ({ ...prev, openbDate: null }));
-                    setDateChanged(prev => ({ ...prev, openbDate: false }));
-                  }}
-                  className={cn(
-                    !selectedDates.openbDate ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
-                  )}
-                >
-                  NILL
-                </Button>
-              </div>
-            </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -1087,7 +990,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                 label="CLOSE A"
                  selectedValue={formData.stock4}
                  onValueChange={(value) => setFormData(prev => ({ ...prev, stock4: value }))}
-                 baseOptions={['CG-', 'CG+', 'CGB', 'CR-', 'CR+', 'CRB', 'OG-', 'OG+', 'OGB', 'OR-', 'OR+', 'ORB', 'NILL']}
+                 baseOptions={['CG-', 'CG+', 'CGB', 'CR-', 'CR+', 'CRB', 'OG-', 'OG+', 'OGB', 'OR-', 'OR+', 'ORB', 'SD CG-', 'SD CG+', 'SD CGB', 'SD CR-', 'SD CR+', 'SD CRB', 'NILL']}
                  hideModifier={true}
                />
               <div className="flex gap-2">
@@ -1131,61 +1034,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   }}
                   className={cn(
                     !selectedDates.stock4Date ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
-                  )}
-                >
-                  NILL
-                </Button>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <SimpleOptionSelector
-                label="CLOSE B"
-                selectedValue={formData.stock4b || ''}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, stock4b: value }))}
-                baseOptions={['SD CG-', 'SD CG+', 'SD CGB', 'SD CR-', 'SD CR+', 'SD CRB', 'NILL']}
-                hideModifier={true}
-              />
-              <div className="flex gap-2">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className={cn(
-                        "flex-1 justify-start text-left font-normal",
-                        (!selectedDates.stock4bDate || dateChanged.stock4bDate) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200",
-                        !selectedDates.stock4bDate && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {selectedDates.stock4bDate ? format(selectedDates.stock4bDate, "PPP") : <span>No date (NILL)</span>}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={selectedDates.stock4bDate || undefined}
-                      onSelect={(date) => {
-                        if (date) {
-                          setSelectedDates(prev => ({ ...prev, stock4bDate: date }));
-                          setDateChanged(prev => ({ ...prev, stock4bDate: true }));
-                        }
-                      }}
-                      initialFocus
-                      className={cn("p-3 pointer-events-auto")}
-                    />
-                  </PopoverContent>
-                </Popover>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedDates(prev => ({ ...prev, stock4bDate: null }));
-                    setDateChanged(prev => ({ ...prev, stock4bDate: false }));
-                  }}
-                  className={cn(
-                    !selectedDates.stock4bDate ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
                   )}
                 >
                   NILL
