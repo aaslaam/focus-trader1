@@ -265,10 +265,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       ...formData,
       ...selectedDates,
       classification: formData.classification as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL',
-      dropdown1: dropdowns.dropdown1Main && dropdowns.dropdown1Sub ? `${dropdowns.dropdown1Main} ${dropdowns.dropdown1Sub}` : undefined,
-      dropdown2: dropdowns.dropdown2Main && dropdowns.dropdown2Sub ? `${dropdowns.dropdown2Main} ${dropdowns.dropdown2Sub}` : undefined,
-      dropdown3: dropdowns.dropdown3Main && dropdowns.dropdown3Sub ? `${dropdowns.dropdown3Main} ${dropdowns.dropdown3Sub}` : undefined,
-      dropdown4: dropdowns.dropdown4Main && dropdowns.dropdown4Sub ? `${dropdowns.dropdown4Main} ${dropdowns.dropdown4Sub}` : undefined,
+      dropdown1: newDropdowns.dropdown1 || undefined,
+      dropdown2: newDropdowns.dropdown2 || undefined,
+      dropdown3: newDropdowns.dropdown3 || undefined,
+      dropdown4: newDropdowns.dropdown4 || undefined,
       imageUrl,
       timestamp: Date.now()
     };
@@ -301,6 +301,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock4: '',
       classification: '',
       notes: ''
+    });
+    setNewDropdowns({
+      dropdown1: '',
+      dropdown2: '',
+      dropdown3: '',
+      dropdown4: ''
     });
     setDropdowns({
       dropdown1Main: '',
@@ -350,6 +356,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock4: '',
       classification: '',
       notes: ''
+    });
+    setNewDropdowns({
+      dropdown1: '',
+      dropdown2: '',
+      dropdown3: '',
+      dropdown4: ''
     });
     setDropdowns({
       dropdown1Main: '',
@@ -457,6 +469,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         stock4: '',
         classification: '',
         notes: ''
+      });
+      setNewDropdowns({
+        dropdown1: '',
+        dropdown2: '',
+        dropdown3: '',
+        dropdown4: ''
       });
       setDropdowns({
         dropdown1Main: '',
