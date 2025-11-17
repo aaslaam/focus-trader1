@@ -1,0 +1,890 @@
+import React, { useState, useRef } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
+import { Plus, CalendarIcon, Paperclip, X } from 'lucide-react';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
+import SimpleOptionSelector from '@/components/SimpleOptionSelector';
+
+interface StockEntryData {
+  stock1: string;
+  stock2: string;
+  stock2b: string;
+  stock2bColor?: string;
+  stock3: string;
+  openb: string;
+  stock4: string;
+  stock4b: string;
+  stock1Date: Date | null;
+  stock2Date: Date | null;
+  stock3Date: Date | null;
+  stock4Date: Date | null;
+  stock4bDate?: Date | null;
+  openbDate?: Date | null;
+  classification: 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL';
+  notes?: string;
+  imageUrl?: string;
+  timestamp: number;
+}
+
+interface StockEntryProps {
+  onEntryAdded: () => void;
+  nextEntryNumber: number;
+}
+
+const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }) => {
+  const [formData, setFormData] = useState({
+    stock1: '',
+    stock2: '',
+    stock2b: '',
+    stock2bColor: '',
+    stock3: '',
+    openb: '',
+    stock4: '',
+    stock4b: '',
+    classification: '' as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL' | '',
+    notes: ''
+  });
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [showEntrySaved, setShowEntrySaved] = useState(false);
+  const [lastSavedEntry, setLastSavedEntry] = useState<StockEntryData | null>(null);
+  const [entrySerialNumber, setEntrySerialNumber] = useState<number>(0);
+  const [showMissingInfo, setShowMissingInfo] = useState(false);
+  const [missingFields, setMissingFields] = useState<string[]>([]);
+  const [showDuplicateEntry, setShowDuplicateEntry] = useState(false);
+  const [duplicateSerialNumber, setDuplicateSerialNumber] = useState<number>(0);
+  const [selectedDates, setSelectedDates] = useState<{
+    stock1Date: Date | null;
+    stock2Date: Date | null;
+    stock3Date: Date | null;
+    stock4Date: Date | null;
+    stock4bDate: Date | null;
+    openbDate: Date | null;
+  }>({
+    stock1Date: new Date(),
+    stock2Date: new Date(),
+    stock3Date: new Date(),
+    stock4Date: new Date(),
+    stock4bDate: new Date(),
+    openbDate: new Date()
+  });
+  const [dateChanged, setDateChanged] = useState<{
+    stock1Date: boolean;
+    stock2Date: boolean;
+    stock3Date: boolean;
+    stock4Date: boolean;
+    stock4bDate: boolean;
+    openbDate: boolean;
+  }>({
+    stock1Date: false,
+    stock2Date: false,
+    stock3Date: false,
+    stock4Date: false,
+    stock4bDate: false,
+    openbDate: false
+  });
+  const { toast } = useToast();
+  
+  // Refs for auto-focus functionality
+  const stock1Ref = useRef<HTMLInputElement>(null);
+  const stock2Ref = useRef<HTMLInputElement>(null);
+  const stock3Ref = useRef<HTMLInputElement>(null);
+  const stock4Ref = useRef<HTMLInputElement>(null);
+  const classificationRef = useRef<HTMLButtonElement>(null);
+
+  // No longer needed - using SimpleOptionSelector
+
+  const handleInputChange = (field: string, value: string) => {
+    const upperValue = value.toUpperCase();
+    setFormData(prev => ({
+      ...prev,
+      [field]: upperValue
+    }));
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent, currentField: string) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      switch (currentField) {
+        case 'stock1':
+          stock2Ref.current?.focus();
+          break;
+        case 'stock2':
+          stock3Ref.current?.focus();
+          break;
+        case 'stock3':
+          stock4Ref.current?.focus();
+          break;
+        case 'stock4':
+          classificationRef.current?.click();
+          break;
+      }
+    }
+  };
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onload = (e) => setImagePreview(e.target?.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setSelectedImage(null);
+    setImagePreview(null);
+  };
+
+  const uploadImage = async (file: File): Promise<string | null> => {
+    const fileName = `note-images/${Date.now()}-${file.name}`;
+    const { data, error } = await supabase.storage
+      .from('note-images')
+      .upload(fileName, file);
+    
+    if (error) {
+      console.error('Upload error:', error);
+      return null;
+    }
+    
+    const { data: urlData } = supabase.storage
+      .from('note-images')
+      .getPublicUrl(fileName);
+    
+    return urlData.publicUrl;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Check for missing fields, but exclude fields with "NILL" value
+    const isFieldMissing = (value: string) => !value || value.trim() === '';
+    
+    if (isFieldMissing(formData.stock2) || isFieldMissing(formData.stock2b) || isFieldMissing(formData.stock3) || isFieldMissing(formData.openb) || isFieldMissing(formData.stock4) || isFieldMissing(formData.stock4b) || !formData.classification) {
+      const missing = [];
+      if (isFieldMissing(formData.stock2)) missing.push("A DIRECTION");
+      if (isFieldMissing(formData.stock2b)) missing.push("B");
+      if (isFieldMissing(formData.stock3)) missing.push("OPEN A");
+      if (isFieldMissing(formData.openb)) missing.push("OPEN B");
+      if (isFieldMissing(formData.stock4)) missing.push("CLOSE A");
+      if (isFieldMissing(formData.stock4b)) missing.push("CLOSE B");
+      if (!formData.classification) missing.push("Classification");
+      
+      setMissingFields(missing);
+      setShowMissingInfo(true);
+      setTimeout(() => {
+        setShowMissingInfo(false);
+        setMissingFields([]);
+      }, 5000);
+      return;
+    }
+
+    console.log('StockEntry submit - classification:', formData.classification);
+    setUploading(true);
+
+    // Check for duplicates (excluding notes - only check field values and dates)
+    const existingEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
+    
+    const fmt = (d: Date | string) => format(new Date(d), 'yyyy-MM-dd');
+    const currentDates = {
+      stock1Date: fmt(selectedDates.stock1Date),
+      stock2Date: fmt(selectedDates.stock2Date),
+      stock3Date: fmt(selectedDates.stock3Date),
+      stock4Date: fmt(selectedDates.stock4Date),
+      stock4bDate: selectedDates.stock4bDate ? fmt(selectedDates.stock4bDate) : null,
+      openbDate: selectedDates.openbDate ? fmt(selectedDates.openbDate) : null,
+    };
+    
+    // Find duplicate entry (checking field values and notes, not dates)
+    const duplicateEntryIndex = existingEntries.findIndex(entry => {
+      return (
+        entry.stock1 === formData.stock1 &&
+        entry.stock2 === formData.stock2 &&
+        entry.stock2b === formData.stock2b &&
+        entry.stock3 === formData.stock3 &&
+        entry.openb === formData.openb &&
+        entry.stock4 === formData.stock4 &&
+        (entry.stock4b || '') === (formData.stock4b || '') &&
+        entry.classification === formData.classification &&
+        (entry.notes || '') === (formData.notes || '')
+      );
+    });
+
+    if (duplicateEntryIndex !== -1) {
+      // Duplicate found - show message with serial number
+      const serialNumber = duplicateEntryIndex + 1;
+      setDuplicateSerialNumber(serialNumber);
+      setShowDuplicateEntry(true);
+      setTimeout(() => {
+        setShowDuplicateEntry(false);
+        setDuplicateSerialNumber(0);
+      }, 5000);
+      setUploading(false);
+      return;
+    }
+    
+    // If duplicate without notes but notes are different, allow saving (continue below)
+
+    let imageUrl: string | undefined;
+    if (selectedImage) {
+      imageUrl = (await uploadImage(selectedImage)) || undefined;
+    }
+
+    const newEntry: StockEntryData = {
+      ...formData,
+      ...selectedDates,
+      classification: formData.classification as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL',
+      imageUrl,
+      timestamp: Date.now()
+    };
+
+    const updatedEntries = [...existingEntries, newEntry];
+    localStorage.setItem('stockEntries', JSON.stringify(updatedEntries));
+    
+    toast({
+      title: "Entry Added",
+      description: `Entry combination result: ${formData.classification}`,
+      variant: "default"
+    });
+
+    // Show entry saved message with serial number
+    setLastSavedEntry(newEntry);
+    setEntrySerialNumber(updatedEntries.length);
+    setShowEntrySaved(true);
+    setTimeout(() => {
+      setShowEntrySaved(false);
+      setLastSavedEntry(null);
+    }, 5000);
+
+    // Reset form
+    setFormData({
+      stock1: '',
+      stock2: '',
+      stock2b: '',
+      stock2bColor: '',
+      stock3: '',
+      openb: '',
+      stock4: '',
+      stock4b: '',
+      classification: '',
+      notes: ''
+    });
+    setSelectedDates({
+      stock1Date: new Date(),
+      stock2Date: new Date(),
+      stock3Date: new Date(),
+      stock4Date: new Date(),
+      stock4bDate: new Date(),
+      openbDate: new Date()
+    });
+    setDateChanged({
+      stock1Date: false,
+      stock2Date: false,
+      stock3Date: false,
+      stock4Date: false,
+      stock4bDate: false,
+      openbDate: false
+    });
+    setSelectedImage(null);
+    setImagePreview(null);
+    setUploading(false);
+
+    onEntryAdded();
+  };
+
+  const handleRefresh = () => {
+    // Clear all form data
+    setFormData({
+      stock1: '',
+      stock2: '',
+      stock2b: '',
+      stock2bColor: '',
+      stock3: '',
+      openb: '',
+      stock4: '',
+      stock4b: '',
+      classification: '',
+      notes: ''
+    });
+    setSelectedDates({
+      stock1Date: new Date(),
+      stock2Date: new Date(),
+      stock3Date: new Date(),
+      stock4Date: new Date(),
+      stock4bDate: new Date(),
+      openbDate: new Date()
+    });
+    setDateChanged({
+      stock1Date: false,
+      stock2Date: false,
+      stock3Date: false,
+      stock4Date: false,
+      stock4bDate: false,
+      openbDate: false
+    });
+    setSelectedImage(null);
+    setImagePreview(null);
+    setUploading(false);
+    
+    toast({
+      title: "Form Cleared",
+      description: "All fields have been reset.",
+      variant: "default"
+    });
+  };
+
+  const handleSetAllNill = async () => {
+    // Set all field values to NILL including direction A, B, colour, and classification
+    setFormData(prev => ({
+      ...prev,
+      stock2: 'NILL',
+      stock2b: 'NILL',
+      stock2bColor: 'NILL',
+      stock3: 'NILL',
+      openb: 'NILL',
+      stock4: 'NILL',
+      stock4b: 'NILL',
+      classification: 'NILL' as 'NILL'
+    }));
+    
+    // Wait a bit for state to update, then submit
+    setTimeout(async () => {
+      setUploading(true);
+      
+      const existingEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
+
+      let imageUrl: string | undefined;
+      if (selectedImage) {
+        imageUrl = (await uploadImage(selectedImage)) || undefined;
+      }
+
+      const newEntry: StockEntryData = {
+        stock1: formData.stock1,
+        stock2: 'NILL',
+        stock2b: 'NILL',
+        stock2bColor: 'NILL',
+        stock3: 'NILL',
+        openb: 'NILL',
+        stock4: 'NILL',
+        stock4b: 'NILL',
+        ...selectedDates,
+        classification: 'NILL',
+        notes: formData.notes,
+        imageUrl,
+        timestamp: Date.now()
+      };
+
+      const updatedEntries = [...existingEntries, newEntry];
+      localStorage.setItem('stockEntries', JSON.stringify(updatedEntries));
+      
+      toast({
+        title: "Entry Added",
+        description: `Entry saved with all fields set to NILL`,
+        variant: "default"
+      });
+
+      // Show entry saved message with serial number
+      setLastSavedEntry(newEntry);
+      setEntrySerialNumber(updatedEntries.length);
+      setShowEntrySaved(true);
+      setTimeout(() => {
+        setShowEntrySaved(false);
+        setLastSavedEntry(null);
+      }, 5000);
+
+      // Reset form
+      setFormData({
+        stock1: '',
+        stock2: '',
+        stock2b: '',
+        stock2bColor: '',
+        stock3: '',
+        openb: '',
+        stock4: '',
+        stock4b: '',
+        classification: '',
+        notes: ''
+      });
+      setSelectedDates({
+        stock1Date: new Date(),
+        stock2Date: new Date(),
+        stock3Date: new Date(),
+        stock4Date: new Date(),
+        stock4bDate: new Date(),
+        openbDate: new Date()
+      });
+      setDateChanged({
+        stock1Date: false,
+        stock2Date: false,
+        stock3Date: false,
+        stock4Date: false,
+        stock4bDate: false,
+        openbDate: false
+      });
+      setSelectedImage(null);
+      setImagePreview(null);
+      setUploading(false);
+
+      onEntryAdded();
+    }, 100);
+  };
+
+  return (
+    <Card className="shadow-card">
+      <CardHeader className="bg-gradient-primary text-primary-foreground rounded-t-lg">
+        <CardTitle className="flex items-center gap-2">
+          <Plus className="h-5 w-5" />
+          Add Entry <span className="font-bold">#{nextEntryNumber}</span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <SimpleOptionSelector
+                label="2 DIRECTION A"
+                selectedValue={formData.stock2}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, stock2: value }))}
+                baseOptions={['CG UP', 'CG IN', 'CG DOWN', 'CR UP', 'CR IN', 'CR DOWN']}
+                hideModifier={true}
+              />
+              <SimpleOptionSelector
+                label="COLOUR"
+                selectedValue={formData.stock2bColor || ''}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, stock2bColor: value }))}
+                baseOptions={['RED', 'GREEN']}
+                hideModifier={true}
+              />
+              <div className="flex gap-2">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={cn(
+                        "flex-1 justify-start text-left font-normal",
+                        (!selectedDates.stock2Date || dateChanged.stock2Date) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200",
+                        !selectedDates.stock2Date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {selectedDates.stock2Date ? format(selectedDates.stock2Date, "PPP") : <span>No date (NILL)</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDates.stock2Date || undefined}
+                      onSelect={(date) => {
+                        if (date) {
+                          setSelectedDates(prev => ({ ...prev, stock2Date: date }));
+                          setDateChanged(prev => ({ ...prev, stock2Date: true }));
+                        }
+                      }}
+                      initialFocus
+                      className={cn("p-3 pointer-events-auto")}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedDates(prev => ({ ...prev, stock2Date: null }));
+                    setDateChanged(prev => ({ ...prev, stock2Date: false }));
+                  }}
+                  className={cn(
+                    !selectedDates.stock2Date ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
+                  )}
+                >
+                  NILL
+                </Button>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <SimpleOptionSelector
+                label="B"
+                selectedValue={formData.stock2b}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, stock2b: value }))}
+                baseOptions={['CG IN', 'CG DOWN', 'CG UP', 'CR IN', 'CR UP', 'CR DOWN']}
+                hideModifier={true}
+                customBackgroundStyle={{ empty: { backgroundColor: '#ffe3e2' }, filled: { backgroundColor: '#dcfce7' } }}
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+            <SimpleOptionSelector
+              label="OPEN A"
+              selectedValue={formData.stock3}
+              onValueChange={(value) => setFormData(prev => ({ ...prev, stock3: value }))}
+              baseOptions={['CG+', 'CG-', 'CGB', 'CR+', 'CR-', 'CRB', 'OG+', 'OG-', 'OGB', 'OR+', 'OR-', 'ORB', 'NILL']}
+              hideModifier={true}
+            />
+              <div className="flex gap-2">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={cn(
+                        "flex-1 justify-start text-left font-normal",
+                        (!selectedDates.stock3Date || dateChanged.stock3Date) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200",
+                        !selectedDates.stock3Date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {selectedDates.stock3Date ? format(selectedDates.stock3Date, "PPP") : <span>No date (NILL)</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDates.stock3Date || undefined}
+                      onSelect={(date) => {
+                        if (date) {
+                          setSelectedDates(prev => ({ ...prev, stock3Date: date }));
+                          setDateChanged(prev => ({ ...prev, stock3Date: true }));
+                        }
+                      }}
+                      initialFocus
+                      className={cn("p-3 pointer-events-auto")}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedDates(prev => ({ ...prev, stock3Date: null }));
+                    setDateChanged(prev => ({ ...prev, stock3Date: false }));
+                  }}
+                  className={cn(
+                    !selectedDates.stock3Date ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
+                  )}
+                >
+                  NILL
+                </Button>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <SimpleOptionSelector
+                label="OPEN B"
+                selectedValue={formData.openb}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, openb: value }))}
+                baseOptions={['SD CG-', 'SD CG+', 'SD CGB', 'SD CR-', 'SD CR+', 'SD CRB', 'NILL']}
+                hideModifier={true}
+              />
+              <div className="flex gap-2">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={cn(
+                        "flex-1 justify-start text-left font-normal",
+                        (!selectedDates.openbDate || dateChanged.openbDate) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200",
+                        !selectedDates.openbDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {selectedDates.openbDate ? format(selectedDates.openbDate, "PPP") : <span>No date (NILL)</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDates.openbDate || undefined}
+                      onSelect={(date) => {
+                        if (date) {
+                          setSelectedDates(prev => ({ ...prev, openbDate: date }));
+                          setDateChanged(prev => ({ ...prev, openbDate: true }));
+                        }
+                      }}
+                      initialFocus
+                      className={cn("p-3 pointer-events-auto")}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedDates(prev => ({ ...prev, openbDate: null }));
+                    setDateChanged(prev => ({ ...prev, openbDate: false }));
+                  }}
+                  className={cn(
+                    !selectedDates.openbDate ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
+                  )}
+                >
+                  NILL
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <SimpleOptionSelector
+                label="CLOSE A"
+                 selectedValue={formData.stock4}
+                 onValueChange={(value) => setFormData(prev => ({ ...prev, stock4: value }))}
+                 baseOptions={['CG-', 'CG+', 'CGB', 'CR-', 'CR+', 'CRB', 'OG-', 'OG+', 'OGB', 'OR-', 'OR+', 'ORB', 'NILL']}
+                 hideModifier={true}
+               />
+              <div className="flex gap-2">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={cn(
+                        "flex-1 justify-start text-left font-normal",
+                        (!selectedDates.stock4Date || dateChanged.stock4Date) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200",
+                        !selectedDates.stock4Date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {selectedDates.stock4Date ? format(selectedDates.stock4Date, "PPP") : <span>No date (NILL)</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDates.stock4Date || undefined}
+                      onSelect={(date) => {
+                        if (date) {
+                          setSelectedDates(prev => ({ ...prev, stock4Date: date }));
+                          setDateChanged(prev => ({ ...prev, stock4Date: true }));
+                        }
+                      }}
+                      initialFocus
+                      className={cn("p-3 pointer-events-auto")}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedDates(prev => ({ ...prev, stock4Date: null }));
+                    setDateChanged(prev => ({ ...prev, stock4Date: false }));
+                  }}
+                  className={cn(
+                    !selectedDates.stock4Date ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
+                  )}
+                >
+                  NILL
+                </Button>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <SimpleOptionSelector
+                label="CLOSE B"
+                selectedValue={formData.stock4b || ''}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, stock4b: value }))}
+                baseOptions={['SD CG-', 'SD CG+', 'SD CGB', 'SD CR-', 'SD CR+', 'SD CRB', 'NILL']}
+                hideModifier={true}
+              />
+              <div className="flex gap-2">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={cn(
+                        "flex-1 justify-start text-left font-normal",
+                        (!selectedDates.stock4bDate || dateChanged.stock4bDate) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200",
+                        !selectedDates.stock4bDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {selectedDates.stock4bDate ? format(selectedDates.stock4bDate, "PPP") : <span>No date (NILL)</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDates.stock4bDate || undefined}
+                      onSelect={(date) => {
+                        if (date) {
+                          setSelectedDates(prev => ({ ...prev, stock4bDate: date }));
+                          setDateChanged(prev => ({ ...prev, stock4bDate: true }));
+                        }
+                      }}
+                      initialFocus
+                      className={cn("p-3 pointer-events-auto")}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedDates(prev => ({ ...prev, stock4bDate: null }));
+                    setDateChanged(prev => ({ ...prev, stock4bDate: false }));
+                  }}
+                  className={cn(
+                    !selectedDates.stock4bDate ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
+                  )}
+                >
+                  NILL
+                </Button>
+              </div>
+            </div>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="classification" className="text-xl font-bold">RESULT</Label>
+            <Select 
+              value={formData.classification}
+              onValueChange={(value) => {
+                console.log('StockEntry classification selected:', value);
+                setFormData(prev => ({ ...prev, classification: value as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL' }));
+              }}
+            >
+              <SelectTrigger ref={classificationRef} className={`text-xl font-bold ${formData.classification ? 'bg-green-100 hover:bg-green-200' : 'bg-red-100 hover:bg-red-200'}`}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Act" className="text-xl font-bold">Act</SelectItem>
+                <SelectItem value="Front Act" className="text-xl font-bold">Front Act</SelectItem>
+                <SelectItem value="Consolidation Act" className="text-xl font-bold">Consolidation Act</SelectItem>
+                <SelectItem value="Consolidation Front Act" className="text-xl font-bold">Consolidation Front Act</SelectItem>
+                <SelectItem value="Consolidation Close" className="text-xl font-bold">Consolidation Close</SelectItem>
+                <SelectItem value="Act doubt" className="text-xl font-bold">Act doubt</SelectItem>
+                <SelectItem value="3rd act" className="text-xl font-bold">3rd act</SelectItem>
+                <SelectItem value="4th act" className="text-xl font-bold">4th act</SelectItem>
+                <SelectItem value="5th act" className="text-xl font-bold">5th act</SelectItem>
+                <SelectItem value="NILL" className="text-xl font-bold">NILL</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            {showDuplicateEntry && (
+              <div className="p-4 bg-red-600 border-2 border-red-700 text-white rounded-lg animate-fade-in">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-2xl font-bold">⚠ Duplicate Entry #{duplicateSerialNumber}</span>
+                </div>
+                <div className="text-sm">
+                  This entry already exists in your records.
+                </div>
+              </div>
+            )}
+            {showMissingInfo && (
+              <div className="p-4 bg-destructive border-2 border-destructive text-destructive-foreground rounded-lg animate-fade-in">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-2xl font-bold">✗ Missing Information</span>
+                </div>
+                <div className="text-sm">
+                  <span className="font-bold">Please fill in:</span> {missingFields.join(", ")}
+                </div>
+              </div>
+            )}
+            {showEntrySaved && lastSavedEntry && (
+              <div className="p-4 bg-green-100 border-2 border-green-500 rounded-lg animate-fade-in">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-2xl font-bold text-green-800">✓ Entry Saved!</span>
+                  <span className="text-xl font-bold text-gray-900 bg-blue-200 px-3 py-1 rounded-md">#{entrySerialNumber}</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div><span className="font-bold">A DIRECTION:</span> {lastSavedEntry.stock2}</div>
+                  <div><span className="font-bold">B:</span> {lastSavedEntry.stock2b}</div>
+                  <div><span className="font-bold">3 OPEN:</span> {lastSavedEntry.stock3}</div>
+                  <div><span className="font-bold">4 CLOSE:</span> {lastSavedEntry.stock4}</div>
+                  <div className="col-span-2"><span className="font-bold">Classification:</span> {lastSavedEntry.classification}</div>
+                </div>
+              </div>
+            )}
+            <Label htmlFor="notes" className="text-xl font-bold">NOTES</Label>
+            <div className="relative">
+              <Textarea
+                id="notes"
+                placeholder=""
+                value={formData.notes}
+                onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value.toUpperCase() }))}
+                className="min-h-[80px] pr-10"
+              />
+              <input
+                type="file"
+                id="image"
+                accept="image/*"
+                onChange={handleImageSelect}
+                className="hidden"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => document.getElementById('image')?.click()}
+                className="absolute top-2 right-2 h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                title="Attach image"
+              >
+                <Paperclip className="h-4 w-4" />
+              </Button>
+            </div>
+            {imagePreview && (
+              <div className="relative inline-block">
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="max-w-full h-32 object-cover rounded-lg border"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  onClick={removeImage}
+                  className="absolute top-1 right-1"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </div>
+            )}
+          </div>
+
+          <div className="flex gap-2">
+            <Button 
+              type="button" 
+              onClick={handleRefresh} 
+              className="flex-1 bg-white text-green-600 border border-border hover:bg-white hover:text-green-700 font-bold" 
+              variant="outline"
+            >
+              REFRESH
+            </Button>
+            <Button 
+              type="button"
+              size="sm"
+              onClick={handleSetAllNill}
+              className="text-white font-bold"
+              style={{ backgroundColor: '#1f3b8a' }}
+            >
+              OK
+            </Button>
+            <Button type="submit" className="flex-1" variant="default" disabled={uploading}>
+              {uploading ? 'Saving...' : 'Save Entry'}
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default StockEntry;
