@@ -544,8 +544,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* 4 Dropdown Pairs Section */}
           <div className="space-y-4 pb-4 mb-4">
-            <Label className="text-xl font-bold">Additional Options</Label>
-            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Dropdown 1 */}
               <div className="space-y-2">
@@ -555,12 +553,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                       value={dropdowns.dropdown1Main}
                       onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown1Main: value }))}
                     >
-                      <SelectTrigger 
-                        className="text-lg font-bold z-50"
-                        style={{ backgroundColor: dropdowns.dropdown1Main ? '#dcfce7' : '#ffe3e2' }}
-                      >
-                        <SelectValue placeholder="Select..." />
-                      </SelectTrigger>
+                    <SelectTrigger 
+                      className="text-lg font-bold z-50"
+                      style={{ backgroundColor: dropdowns.dropdown1Main ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
                       <SelectContent className="bg-card z-[100]">
                         <SelectItem value="YG" className="text-lg font-bold">YG</SelectItem>
                         <SelectItem value="YR" className="text-lg font-bold">YR</SelectItem>
@@ -572,12 +570,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                       value={dropdowns.dropdown1Sub}
                       onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown1Sub: value }))}
                     >
-                      <SelectTrigger 
-                        className="text-lg font-bold z-50"
-                        style={{ backgroundColor: dropdowns.dropdown1Sub ? '#dcfce7' : '#ffe3e2' }}
-                      >
-                        <SelectValue placeholder="Direction" />
-                      </SelectTrigger>
+                    <SelectTrigger 
+                      className="text-lg font-bold z-50"
+                      style={{ backgroundColor: dropdowns.dropdown1Sub ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
                       <SelectContent className="bg-card z-[100]">
                         <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
                         <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
@@ -647,12 +645,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                       value={dropdowns.dropdown2Main}
                       onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown2Main: value }))}
                     >
-                      <SelectTrigger 
-                        className="text-lg font-bold z-50"
-                        style={{ backgroundColor: dropdowns.dropdown2Main ? '#dcfce7' : '#ffe3e2' }}
-                      >
-                        <SelectValue placeholder="Select..." />
-                      </SelectTrigger>
+                    <SelectTrigger 
+                      className="text-lg font-bold z-50"
+                      style={{ backgroundColor: dropdowns.dropdown2Main ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
                       <SelectContent className="bg-card z-[100]">
                         <SelectItem value="MG" className="text-lg font-bold">MG</SelectItem>
                         <SelectItem value="MR" className="text-lg font-bold">MR</SelectItem>
@@ -664,12 +662,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                       value={dropdowns.dropdown2Sub}
                       onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown2Sub: value }))}
                     >
-                      <SelectTrigger 
-                        className="text-lg font-bold z-50"
-                        style={{ backgroundColor: dropdowns.dropdown2Sub ? '#dcfce7' : '#ffe3e2' }}
-                      >
-                        <SelectValue placeholder="Direction" />
-                      </SelectTrigger>
+                    <SelectTrigger 
+                      className="text-lg font-bold z-50"
+                      style={{ backgroundColor: dropdowns.dropdown2Sub ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
                       <SelectContent className="bg-card z-[100]">
                         <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
                         <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
@@ -739,12 +737,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                       value={dropdowns.dropdown3Main}
                       onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown3Main: value }))}
                     >
-                      <SelectTrigger 
-                        className="text-lg font-bold z-50"
-                        style={{ backgroundColor: dropdowns.dropdown3Main ? '#dcfce7' : '#ffe3e2' }}
-                      >
-                        <SelectValue placeholder="Select..." />
-                      </SelectTrigger>
+                    <SelectTrigger 
+                      className="text-lg font-bold z-50"
+                      style={{ backgroundColor: dropdowns.dropdown3Main ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
                       <SelectContent className="bg-card z-[100]">
                         <SelectItem value="WG" className="text-lg font-bold">WG</SelectItem>
                         <SelectItem value="ER" className="text-lg font-bold">ER</SelectItem>
@@ -756,12 +754,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                       value={dropdowns.dropdown3Sub}
                       onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown3Sub: value }))}
                     >
-                      <SelectTrigger 
-                        className="text-lg font-bold z-50"
-                        style={{ backgroundColor: dropdowns.dropdown3Sub ? '#dcfce7' : '#ffe3e2' }}
-                      >
-                        <SelectValue placeholder="Direction" />
-                      </SelectTrigger>
+                    <SelectTrigger 
+                      className="text-lg font-bold z-50"
+                      style={{ backgroundColor: dropdowns.dropdown3Sub ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
                       <SelectContent className="bg-card z-[100]">
                         <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
                         <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
@@ -831,12 +829,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                       value={dropdowns.dropdown4Main}
                       onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Main: value }))}
                     >
-                      <SelectTrigger 
-                        className="text-lg font-bold z-50"
-                        style={{ backgroundColor: dropdowns.dropdown4Main ? '#dcfce7' : '#ffe3e2' }}
-                      >
-                        <SelectValue placeholder="Select..." />
-                      </SelectTrigger>
+                    <SelectTrigger 
+                      className="text-lg font-bold z-50"
+                      style={{ backgroundColor: dropdowns.dropdown4Main ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
                       <SelectContent className="bg-card z-[100]">
                         <SelectItem value="DG" className="text-lg font-bold">DG</SelectItem>
                         <SelectItem value="DR" className="text-lg font-bold">DR</SelectItem>
@@ -848,12 +846,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                       value={dropdowns.dropdown4Sub}
                       onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Sub: value }))}
                     >
-                      <SelectTrigger 
-                        className="text-lg font-bold z-50"
-                        style={{ backgroundColor: dropdowns.dropdown4Sub ? '#dcfce7' : '#ffe3e2' }}
-                      >
-                        <SelectValue placeholder="Direction" />
-                      </SelectTrigger>
+                    <SelectTrigger 
+                      className="text-lg font-bold z-50"
+                      style={{ backgroundColor: dropdowns.dropdown4Sub ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
                       <SelectContent className="bg-card z-[100]">
                         <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
                         <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
