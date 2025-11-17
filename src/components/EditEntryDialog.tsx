@@ -53,9 +53,7 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
     stock2b: '',
     stock2bColor: '',
     stock3: '',
-    openb: '',
     stock4: '',
-    stock4b: '',
     classification: '' as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL' | '',
     notes: ''
   });
@@ -66,30 +64,22 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
     stock2Date: Date | null;
     stock3Date: Date | null;
     stock4Date: Date | null;
-    stock4bDate: Date | null;
-    openbDate: Date | null;
   }>({
     stock1Date: new Date(),
     stock2Date: new Date(),
     stock3Date: new Date(),
-    stock4Date: new Date(),
-    stock4bDate: new Date(),
-    openbDate: new Date()
+    stock4Date: new Date()
   });
   const [dateChanged, setDateChanged] = useState<{
     stock1Date: boolean;
     stock2Date: boolean;
     stock3Date: boolean;
     stock4Date: boolean;
-    stock4bDate: boolean;
-    openbDate: boolean;
   }>({
     stock1Date: false,
     stock2Date: false,
     stock3Date: false,
-    stock4Date: false,
-    stock4bDate: false,
-    openbDate: false
+    stock4Date: false
   });
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -112,9 +102,7 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
         stock2b: entry.stock2b || '',
         stock2bColor: (entry as any).stock2bColor || '',
         stock3: entry.stock3,
-        openb: entry.openb || '',
         stock4: entry.stock4,
-        stock4b: entry.stock4b || '',
         classification: normalizeClassification(entry.classification),
         notes: entry.notes || ''
       });
@@ -122,17 +110,13 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
         stock1Date: entry.stock1Date ? new Date(entry.stock1Date) : null,
         stock2Date: entry.stock2Date ? new Date(entry.stock2Date) : null,
         stock3Date: entry.stock3Date ? new Date(entry.stock3Date) : null,
-        stock4Date: entry.stock4Date ? new Date(entry.stock4Date) : null,
-        stock4bDate: entry.stock4bDate ? new Date(entry.stock4bDate) : null,
-        openbDate: entry.openbDate ? new Date(entry.openbDate) : null
+        stock4Date: entry.stock4Date ? new Date(entry.stock4Date) : null
       });
       setDateChanged({
         stock1Date: false,
         stock2Date: false,
         stock3Date: false,
-        stock4Date: false,
-        stock4bDate: false,
-        openbDate: false
+        stock4Date: false
       });
       setImagePreview(entry.imageUrl || null);
       setSelectedImage(null);
