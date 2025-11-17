@@ -498,6 +498,189 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       </CardHeader>
       <CardContent className="p-6">
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* 4 Dropdown Pairs Section */}
+          <div className="space-y-4 pb-4 mb-4">
+            <Label className="text-xl font-bold">Additional Options</Label>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Dropdown 1 */}
+              <div className="flex gap-2 items-center">
+                <div className="flex-1">
+                  <Select 
+                    value={dropdowns.dropdown1Main}
+                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown1Main: value }))}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold z-50"
+                      style={{ backgroundColor: dropdowns.dropdown1Main ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Select..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-[100]">
+                      <SelectItem value="YG" className="text-lg font-bold">YG</SelectItem>
+                      <SelectItem value="YR" className="text-lg font-bold">YR</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex-1">
+                  <Select 
+                    value={dropdowns.dropdown1Sub}
+                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown1Sub: value }))}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold z-50"
+                      style={{ backgroundColor: dropdowns.dropdown1Sub ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Direction" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-[100]">
+                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {dropdowns.dropdown1Main && dropdowns.dropdown1Sub && (
+                  <div className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
+                    = {dropdowns.dropdown1Main} {dropdowns.dropdown1Sub}
+                  </div>
+                )}
+              </div>
+
+              {/* Dropdown 2 */}
+              <div className="flex gap-2 items-center">
+                <div className="flex-1">
+                  <Select 
+                    value={dropdowns.dropdown2Main}
+                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown2Main: value }))}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold z-50"
+                      style={{ backgroundColor: dropdowns.dropdown2Main ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Select..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-[100]">
+                      <SelectItem value="MG" className="text-lg font-bold">MG</SelectItem>
+                      <SelectItem value="MR" className="text-lg font-bold">MR</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex-1">
+                  <Select 
+                    value={dropdowns.dropdown2Sub}
+                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown2Sub: value }))}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold z-50"
+                      style={{ backgroundColor: dropdowns.dropdown2Sub ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Direction" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-[100]">
+                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {dropdowns.dropdown2Main && dropdowns.dropdown2Sub && (
+                  <div className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
+                    = {dropdowns.dropdown2Main} {dropdowns.dropdown2Sub}
+                  </div>
+                )}
+              </div>
+
+              {/* Dropdown 3 */}
+              <div className="flex gap-2 items-center">
+                <div className="flex-1">
+                  <Select 
+                    value={dropdowns.dropdown3Main}
+                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown3Main: value }))}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold z-50"
+                      style={{ backgroundColor: dropdowns.dropdown3Main ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Select..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-[100]">
+                      <SelectItem value="WG" className="text-lg font-bold">WG</SelectItem>
+                      <SelectItem value="ER" className="text-lg font-bold">ER</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex-1">
+                  <Select 
+                    value={dropdowns.dropdown3Sub}
+                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown3Sub: value }))}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold z-50"
+                      style={{ backgroundColor: dropdowns.dropdown3Sub ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Direction" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-[100]">
+                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {dropdowns.dropdown3Main && dropdowns.dropdown3Sub && (
+                  <div className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
+                    = {dropdowns.dropdown3Main} {dropdowns.dropdown3Sub}
+                  </div>
+                )}
+              </div>
+
+              {/* Dropdown 4 */}
+              <div className="flex gap-2 items-center">
+                <div className="flex-1">
+                  <Select 
+                    value={dropdowns.dropdown4Main}
+                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Main: value }))}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold z-50"
+                      style={{ backgroundColor: dropdowns.dropdown4Main ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Select..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-[100]">
+                      <SelectItem value="DG" className="text-lg font-bold">DG</SelectItem>
+                      <SelectItem value="DR" className="text-lg font-bold">DR</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex-1">
+                  <Select 
+                    value={dropdowns.dropdown4Sub}
+                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Sub: value }))}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold z-50"
+                      style={{ backgroundColor: dropdowns.dropdown4Sub ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Direction" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-[100]">
+                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {dropdowns.dropdown4Main && dropdowns.dropdown4Sub && (
+                  <div className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
+                    = {dropdowns.dropdown4Main} {dropdowns.dropdown4Sub}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <SimpleOptionSelector
@@ -793,165 +976,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                 >
                   NILL
                 </Button>
-              </div>
-            </div>
-          </div>
-          
-          {/* 4 Dropdown Pairs Section */}
-          <div className="space-y-4 border-t-2 border-border pt-4 mt-6">
-            <Label className="text-xl font-bold">Additional Options</Label>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Dropdown 1 */}
-              <div className="flex gap-2 items-center">
-                <div className="flex-1">
-                  <Select 
-                    value={dropdowns.dropdown1Main}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown1Main: value }))}
-                  >
-                    <SelectTrigger className="bg-card text-lg font-bold z-50">
-                      <SelectValue placeholder="Select..." />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="YG" className="text-lg font-bold">YG</SelectItem>
-                      <SelectItem value="YR" className="text-lg font-bold">YR</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex-1">
-                  <Select 
-                    value={dropdowns.dropdown1Sub}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown1Sub: value }))}
-                  >
-                    <SelectTrigger className="bg-card text-lg font-bold z-50">
-                      <SelectValue placeholder="Direction" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
-                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
-                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                {dropdowns.dropdown1Main && dropdowns.dropdown1Sub && (
-                  <div className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
-                    = {dropdowns.dropdown1Main} {dropdowns.dropdown1Sub}
-                  </div>
-                )}
-              </div>
-
-              {/* Dropdown 2 */}
-              <div className="flex gap-2 items-center">
-                <div className="flex-1">
-                  <Select 
-                    value={dropdowns.dropdown2Main}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown2Main: value }))}
-                  >
-                    <SelectTrigger className="bg-card text-lg font-bold z-50">
-                      <SelectValue placeholder="Select..." />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="MG" className="text-lg font-bold">MG</SelectItem>
-                      <SelectItem value="MR" className="text-lg font-bold">MR</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex-1">
-                  <Select 
-                    value={dropdowns.dropdown2Sub}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown2Sub: value }))}
-                  >
-                    <SelectTrigger className="bg-card text-lg font-bold z-50">
-                      <SelectValue placeholder="Direction" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
-                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
-                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                {dropdowns.dropdown2Main && dropdowns.dropdown2Sub && (
-                  <div className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
-                    = {dropdowns.dropdown2Main} {dropdowns.dropdown2Sub}
-                  </div>
-                )}
-              </div>
-
-              {/* Dropdown 3 */}
-              <div className="flex gap-2 items-center">
-                <div className="flex-1">
-                  <Select 
-                    value={dropdowns.dropdown3Main}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown3Main: value }))}
-                  >
-                    <SelectTrigger className="bg-card text-lg font-bold z-50">
-                      <SelectValue placeholder="Select..." />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="WG" className="text-lg font-bold">WG</SelectItem>
-                      <SelectItem value="ER" className="text-lg font-bold">ER</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex-1">
-                  <Select 
-                    value={dropdowns.dropdown3Sub}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown3Sub: value }))}
-                  >
-                    <SelectTrigger className="bg-card text-lg font-bold z-50">
-                      <SelectValue placeholder="Direction" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
-                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
-                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                {dropdowns.dropdown3Main && dropdowns.dropdown3Sub && (
-                  <div className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
-                    = {dropdowns.dropdown3Main} {dropdowns.dropdown3Sub}
-                  </div>
-                )}
-              </div>
-
-              {/* Dropdown 4 */}
-              <div className="flex gap-2 items-center">
-                <div className="flex-1">
-                  <Select 
-                    value={dropdowns.dropdown4Main}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Main: value }))}
-                  >
-                    <SelectTrigger className="bg-card text-lg font-bold z-50">
-                      <SelectValue placeholder="Select..." />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="DG" className="text-lg font-bold">DG</SelectItem>
-                      <SelectItem value="DR" className="text-lg font-bold">DR</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex-1">
-                  <Select 
-                    value={dropdowns.dropdown4Sub}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Sub: value }))}
-                  >
-                    <SelectTrigger className="bg-card text-lg font-bold z-50">
-                      <SelectValue placeholder="Direction" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
-                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
-                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                {dropdowns.dropdown4Main && dropdowns.dropdown4Sub && (
-                  <div className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
-                    = {dropdowns.dropdown4Main} {dropdowns.dropdown4Sub}
-                  </div>
-                )}
               </div>
             </div>
           </div>
