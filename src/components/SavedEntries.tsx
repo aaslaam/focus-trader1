@@ -290,6 +290,32 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
                     </div>
                   </div>
 
+                  {/* New Four Dropdowns Row */}
+                  {(entry.dropdown1 || entry.dropdown2 || entry.dropdown3 || entry.dropdown4) && (
+                    <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2">
+                      {entry.dropdown1 && (
+                        <div className="px-3 py-2 rounded bg-blue-50 border border-blue-200">
+                          <span className="text-lg font-bold">{entry.dropdown1}</span>
+                        </div>
+                      )}
+                      {entry.dropdown2 && (
+                        <div className="px-3 py-2 rounded bg-green-50 border border-green-200">
+                          <span className="text-lg font-bold">{entry.dropdown2}</span>
+                        </div>
+                      )}
+                      {entry.dropdown3 && (
+                        <div className="px-3 py-2 rounded bg-purple-50 border border-purple-200">
+                          <span className="text-lg font-bold">{entry.dropdown3}</span>
+                        </div>
+                      )}
+                      {entry.dropdown4 && (
+                        <div className="px-3 py-2 rounded bg-orange-50 border border-orange-200">
+                          <span className="text-lg font-bold">{entry.dropdown4}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   <div className="mt-4 flex items-center gap-2">
                     <Badge
                       variant="outline"

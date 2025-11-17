@@ -261,6 +261,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       imageUrl = (await uploadImage(selectedImage)) || undefined;
     }
 
+    console.log('New dropdowns state before save:', newDropdowns);
+
     const newEntry: StockEntryData = {
       ...formData,
       ...selectedDates,
@@ -272,6 +274,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       imageUrl,
       timestamp: Date.now()
     };
+
+    console.log('New entry with dropdowns:', newEntry);
 
     const updatedEntries = [...existingEntries, newEntry];
     localStorage.setItem('stockEntries', JSON.stringify(updatedEntries));
