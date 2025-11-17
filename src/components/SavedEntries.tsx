@@ -188,13 +188,13 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
                   </div>
                   
                   <div className="space-y-4">
-                    {/* 2 DIRECTION A & B */}
+                    {/* DIRECTION A & B */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="flex flex-col">
                         <div className="flex items-center gap-1">
                           <span className="px-3 py-3 rounded inline-flex flex-col items-start gap-1" style={{ backgroundColor: '#ffe3e2' }}>
                             <div className="flex items-center gap-1">
-                              <span className="text-xl font-extrabold">2 DIRECTION A:</span>
+                              <span className="text-xl font-extrabold">DIRECTION A:</span>
                             </div>
                             <div className="flex flex-col gap-1">
                               <span className="text-xl font-extrabold">{formatValue(entry.stock2)}</span>
