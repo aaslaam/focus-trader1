@@ -268,19 +268,6 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
                           </span>
                         </div>
                       </div>
-                      <div className="flex flex-col">
-                        <div className="flex items-center gap-1">
-                          <span className="px-3 py-3 rounded inline-flex flex-col items-start gap-1" style={{ backgroundColor: '#dcfce7' }}>
-                            <div className="flex items-center gap-1">
-                              <span className="text-xl font-extrabold">OPEN B:</span>
-                            </div>
-                            <div className="flex flex-col gap-1">
-                              <span className="text-xl font-extrabold">{formatValue(entry.openb || '')}</span>
-                              <span className="text-lg font-extrabold text-muted-foreground">{entry.openbDate ? format(new Date(entry.openbDate), "d/M/yyyy") : "NILL"}</span>
-                            </div>
-                          </span>
-                        </div>
-                      </div>
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -296,19 +283,6 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
                             <div className="flex flex-col gap-1">
                               <span className="text-xl font-extrabold">{formatValue(entry.stock4)}</span>
                               <span className="text-lg font-extrabold text-muted-foreground">{entry.stock4Date ? format(new Date(entry.stock4Date), "d/M/yyyy") : "NILL"}</span>
-                            </div>
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex flex-col">
-                        <div className="flex items-center gap-1">
-                          <span className="px-3 py-3 rounded inline-flex flex-col items-start gap-1" style={{ backgroundColor: '#dcfce7' }}>
-                            <div className="flex items-center gap-1">
-                              <span className="text-xl font-extrabold">CLOSE B:</span>
-                            </div>
-                            <div className="flex flex-col gap-1">
-                              <span className="text-xl font-extrabold">{formatValue(entry.stock4b || '')}</span>
-                              <span className="text-lg font-extrabold text-muted-foreground">{entry.stock4bDate ? format(new Date(entry.stock4bDate), "d/M/yyyy") : "NILL"}</span>
                             </div>
                           </span>
                         </div>
