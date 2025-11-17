@@ -30,6 +30,10 @@ interface StockEntryData {
   stock4bDate?: Date | null;
   openbDate?: Date | null;
   classification: 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL';
+  dropdown1?: string;
+  dropdown2?: string;
+  dropdown3?: string;
+  dropdown4?: string;
   notes?: string;
   imageUrl?: string;
   timestamp: number;
@@ -52,6 +56,16 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     stock4b: '',
     classification: '' as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL' | '',
     notes: ''
+  });
+  const [dropdowns, setDropdowns] = useState({
+    dropdown1Main: '',
+    dropdown1Sub: '',
+    dropdown2Main: '',
+    dropdown2Sub: '',
+    dropdown3Main: '',
+    dropdown3Sub: '',
+    dropdown4Main: '',
+    dropdown4Sub: ''
   });
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -245,6 +259,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       ...formData,
       ...selectedDates,
       classification: formData.classification as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL',
+      dropdown1: dropdowns.dropdown1Main && dropdowns.dropdown1Sub ? `${dropdowns.dropdown1Main} ${dropdowns.dropdown1Sub}` : undefined,
+      dropdown2: dropdowns.dropdown2Main && dropdowns.dropdown2Sub ? `${dropdowns.dropdown2Main} ${dropdowns.dropdown2Sub}` : undefined,
+      dropdown3: dropdowns.dropdown3Main && dropdowns.dropdown3Sub ? `${dropdowns.dropdown3Main} ${dropdowns.dropdown3Sub}` : undefined,
+      dropdown4: dropdowns.dropdown4Main && dropdowns.dropdown4Sub ? `${dropdowns.dropdown4Main} ${dropdowns.dropdown4Sub}` : undefined,
       imageUrl,
       timestamp: Date.now()
     };
@@ -279,6 +297,16 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock4b: '',
       classification: '',
       notes: ''
+    });
+    setDropdowns({
+      dropdown1Main: '',
+      dropdown1Sub: '',
+      dropdown2Main: '',
+      dropdown2Sub: '',
+      dropdown3Main: '',
+      dropdown3Sub: '',
+      dropdown4Main: '',
+      dropdown4Sub: ''
     });
     setSelectedDates({
       stock1Date: new Date(),
@@ -316,6 +344,16 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock4b: '',
       classification: '',
       notes: ''
+    });
+    setDropdowns({
+      dropdown1Main: '',
+      dropdown1Sub: '',
+      dropdown2Main: '',
+      dropdown2Sub: '',
+      dropdown3Main: '',
+      dropdown3Sub: '',
+      dropdown4Main: '',
+      dropdown4Sub: ''
     });
     setSelectedDates({
       stock1Date: new Date(),
@@ -415,6 +453,16 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         stock4b: '',
         classification: '',
         notes: ''
+      });
+      setDropdowns({
+        dropdown1Main: '',
+        dropdown1Sub: '',
+        dropdown2Main: '',
+        dropdown2Sub: '',
+        dropdown3Main: '',
+        dropdown3Sub: '',
+        dropdown4Main: '',
+        dropdown4Sub: ''
       });
       setSelectedDates({
         stock1Date: new Date(),
@@ -745,6 +793,165 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                 >
                   NILL
                 </Button>
+              </div>
+            </div>
+          </div>
+          
+          {/* 4 Dropdown Pairs Section */}
+          <div className="space-y-4 border-t-2 border-border pt-4 mt-6">
+            <Label className="text-xl font-bold">Additional Options</Label>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Dropdown 1 */}
+              <div className="flex gap-2 items-center">
+                <div className="flex-1">
+                  <Select 
+                    value={dropdowns.dropdown1Main}
+                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown1Main: value }))}
+                  >
+                    <SelectTrigger className="bg-card text-lg font-bold z-50">
+                      <SelectValue placeholder="Select..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-[100]">
+                      <SelectItem value="YG" className="text-lg font-bold">YG</SelectItem>
+                      <SelectItem value="YR" className="text-lg font-bold">YR</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex-1">
+                  <Select 
+                    value={dropdowns.dropdown1Sub}
+                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown1Sub: value }))}
+                  >
+                    <SelectTrigger className="bg-card text-lg font-bold z-50">
+                      <SelectValue placeholder="Direction" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-[100]">
+                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {dropdowns.dropdown1Main && dropdowns.dropdown1Sub && (
+                  <div className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
+                    = {dropdowns.dropdown1Main} {dropdowns.dropdown1Sub}
+                  </div>
+                )}
+              </div>
+
+              {/* Dropdown 2 */}
+              <div className="flex gap-2 items-center">
+                <div className="flex-1">
+                  <Select 
+                    value={dropdowns.dropdown2Main}
+                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown2Main: value }))}
+                  >
+                    <SelectTrigger className="bg-card text-lg font-bold z-50">
+                      <SelectValue placeholder="Select..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-[100]">
+                      <SelectItem value="MG" className="text-lg font-bold">MG</SelectItem>
+                      <SelectItem value="MR" className="text-lg font-bold">MR</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex-1">
+                  <Select 
+                    value={dropdowns.dropdown2Sub}
+                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown2Sub: value }))}
+                  >
+                    <SelectTrigger className="bg-card text-lg font-bold z-50">
+                      <SelectValue placeholder="Direction" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-[100]">
+                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {dropdowns.dropdown2Main && dropdowns.dropdown2Sub && (
+                  <div className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
+                    = {dropdowns.dropdown2Main} {dropdowns.dropdown2Sub}
+                  </div>
+                )}
+              </div>
+
+              {/* Dropdown 3 */}
+              <div className="flex gap-2 items-center">
+                <div className="flex-1">
+                  <Select 
+                    value={dropdowns.dropdown3Main}
+                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown3Main: value }))}
+                  >
+                    <SelectTrigger className="bg-card text-lg font-bold z-50">
+                      <SelectValue placeholder="Select..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-[100]">
+                      <SelectItem value="WG" className="text-lg font-bold">WG</SelectItem>
+                      <SelectItem value="ER" className="text-lg font-bold">ER</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex-1">
+                  <Select 
+                    value={dropdowns.dropdown3Sub}
+                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown3Sub: value }))}
+                  >
+                    <SelectTrigger className="bg-card text-lg font-bold z-50">
+                      <SelectValue placeholder="Direction" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-[100]">
+                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {dropdowns.dropdown3Main && dropdowns.dropdown3Sub && (
+                  <div className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
+                    = {dropdowns.dropdown3Main} {dropdowns.dropdown3Sub}
+                  </div>
+                )}
+              </div>
+
+              {/* Dropdown 4 */}
+              <div className="flex gap-2 items-center">
+                <div className="flex-1">
+                  <Select 
+                    value={dropdowns.dropdown4Main}
+                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Main: value }))}
+                  >
+                    <SelectTrigger className="bg-card text-lg font-bold z-50">
+                      <SelectValue placeholder="Select..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-[100]">
+                      <SelectItem value="DG" className="text-lg font-bold">DG</SelectItem>
+                      <SelectItem value="DR" className="text-lg font-bold">DR</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex-1">
+                  <Select 
+                    value={dropdowns.dropdown4Sub}
+                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Sub: value }))}
+                  >
+                    <SelectTrigger className="bg-card text-lg font-bold z-50">
+                      <SelectValue placeholder="Direction" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-[100]">
+                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {dropdowns.dropdown4Main && dropdowns.dropdown4Sub && (
+                  <div className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
+                    = {dropdowns.dropdown4Main} {dropdowns.dropdown4Sub}
+                  </div>
+                )}
               </div>
             </div>
           </div>
