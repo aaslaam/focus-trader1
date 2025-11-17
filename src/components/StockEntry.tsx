@@ -55,6 +55,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     classification: '' as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL' | '',
     notes: ''
   });
+  const [newDropdowns, setNewDropdowns] = useState({
+    dropdown1: '',
+    dropdown2: '',
+    dropdown3: '',
+    dropdown4: ''
+  });
   const [dropdowns, setDropdowns] = useState({
     dropdown1Main: '',
     dropdown1Sub: '',
@@ -1037,6 +1043,78 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   NILL
                 </Button>
               </div>
+            </div>
+          </div>
+          
+          {/* Four Dropdowns Row */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <Select 
+                value={newDropdowns.dropdown1}
+                onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown1: value }))}
+              >
+                <SelectTrigger className="text-lg font-bold">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent className="bg-background">
+                  <SelectItem value="OG" className="text-lg font-bold">OG</SelectItem>
+                  <SelectItem value="OR" className="text-lg font-bold">OR</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <Select 
+                value={newDropdowns.dropdown2}
+                onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown2: value }))}
+              >
+                <SelectTrigger className="text-lg font-bold">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent className="bg-background">
+                  <SelectItem value="FORWARD" className="text-lg font-bold">FORWARD</SelectItem>
+                  <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                  <SelectItem value="REVERSE" className="text-lg font-bold">REVERSE</SelectItem>
+                  <SelectItem value="RETURN" className="text-lg font-bold">RETURN</SelectItem>
+                  <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <Select 
+                value={newDropdowns.dropdown3}
+                onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown3: value }))}
+              >
+                <SelectTrigger className="text-lg font-bold">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent className="bg-background">
+                  <SelectItem value="FORWARD" className="text-lg font-bold">FORWARD</SelectItem>
+                  <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                  <SelectItem value="REVERSE" className="text-lg font-bold">REVERSE</SelectItem>
+                  <SelectItem value="RETURN" className="text-lg font-bold">RETURN</SelectItem>
+                  <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <Select 
+                value={newDropdowns.dropdown4}
+                onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown4: value }))}
+              >
+                <SelectTrigger className="text-lg font-bold">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent className="bg-background">
+                  <SelectItem value="FORWARD" className="text-lg font-bold">FORWARD</SelectItem>
+                  <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                  <SelectItem value="REVERSE" className="text-lg font-bold">REVERSE</SelectItem>
+                  <SelectItem value="RETURN" className="text-lg font-bold">RETURN</SelectItem>
+                  <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           
