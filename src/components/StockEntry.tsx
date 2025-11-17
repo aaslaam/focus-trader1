@@ -29,6 +29,10 @@ interface StockEntryData {
   stock4Date: Date | null;
   stock4bDate?: Date | null;
   openbDate?: Date | null;
+  dropdown1Date?: Date | null;
+  dropdown2Date?: Date | null;
+  dropdown3Date?: Date | null;
+  dropdown4Date?: Date | null;
   classification: 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL';
   dropdown1?: string;
   dropdown2?: string;
@@ -84,13 +88,21 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     stock4Date: Date | null;
     stock4bDate: Date | null;
     openbDate: Date | null;
+    dropdown1Date: Date | null;
+    dropdown2Date: Date | null;
+    dropdown3Date: Date | null;
+    dropdown4Date: Date | null;
   }>({
     stock1Date: new Date(),
     stock2Date: new Date(),
     stock3Date: new Date(),
     stock4Date: new Date(),
     stock4bDate: new Date(),
-    openbDate: new Date()
+    openbDate: new Date(),
+    dropdown1Date: new Date(),
+    dropdown2Date: new Date(),
+    dropdown3Date: new Date(),
+    dropdown4Date: new Date()
   });
   const [dateChanged, setDateChanged] = useState<{
     stock1Date: boolean;
@@ -99,13 +111,21 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     stock4Date: boolean;
     stock4bDate: boolean;
     openbDate: boolean;
+    dropdown1Date: boolean;
+    dropdown2Date: boolean;
+    dropdown3Date: boolean;
+    dropdown4Date: boolean;
   }>({
     stock1Date: false,
     stock2Date: false,
     stock3Date: false,
     stock4Date: false,
     stock4bDate: false,
-    openbDate: false
+    openbDate: false,
+    dropdown1Date: false,
+    dropdown2Date: false,
+    dropdown3Date: false,
+    dropdown4Date: false
   });
   const { toast } = useToast();
   
@@ -314,7 +334,11 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock3Date: new Date(),
       stock4Date: new Date(),
       stock4bDate: new Date(),
-      openbDate: new Date()
+      openbDate: new Date(),
+      dropdown1Date: new Date(),
+      dropdown2Date: new Date(),
+      dropdown3Date: new Date(),
+      dropdown4Date: new Date()
     });
     setDateChanged({
       stock1Date: false,
@@ -322,7 +346,11 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock3Date: false,
       stock4Date: false,
       stock4bDate: false,
-      openbDate: false
+      openbDate: false,
+      dropdown1Date: false,
+      dropdown2Date: false,
+      dropdown3Date: false,
+      dropdown4Date: false
     });
     setSelectedImage(null);
     setImagePreview(null);
@@ -361,7 +389,11 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock3Date: new Date(),
       stock4Date: new Date(),
       stock4bDate: new Date(),
-      openbDate: new Date()
+      openbDate: new Date(),
+      dropdown1Date: new Date(),
+      dropdown2Date: new Date(),
+      dropdown3Date: new Date(),
+      dropdown4Date: new Date()
     });
     setDateChanged({
       stock1Date: false,
@@ -369,7 +401,11 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock3Date: false,
       stock4Date: false,
       stock4bDate: false,
-      openbDate: false
+      openbDate: false,
+      dropdown1Date: false,
+      dropdown2Date: false,
+      dropdown3Date: false,
+      dropdown4Date: false
     });
     setSelectedImage(null);
     setImagePreview(null);
@@ -470,7 +506,11 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         stock3Date: new Date(),
         stock4Date: new Date(),
         stock4bDate: new Date(),
-        openbDate: new Date()
+        openbDate: new Date(),
+        dropdown1Date: new Date(),
+        dropdown2Date: new Date(),
+        dropdown3Date: new Date(),
+        dropdown4Date: new Date()
       });
       setDateChanged({
         stock1Date: false,
@@ -478,7 +518,11 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         stock3Date: false,
         stock4Date: false,
         stock4bDate: false,
-        openbDate: false
+        openbDate: false,
+        dropdown1Date: false,
+        dropdown2Date: false,
+        dropdown3Date: false,
+        dropdown4Date: false
       });
       setSelectedImage(null);
       setImagePreview(null);
@@ -504,179 +548,371 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Dropdown 1 */}
-              <div className="flex gap-2 items-center">
-                <div className="flex-1">
-                  <Select 
-                    value={dropdowns.dropdown1Main}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown1Main: value }))}
-                  >
-                    <SelectTrigger 
-                      className="text-lg font-bold z-50"
-                      style={{ backgroundColor: dropdowns.dropdown1Main ? '#dcfce7' : '#ffe3e2' }}
+              <div className="space-y-2">
+                <div className="flex gap-2 items-center">
+                  <div className="flex-1">
+                    <Select 
+                      value={dropdowns.dropdown1Main}
+                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown1Main: value }))}
                     >
-                      <SelectValue placeholder="Select..." />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="YG" className="text-lg font-bold">YG</SelectItem>
-                      <SelectItem value="YR" className="text-lg font-bold">YR</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex-1">
-                  <Select 
-                    value={dropdowns.dropdown1Sub}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown1Sub: value }))}
-                  >
-                    <SelectTrigger 
-                      className="text-lg font-bold z-50"
-                      style={{ backgroundColor: dropdowns.dropdown1Sub ? '#dcfce7' : '#ffe3e2' }}
-                    >
-                      <SelectValue placeholder="Direction" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
-                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
-                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                {dropdowns.dropdown1Main && dropdowns.dropdown1Sub && (
-                  <div className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
-                    = {dropdowns.dropdown1Main} {dropdowns.dropdown1Sub}
+                      <SelectTrigger 
+                        className="text-lg font-bold z-50"
+                        style={{ backgroundColor: dropdowns.dropdown1Main ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="Select..." />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="YG" className="text-lg font-bold">YG</SelectItem>
+                        <SelectItem value="YR" className="text-lg font-bold">YR</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                )}
+                  <div className="flex-1">
+                    <Select 
+                      value={dropdowns.dropdown1Sub}
+                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown1Sub: value }))}
+                    >
+                      <SelectTrigger 
+                        className="text-lg font-bold z-50"
+                        style={{ backgroundColor: dropdowns.dropdown1Sub ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="Direction" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                        <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                        <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {dropdowns.dropdown1Main && dropdowns.dropdown1Sub && (
+                    <div className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
+                      = {dropdowns.dropdown1Main} {dropdowns.dropdown1Sub}
+                    </div>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className={cn(
+                          "flex-1 justify-start text-left font-normal",
+                          (!selectedDates.dropdown1Date || dateChanged.dropdown1Date) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200",
+                          !selectedDates.dropdown1Date && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {selectedDates.dropdown1Date ? format(selectedDates.dropdown1Date, "PPP") : <span>No date (NILL)</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={selectedDates.dropdown1Date || undefined}
+                        onSelect={(date) => {
+                          if (date) {
+                            setSelectedDates(prev => ({ ...prev, dropdown1Date: date }));
+                            setDateChanged(prev => ({ ...prev, dropdown1Date: true }));
+                          }
+                        }}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedDates(prev => ({ ...prev, dropdown1Date: null }));
+                      setDateChanged(prev => ({ ...prev, dropdown1Date: false }));
+                    }}
+                    className={cn(
+                      !selectedDates.dropdown1Date ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
+                    )}
+                  >
+                    NILL
+                  </Button>
+                </div>
               </div>
 
               {/* Dropdown 2 */}
-              <div className="flex gap-2 items-center">
-                <div className="flex-1">
-                  <Select 
-                    value={dropdowns.dropdown2Main}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown2Main: value }))}
-                  >
-                    <SelectTrigger 
-                      className="text-lg font-bold z-50"
-                      style={{ backgroundColor: dropdowns.dropdown2Main ? '#dcfce7' : '#ffe3e2' }}
+              <div className="space-y-2">
+                <div className="flex gap-2 items-center">
+                  <div className="flex-1">
+                    <Select 
+                      value={dropdowns.dropdown2Main}
+                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown2Main: value }))}
                     >
-                      <SelectValue placeholder="Select..." />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="MG" className="text-lg font-bold">MG</SelectItem>
-                      <SelectItem value="MR" className="text-lg font-bold">MR</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex-1">
-                  <Select 
-                    value={dropdowns.dropdown2Sub}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown2Sub: value }))}
-                  >
-                    <SelectTrigger 
-                      className="text-lg font-bold z-50"
-                      style={{ backgroundColor: dropdowns.dropdown2Sub ? '#dcfce7' : '#ffe3e2' }}
-                    >
-                      <SelectValue placeholder="Direction" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
-                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
-                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                {dropdowns.dropdown2Main && dropdowns.dropdown2Sub && (
-                  <div className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
-                    = {dropdowns.dropdown2Main} {dropdowns.dropdown2Sub}
+                      <SelectTrigger 
+                        className="text-lg font-bold z-50"
+                        style={{ backgroundColor: dropdowns.dropdown2Main ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="Select..." />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="MG" className="text-lg font-bold">MG</SelectItem>
+                        <SelectItem value="MR" className="text-lg font-bold">MR</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                )}
+                  <div className="flex-1">
+                    <Select 
+                      value={dropdowns.dropdown2Sub}
+                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown2Sub: value }))}
+                    >
+                      <SelectTrigger 
+                        className="text-lg font-bold z-50"
+                        style={{ backgroundColor: dropdowns.dropdown2Sub ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="Direction" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                        <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                        <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {dropdowns.dropdown2Main && dropdowns.dropdown2Sub && (
+                    <div className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
+                      = {dropdowns.dropdown2Main} {dropdowns.dropdown2Sub}
+                    </div>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className={cn(
+                          "flex-1 justify-start text-left font-normal",
+                          (!selectedDates.dropdown2Date || dateChanged.dropdown2Date) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200",
+                          !selectedDates.dropdown2Date && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {selectedDates.dropdown2Date ? format(selectedDates.dropdown2Date, "PPP") : <span>No date (NILL)</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={selectedDates.dropdown2Date || undefined}
+                        onSelect={(date) => {
+                          if (date) {
+                            setSelectedDates(prev => ({ ...prev, dropdown2Date: date }));
+                            setDateChanged(prev => ({ ...prev, dropdown2Date: true }));
+                          }
+                        }}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedDates(prev => ({ ...prev, dropdown2Date: null }));
+                      setDateChanged(prev => ({ ...prev, dropdown2Date: false }));
+                    }}
+                    className={cn(
+                      !selectedDates.dropdown2Date ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
+                    )}
+                  >
+                    NILL
+                  </Button>
+                </div>
               </div>
 
               {/* Dropdown 3 */}
-              <div className="flex gap-2 items-center">
-                <div className="flex-1">
-                  <Select 
-                    value={dropdowns.dropdown3Main}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown3Main: value }))}
-                  >
-                    <SelectTrigger 
-                      className="text-lg font-bold z-50"
-                      style={{ backgroundColor: dropdowns.dropdown3Main ? '#dcfce7' : '#ffe3e2' }}
+              <div className="space-y-2">
+                <div className="flex gap-2 items-center">
+                  <div className="flex-1">
+                    <Select 
+                      value={dropdowns.dropdown3Main}
+                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown3Main: value }))}
                     >
-                      <SelectValue placeholder="Select..." />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="WG" className="text-lg font-bold">WG</SelectItem>
-                      <SelectItem value="ER" className="text-lg font-bold">ER</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex-1">
-                  <Select 
-                    value={dropdowns.dropdown3Sub}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown3Sub: value }))}
-                  >
-                    <SelectTrigger 
-                      className="text-lg font-bold z-50"
-                      style={{ backgroundColor: dropdowns.dropdown3Sub ? '#dcfce7' : '#ffe3e2' }}
-                    >
-                      <SelectValue placeholder="Direction" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
-                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
-                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                {dropdowns.dropdown3Main && dropdowns.dropdown3Sub && (
-                  <div className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
-                    = {dropdowns.dropdown3Main} {dropdowns.dropdown3Sub}
+                      <SelectTrigger 
+                        className="text-lg font-bold z-50"
+                        style={{ backgroundColor: dropdowns.dropdown3Main ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="Select..." />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="WG" className="text-lg font-bold">WG</SelectItem>
+                        <SelectItem value="ER" className="text-lg font-bold">ER</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                )}
+                  <div className="flex-1">
+                    <Select 
+                      value={dropdowns.dropdown3Sub}
+                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown3Sub: value }))}
+                    >
+                      <SelectTrigger 
+                        className="text-lg font-bold z-50"
+                        style={{ backgroundColor: dropdowns.dropdown3Sub ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="Direction" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                        <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                        <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {dropdowns.dropdown3Main && dropdowns.dropdown3Sub && (
+                    <div className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
+                      = {dropdowns.dropdown3Main} {dropdowns.dropdown3Sub}
+                    </div>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className={cn(
+                          "flex-1 justify-start text-left font-normal",
+                          (!selectedDates.dropdown3Date || dateChanged.dropdown3Date) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200",
+                          !selectedDates.dropdown3Date && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {selectedDates.dropdown3Date ? format(selectedDates.dropdown3Date, "PPP") : <span>No date (NILL)</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={selectedDates.dropdown3Date || undefined}
+                        onSelect={(date) => {
+                          if (date) {
+                            setSelectedDates(prev => ({ ...prev, dropdown3Date: date }));
+                            setDateChanged(prev => ({ ...prev, dropdown3Date: true }));
+                          }
+                        }}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedDates(prev => ({ ...prev, dropdown3Date: null }));
+                      setDateChanged(prev => ({ ...prev, dropdown3Date: false }));
+                    }}
+                    className={cn(
+                      !selectedDates.dropdown3Date ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
+                    )}
+                  >
+                    NILL
+                  </Button>
+                </div>
               </div>
 
               {/* Dropdown 4 */}
-              <div className="flex gap-2 items-center">
-                <div className="flex-1">
-                  <Select 
-                    value={dropdowns.dropdown4Main}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Main: value }))}
-                  >
-                    <SelectTrigger 
-                      className="text-lg font-bold z-50"
-                      style={{ backgroundColor: dropdowns.dropdown4Main ? '#dcfce7' : '#ffe3e2' }}
+              <div className="space-y-2">
+                <div className="flex gap-2 items-center">
+                  <div className="flex-1">
+                    <Select 
+                      value={dropdowns.dropdown4Main}
+                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Main: value }))}
                     >
-                      <SelectValue placeholder="Select..." />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="DG" className="text-lg font-bold">DG</SelectItem>
-                      <SelectItem value="DR" className="text-lg font-bold">DR</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex-1">
-                  <Select 
-                    value={dropdowns.dropdown4Sub}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Sub: value }))}
-                  >
-                    <SelectTrigger 
-                      className="text-lg font-bold z-50"
-                      style={{ backgroundColor: dropdowns.dropdown4Sub ? '#dcfce7' : '#ffe3e2' }}
-                    >
-                      <SelectValue placeholder="Direction" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
-                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
-                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                {dropdowns.dropdown4Main && dropdowns.dropdown4Sub && (
-                  <div className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
-                    = {dropdowns.dropdown4Main} {dropdowns.dropdown4Sub}
+                      <SelectTrigger 
+                        className="text-lg font-bold z-50"
+                        style={{ backgroundColor: dropdowns.dropdown4Main ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="Select..." />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="DG" className="text-lg font-bold">DG</SelectItem>
+                        <SelectItem value="DR" className="text-lg font-bold">DR</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                )}
+                  <div className="flex-1">
+                    <Select 
+                      value={dropdowns.dropdown4Sub}
+                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Sub: value }))}
+                    >
+                      <SelectTrigger 
+                        className="text-lg font-bold z-50"
+                        style={{ backgroundColor: dropdowns.dropdown4Sub ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="Direction" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                        <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                        <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {dropdowns.dropdown4Main && dropdowns.dropdown4Sub && (
+                    <div className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
+                      = {dropdowns.dropdown4Main} {dropdowns.dropdown4Sub}
+                    </div>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className={cn(
+                          "flex-1 justify-start text-left font-normal",
+                          (!selectedDates.dropdown4Date || dateChanged.dropdown4Date) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200",
+                          !selectedDates.dropdown4Date && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {selectedDates.dropdown4Date ? format(selectedDates.dropdown4Date, "PPP") : <span>No date (NILL)</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={selectedDates.dropdown4Date || undefined}
+                        onSelect={(date) => {
+                          if (date) {
+                            setSelectedDates(prev => ({ ...prev, dropdown4Date: date }));
+                            setDateChanged(prev => ({ ...prev, dropdown4Date: true }));
+                          }
+                        }}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedDates(prev => ({ ...prev, dropdown4Date: null }));
+                      setDateChanged(prev => ({ ...prev, dropdown4Date: false }));
+                    }}
+                    className={cn(
+                      !selectedDates.dropdown4Date ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
+                    )}
+                  >
+                    NILL
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
