@@ -31,6 +31,7 @@ interface StockEntryData {
   dropdown2Date?: Date | null;
   dropdown3Date?: Date | null;
   dropdown4Date?: Date | null;
+  ogOpenA?: string;
   notes?: string;
   imageUrl?: string;
   timestamp: number;
