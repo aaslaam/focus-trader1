@@ -137,12 +137,15 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
   
   // Update combined dropdown values whenever individual dropdowns change
   useEffect(() => {
-    setNewDropdowns({
+    const combined = {
       dropdown1: `${dropdowns.dropdown1Main} ${dropdowns.dropdown1Sub}`.trim(),
       dropdown2: `${dropdowns.dropdown2Main} ${dropdowns.dropdown2Sub}`.trim(),
       dropdown3: `${dropdowns.dropdown3Main} ${dropdowns.dropdown3Sub}`.trim(),
       dropdown4: `${dropdowns.dropdown4Main} ${dropdowns.dropdown4Sub}`.trim()
-    });
+    };
+    console.log('StockEntry - useEffect updating combined dropdowns:', combined);
+    console.log('StockEntry - Individual dropdown states:', dropdowns);
+    setNewDropdowns(combined);
   }, [dropdowns]);
   
   // Refs for auto-focus functionality
