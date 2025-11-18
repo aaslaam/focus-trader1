@@ -29,6 +29,8 @@ interface StockEntryData {
   dropdown2Date?: Date | null;
   dropdown3Date?: Date | null;
   dropdown4Date?: Date | null;
+  ogOpenADate?: Date | null;
+  ogCloseADate?: Date | null;
   classification: 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL';
   dropdown1?: string;
   dropdown2?: string;
@@ -94,6 +96,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     dropdown2Date: Date | null;
     dropdown3Date: Date | null;
     dropdown4Date: Date | null;
+    ogOpenADate: Date | null;
+    ogCloseADate: Date | null;
   }>({
     stock1Date: new Date(),
     stock2Date: new Date(),
@@ -102,7 +106,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     dropdown1Date: new Date(),
     dropdown2Date: new Date(),
     dropdown3Date: new Date(),
-    dropdown4Date: new Date()
+    dropdown4Date: new Date(),
+    ogOpenADate: new Date(),
+    ogCloseADate: new Date()
   });
   const [dateChanged, setDateChanged] = useState<{
     stock1Date: boolean;
@@ -113,6 +119,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     dropdown2Date: boolean;
     dropdown3Date: boolean;
     dropdown4Date: boolean;
+    ogOpenADate: boolean;
+    ogCloseADate: boolean;
   }>({
     stock1Date: false,
     stock2Date: false,
@@ -121,7 +129,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     dropdown1Date: false,
     dropdown2Date: false,
     dropdown3Date: false,
-    dropdown4Date: false
+    dropdown4Date: false,
+    ogOpenADate: false,
+    ogCloseADate: false
   });
   const { toast } = useToast();
   
@@ -336,7 +346,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       dropdown1Date: new Date(),
       dropdown2Date: new Date(),
       dropdown3Date: new Date(),
-      dropdown4Date: new Date()
+      dropdown4Date: new Date(),
+      ogOpenADate: new Date(),
+      ogCloseADate: new Date()
     });
     setDateChanged({
       stock1Date: false,
@@ -346,7 +358,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       dropdown1Date: false,
       dropdown2Date: false,
       dropdown3Date: false,
-      dropdown4Date: false
+      dropdown4Date: false,
+      ogOpenADate: false,
+      ogCloseADate: false
     });
     setSelectedImage(null);
     setImagePreview(null);
@@ -393,7 +407,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       dropdown1Date: new Date(),
       dropdown2Date: new Date(),
       dropdown3Date: new Date(),
-      dropdown4Date: new Date()
+      dropdown4Date: new Date(),
+      ogOpenADate: new Date(),
+      ogCloseADate: new Date()
     });
     setDateChanged({
       stock1Date: false,
@@ -403,7 +419,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       dropdown1Date: false,
       dropdown2Date: false,
       dropdown3Date: false,
-      dropdown4Date: false
+      dropdown4Date: false,
+      ogOpenADate: false,
+      ogCloseADate: false
     });
     setSelectedImage(null);
     setImagePreview(null);
@@ -508,7 +526,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         dropdown1Date: new Date(),
         dropdown2Date: new Date(),
         dropdown3Date: new Date(),
-        dropdown4Date: new Date()
+        dropdown4Date: new Date(),
+        ogOpenADate: new Date(),
+        ogCloseADate: new Date()
       });
       setDateChanged({
         stock1Date: false,
@@ -518,7 +538,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         dropdown1Date: false,
         dropdown2Date: false,
         dropdown3Date: false,
-        dropdown4Date: false
+        dropdown4Date: false,
+        ogOpenADate: false,
+        ogCloseADate: false
       });
       setSelectedImage(null);
       setImagePreview(null);
@@ -1202,64 +1224,159 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
             </div>
           </div>
           
-          {/* OG OPEN A Dropdown */}
-          <div className="space-y-2">
-            <Label className="text-lg font-bold">OG OPEN A</Label>
-            <Select 
-              value={formData.ogOpenA}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, ogOpenA: value }))}
-            >
-              <SelectTrigger 
-                className="text-lg font-bold"
-                style={{ backgroundColor: formData.ogOpenA ? '#dcfce7' : '#ffe3e2' }}
+          {/* OG OPEN A and OG CLOSE A Dropdowns in Same Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* OG OPEN A */}
+            <div className="space-y-2">
+              <Label className="text-lg font-bold">OG OPEN A</Label>
+              <Select 
+                value={formData.ogOpenA}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, ogOpenA: value }))}
               >
-                <SelectValue placeholder="Select" />
-              </SelectTrigger>
-              <SelectContent className="bg-card z-[100]">
-                <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
-                <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
-                <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
-                <SelectItem value="OG-" className="text-lg font-bold">OG-</SelectItem>
-                <SelectItem value="OG+" className="text-lg font-bold">OG+</SelectItem>
-                <SelectItem value="OGB" className="text-lg font-bold">OGB</SelectItem>
-                <SelectItem value="CG-" className="text-lg font-bold">CG-</SelectItem>
-                <SelectItem value="CG+" className="text-lg font-bold">CG+</SelectItem>
-                <SelectItem value="CGB" className="text-lg font-bold">CGB</SelectItem>
-                <SelectItem value="CR-" className="text-lg font-bold">CR-</SelectItem>
-                <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
-                <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          
-          {/* OG CLOSE A Dropdown */}
-          <div className="space-y-2">
-            <Label className="text-lg font-bold">OG CLOSE A</Label>
-            <Select 
-              value={formData.ogCloseA}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, ogCloseA: value }))}
-            >
-              <SelectTrigger 
-                className="text-lg font-bold"
-                style={{ backgroundColor: formData.ogCloseA ? '#dcfce7' : '#ffe3e2' }}
+                <SelectTrigger 
+                  className="text-lg font-bold"
+                  style={{ backgroundColor: formData.ogOpenA ? '#dcfce7' : '#ffe3e2' }}
+                >
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent className="bg-card z-[100]">
+                  <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
+                  <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
+                  <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
+                  <SelectItem value="OG-" className="text-lg font-bold">OG-</SelectItem>
+                  <SelectItem value="OG+" className="text-lg font-bold">OG+</SelectItem>
+                  <SelectItem value="OGB" className="text-lg font-bold">OGB</SelectItem>
+                  <SelectItem value="CG-" className="text-lg font-bold">CG-</SelectItem>
+                  <SelectItem value="CG+" className="text-lg font-bold">CG+</SelectItem>
+                  <SelectItem value="CGB" className="text-lg font-bold">CGB</SelectItem>
+                  <SelectItem value="CR-" className="text-lg font-bold">CR-</SelectItem>
+                  <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
+                  <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
+                </SelectContent>
+              </Select>
+              <div className="flex gap-2">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={cn(
+                        "flex-1 justify-start text-left font-normal",
+                        (!selectedDates.ogOpenADate || dateChanged.ogOpenADate) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200",
+                        !selectedDates.ogOpenADate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {selectedDates.ogOpenADate ? format(selectedDates.ogOpenADate, "PPP") : <span>No date (NILL)</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDates.ogOpenADate || undefined}
+                      onSelect={(date) => {
+                        if (date) {
+                          setSelectedDates(prev => ({ ...prev, ogOpenADate: date }));
+                          setDateChanged(prev => ({ ...prev, ogOpenADate: true }));
+                        }
+                      }}
+                      initialFocus
+                      className={cn("p-3 pointer-events-auto")}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedDates(prev => ({ ...prev, ogOpenADate: null }));
+                    setDateChanged(prev => ({ ...prev, ogOpenADate: false }));
+                  }}
+                  className={cn(
+                    !selectedDates.ogOpenADate ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
+                  )}
+                >
+                  NILL
+                </Button>
+              </div>
+            </div>
+            
+            {/* OG CLOSE A */}
+            <div className="space-y-2">
+              <Label className="text-lg font-bold">OG CLOSE A</Label>
+              <Select 
+                value={formData.ogCloseA}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, ogCloseA: value }))}
               >
-                <SelectValue placeholder="Select" />
-              </SelectTrigger>
-              <SelectContent className="bg-card z-[100]">
-                <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
-                <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
-                <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
-                <SelectItem value="OG-" className="text-lg font-bold">OG-</SelectItem>
-                <SelectItem value="OG+" className="text-lg font-bold">OG+</SelectItem>
-                <SelectItem value="OGB" className="text-lg font-bold">OGB</SelectItem>
-                <SelectItem value="CG-" className="text-lg font-bold">CG-</SelectItem>
-                <SelectItem value="CG+" className="text-lg font-bold">CG+</SelectItem>
-                <SelectItem value="CGB" className="text-lg font-bold">CGB</SelectItem>
-                <SelectItem value="CR-" className="text-lg font-bold">CR-</SelectItem>
-                <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
-                <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
-              </SelectContent>
-            </Select>
+                <SelectTrigger 
+                  className="text-lg font-bold"
+                  style={{ backgroundColor: formData.ogCloseA ? '#dcfce7' : '#ffe3e2' }}
+                >
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent className="bg-card z-[100]">
+                  <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
+                  <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
+                  <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
+                  <SelectItem value="OG-" className="text-lg font-bold">OG-</SelectItem>
+                  <SelectItem value="OG+" className="text-lg font-bold">OG+</SelectItem>
+                  <SelectItem value="OGB" className="text-lg font-bold">OGB</SelectItem>
+                  <SelectItem value="CG-" className="text-lg font-bold">CG-</SelectItem>
+                  <SelectItem value="CG+" className="text-lg font-bold">CG+</SelectItem>
+                  <SelectItem value="CGB" className="text-lg font-bold">CGB</SelectItem>
+                  <SelectItem value="CR-" className="text-lg font-bold">CR-</SelectItem>
+                  <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
+                  <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
+                </SelectContent>
+              </Select>
+              <div className="flex gap-2">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={cn(
+                        "flex-1 justify-start text-left font-normal",
+                        (!selectedDates.ogCloseADate || dateChanged.ogCloseADate) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200",
+                        !selectedDates.ogCloseADate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {selectedDates.ogCloseADate ? format(selectedDates.ogCloseADate, "PPP") : <span>No date (NILL)</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDates.ogCloseADate || undefined}
+                      onSelect={(date) => {
+                        if (date) {
+                          setSelectedDates(prev => ({ ...prev, ogCloseADate: date }));
+                          setDateChanged(prev => ({ ...prev, ogCloseADate: true }));
+                        }
+                      }}
+                      initialFocus
+                      className={cn("p-3 pointer-events-auto")}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedDates(prev => ({ ...prev, ogCloseADate: null }));
+                    setDateChanged(prev => ({ ...prev, ogCloseADate: false }));
+                  }}
+                  className={cn(
+                    !selectedDates.ogCloseADate ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
+                  )}
+                >
+                  NILL
+                </Button>
+              </div>
+            </div>
           </div>
           
           <div className="space-y-2">

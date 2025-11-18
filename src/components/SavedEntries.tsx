@@ -33,6 +33,8 @@ interface StockEntryData {
   dropdown4Date?: Date | null;
   ogOpenA?: string;
   ogCloseA?: string;
+  ogOpenADate?: Date | null;
+  ogCloseADate?: Date | null;
   notes?: string;
   imageUrl?: string;
   timestamp: number;
@@ -330,22 +332,41 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
                     </div>
                   )}
 
-                  {/* OG OPEN A Dropdown */}
-                  {entry.ogOpenA && (
+                  {/* OG OPEN A and OG CLOSE A in same row */}
+                  {(entry.ogOpenA || entry.ogCloseA) && (
                     <div className="mt-4">
-                      <div className="px-3 py-2 rounded bg-indigo-50 border border-indigo-200 inline-block">
-                        <div className="text-sm font-bold text-indigo-700 mb-1">OG OPEN A</div>
-                        <span className="text-lg font-bold">{entry.ogOpenA}</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* OG CLOSE A Dropdown */}
-                  {entry.ogCloseA && (
-                    <div className="mt-4">
-                      <div className="px-3 py-2 rounded bg-pink-50 border border-pink-200 inline-block">
-                        <div className="text-sm font-bold text-pink-700 mb-1">OG CLOSE A</div>
-                        <span className="text-lg font-bold">{entry.ogCloseA}</span>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* OG OPEN A */}
+                        {entry.ogOpenA && (
+                          <div className="space-y-2">
+                            <div className="px-3 py-2 rounded bg-indigo-50 border border-indigo-200">
+                              <div className="text-sm font-bold text-indigo-700 mb-1">OG OPEN A</div>
+                              <span className="text-lg font-bold">{entry.ogOpenA}</span>
+                            </div>
+                            {entry.ogOpenADate && (
+                              <div className="flex items-center gap-2 px-3 py-2 rounded bg-slate-100 border border-slate-300">
+                                <Calendar className="h-4 w-4 text-slate-600" />
+                                <span className="text-sm font-semibold">Date: {format(new Date(entry.ogOpenADate), "d/M/yyyy")}</span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        
+                        {/* OG CLOSE A */}
+                        {entry.ogCloseA && (
+                          <div className="space-y-2">
+                            <div className="px-3 py-2 rounded bg-pink-50 border border-pink-200">
+                              <div className="text-sm font-bold text-pink-700 mb-1">OG CLOSE A</div>
+                              <span className="text-lg font-bold">{entry.ogCloseA}</span>
+                            </div>
+                            {entry.ogCloseADate && (
+                              <div className="flex items-center gap-2 px-3 py-2 rounded bg-slate-100 border border-slate-300">
+                                <Calendar className="h-4 w-4 text-slate-600" />
+                                <span className="text-sm font-semibold">Date: {format(new Date(entry.ogCloseADate), "d/M/yyyy")}</span>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
