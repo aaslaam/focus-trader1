@@ -329,6 +329,16 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
                     </div>
                   )}
 
+                  {/* OG OPEN A Dropdown */}
+                  {entry.ogOpenA && (
+                    <div className="mt-4">
+                      <div className="px-3 py-2 rounded bg-indigo-50 border border-indigo-200 inline-block">
+                        <div className="text-sm font-bold text-indigo-700 mb-1">OG OPEN A</div>
+                        <span className="text-lg font-bold">{entry.ogOpenA}</span>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="mt-4 flex items-center gap-2">
                     <Badge
                       variant="outline"
