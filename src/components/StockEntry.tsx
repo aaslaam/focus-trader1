@@ -34,6 +34,7 @@ interface StockEntryData {
   dropdown2?: string;
   dropdown3?: string;
   dropdown4?: string;
+  ogOpenA?: string;
   notes?: string;
   imageUrl?: string;
   timestamp: number;
@@ -53,6 +54,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     stock3: '',
     stock4: '',
     classification: '' as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL' | '',
+    ogOpenA: '',
     notes: ''
   });
   const [newDropdowns, setNewDropdowns] = useState({
@@ -304,6 +306,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock3: '',
       stock4: '',
       classification: '',
+      ogOpenA: '',
       notes: ''
     });
     setNewDropdowns({
@@ -359,6 +362,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock3: '',
       stock4: '',
       classification: '',
+      ogOpenA: '',
       notes: ''
     });
     setNewDropdowns({
@@ -472,6 +476,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         stock3: '',
         stock4: '',
         classification: '',
+        ogOpenA: '',
         notes: ''
       });
       setNewDropdowns({
@@ -1066,6 +1071,36 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                 </Button>
               </div>
             </div>
+          </div>
+          
+          {/* OG OPEN A Dropdown */}
+          <div className="space-y-2">
+            <Label className="text-lg font-bold">OG OPEN A</Label>
+            <Select 
+              value={formData.ogOpenA}
+              onValueChange={(value) => setFormData(prev => ({ ...prev, ogOpenA: value }))}
+            >
+              <SelectTrigger 
+                className="text-lg font-bold"
+                style={{ backgroundColor: formData.ogOpenA ? '#dcfce7' : '#ffe3e2' }}
+              >
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent className="bg-card z-[100]">
+                <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
+                <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
+                <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
+                <SelectItem value="OG-" className="text-lg font-bold">OG-</SelectItem>
+                <SelectItem value="OG+" className="text-lg font-bold">OG+</SelectItem>
+                <SelectItem value="OGB" className="text-lg font-bold">OGB</SelectItem>
+                <SelectItem value="CG-" className="text-lg font-bold">CG-</SelectItem>
+                <SelectItem value="CG+" className="text-lg font-bold">CG+</SelectItem>
+                <SelectItem value="CGB" className="text-lg font-bold">CGB</SelectItem>
+                <SelectItem value="CR-" className="text-lg font-bold">CR-</SelectItem>
+                <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
+                <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           
           {/* Four Dropdowns Row */}
