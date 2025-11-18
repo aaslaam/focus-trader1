@@ -1104,8 +1104,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
           <div className="space-y-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="space-y-2">
-                <Label className="text-lg font-bold">OG DIRECTION A</Label>
-                <Select 
+                <Label className="text-lg font-bold">INTRO 1</Label>
+                <Select
                   value={newDropdowns.dropdown1}
                   onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown1: value }))}
                 >
@@ -1120,8 +1120,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               </div>
               
               <div className="space-y-2">
-                <Label className="text-lg font-bold">OG DIRECTION B</Label>
-                <Select 
+                <Label className="text-lg font-bold">INTRO 2</Label>
+                <Select
                   value={newDropdowns.dropdown2}
                   onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown2: value }))}
                 >
@@ -1139,8 +1139,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               </div>
               
               <div className="space-y-2">
-                <Label className="text-lg font-bold">OG DIRECTION C</Label>
-                <Select 
+                <Label className="text-lg font-bold">INTRO 3</Label>
+                <Select
                   value={newDropdowns.dropdown3}
                   onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown3: value }))}
                 >
@@ -1158,8 +1158,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               </div>
               
               <div className="space-y-2">
-                <Label className="text-lg font-bold">OG DIRECTION D</Label>
-                <Select 
+                <Label className="text-lg font-bold">INTRO 4</Label>
+                <Select
                   value={newDropdowns.dropdown4}
                   onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown4: value }))}
                 >
