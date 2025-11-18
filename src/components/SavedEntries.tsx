@@ -50,8 +50,22 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const loadEntries = () => {
-    const savedEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
-    setEntries(savedEntries.sort((a, b) => b.timestamp - a.timestamp));
+    try {
+      const rawData = localStorage.getItem('stockEntries');
+      console.log('SavedEntries - Raw localStorage data:', rawData);
+      const savedEntries = JSON.parse(rawData || '[]') as StockEntryData[];
+      console.log('SavedEntries - Parsed entries:', savedEntries.length, 'entries found');
+      console.log('SavedEntries - First entry:', savedEntries[0]);
+      setEntries(savedEntries.sort((a, b) => b.timestamp - a.timestamp));
+    } catch (error) {
+      console.error('SavedEntries - Error loading entries:', error);
+      setEntries([]);
+      toast({
+        title: "Error Loading Entries",
+        description: "Failed to load saved entries. Data may be corrupted.",
+        variant: "destructive"
+      });
+    }
   };
 
   useEffect(() => {

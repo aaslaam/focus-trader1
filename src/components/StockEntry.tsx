@@ -275,7 +275,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       imageUrl = (await uploadImage(selectedImage)) || undefined;
     }
 
-    console.log('New dropdowns state before save:', newDropdowns);
+    console.log('StockEntry - Saving to localStorage');
+    console.log('StockEntry - Existing entries:', existingEntries.length);
+    console.log('StockEntry - New dropdowns state before save:', newDropdowns);
 
     const newEntry: StockEntryData = {
       ...formData,
@@ -289,10 +291,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       timestamp: Date.now()
     };
 
-    console.log('New entry with dropdowns:', newEntry);
+    console.log('StockEntry - New entry with dropdowns:', newEntry);
 
     const updatedEntries = [...existingEntries, newEntry];
     localStorage.setItem('stockEntries', JSON.stringify(updatedEntries));
+    console.log('StockEntry - Saved to localStorage, total entries:', updatedEntries.length);
+    console.log('StockEntry - Calling onEntryAdded callback');
     
     toast({
       title: "Entry Added",
