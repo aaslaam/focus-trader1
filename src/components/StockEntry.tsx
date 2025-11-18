@@ -599,6 +599,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                         <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
                         <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
                         <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                        <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                        <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                        <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -687,6 +690,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                         <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
                         <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
                         <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                        <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                        <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                        <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -775,6 +781,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                         <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
                         <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
                         <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                        <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                        <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                        <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -863,6 +872,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                         <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
                         <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
                         <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                        <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                        <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                        <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
