@@ -35,6 +35,7 @@ interface StockEntryData {
   dropdown3Date?: Date | null;
   dropdown4Date?: Date | null;
   ogOpenA?: string;
+  ogCloseA?: string;
   notes?: string;
   imageUrl?: string;
   timestamp: number;
@@ -57,6 +58,7 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
     stock4: '',
     classification: '' as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL' | '',
     ogOpenA: '',
+    ogCloseA: '',
     notes: ''
   });
   const [open, setOpen] = useState(false);
@@ -107,6 +109,7 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
         stock4: entry.stock4,
         classification: normalizeClassification(entry.classification),
         ogOpenA: entry.ogOpenA || '',
+        ogCloseA: entry.ogCloseA || '',
         notes: entry.notes || ''
       });
       setSelectedDates({
@@ -550,10 +553,40 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
                  <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
                  <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
                </SelectContent>
-             </Select>
-           </div>
-           
-           <div className="space-y-2">
+              </Select>
+            </div>
+            
+            {/* OG CLOSE A Dropdown */}
+            <div className="space-y-2">
+              <Label className="text-lg font-bold">OG CLOSE A</Label>
+              <Select 
+                value={formData.ogCloseA}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, ogCloseA: value }))}
+              >
+                <SelectTrigger 
+                  className="text-lg font-bold"
+                  style={{ backgroundColor: formData.ogCloseA ? '#dcfce7' : '#ffe3e2' }}
+                >
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent className="bg-card z-[100]">
+                  <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
+                  <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
+                  <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
+                  <SelectItem value="OG-" className="text-lg font-bold">OG-</SelectItem>
+                  <SelectItem value="OG+" className="text-lg font-bold">OG+</SelectItem>
+                  <SelectItem value="OGB" className="text-lg font-bold">OGB</SelectItem>
+                  <SelectItem value="CG-" className="text-lg font-bold">CG-</SelectItem>
+                  <SelectItem value="CG+" className="text-lg font-bold">CG+</SelectItem>
+                  <SelectItem value="CGB" className="text-lg font-bold">CGB</SelectItem>
+                  <SelectItem value="CR-" className="text-lg font-bold">CR-</SelectItem>
+                  <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
+                  <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
              <Label htmlFor="edit-classification" className="text-xl font-bold">RESULT</Label>
             <Select 
               value={formData.classification} 
