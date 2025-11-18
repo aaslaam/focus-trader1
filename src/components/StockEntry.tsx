@@ -570,7 +570,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   <div className="flex-1">
                     <Select 
                       value={dropdowns.dropdown1Main}
-                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown1Main: value }))}
+                      onValueChange={(value) => {
+                        setDropdowns(prev => ({ ...prev, dropdown1Main: value }));
+                        setNewDropdowns(prev => ({ ...prev, dropdown1: `${value} ${dropdowns.dropdown1Sub}`.trim() }));
+                      }}
                     >
                       <SelectTrigger 
                         className="text-lg font-bold z-50"
@@ -587,7 +590,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   <div className="flex-1">
                     <Select 
                       value={dropdowns.dropdown1Sub}
-                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown1Sub: value }))}
+                      onValueChange={(value) => {
+                        setDropdowns(prev => ({ ...prev, dropdown1Sub: value }));
+                        setNewDropdowns(prev => ({ ...prev, dropdown1: `${dropdowns.dropdown1Main} ${value}`.trim() }));
+                      }}
                     >
                       <SelectTrigger 
                         className="text-lg font-bold z-50"
@@ -660,7 +666,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   <div className="flex-1">
                     <Select 
                       value={dropdowns.dropdown2Main}
-                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown2Main: value }))}
+                      onValueChange={(value) => {
+                        setDropdowns(prev => ({ ...prev, dropdown2Main: value }));
+                        setNewDropdowns(prev => ({ ...prev, dropdown2: `${value} ${dropdowns.dropdown2Sub}`.trim() }));
+                      }}
                     >
                       <SelectTrigger 
                         className="text-lg font-bold z-50"
@@ -677,7 +686,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   <div className="flex-1">
                     <Select 
                       value={dropdowns.dropdown2Sub}
-                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown2Sub: value }))}
+                      onValueChange={(value) => {
+                        setDropdowns(prev => ({ ...prev, dropdown2Sub: value }));
+                        setNewDropdowns(prev => ({ ...prev, dropdown2: `${dropdowns.dropdown2Main} ${value}`.trim() }));
+                      }}
                     >
                       <SelectTrigger 
                         className="text-lg font-bold z-50"
@@ -750,7 +762,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   <div className="flex-1">
                     <Select 
                       value={dropdowns.dropdown3Main}
-                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown3Main: value }))}
+                      onValueChange={(value) => {
+                        setDropdowns(prev => ({ ...prev, dropdown3Main: value }));
+                        setNewDropdowns(prev => ({ ...prev, dropdown3: `${value} ${dropdowns.dropdown3Sub}`.trim() }));
+                      }}
                     >
                       <SelectTrigger 
                         className="text-lg font-bold z-50"
@@ -767,7 +782,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   <div className="flex-1">
                     <Select 
                       value={dropdowns.dropdown3Sub}
-                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown3Sub: value }))}
+                      onValueChange={(value) => {
+                        setDropdowns(prev => ({ ...prev, dropdown3Sub: value }));
+                        setNewDropdowns(prev => ({ ...prev, dropdown3: `${dropdowns.dropdown3Main} ${value}`.trim() }));
+                      }}
                     >
                       <SelectTrigger 
                         className="text-lg font-bold z-50"
@@ -840,7 +858,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   <div className="flex-1">
                     <Select 
                       value={dropdowns.dropdown4Main}
-                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Main: value }))}
+                      onValueChange={(value) => {
+                        setDropdowns(prev => ({ ...prev, dropdown4Main: value }));
+                        setNewDropdowns(prev => ({ ...prev, dropdown4: `${value} ${dropdowns.dropdown4Sub}`.trim() }));
+                      }}
                     >
                       <SelectTrigger 
                         className="text-lg font-bold z-50"
@@ -857,7 +878,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   <div className="flex-1">
                     <Select 
                       value={dropdowns.dropdown4Sub}
-                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Sub: value }))}
+                      onValueChange={(value) => {
+                        setDropdowns(prev => ({ ...prev, dropdown4Sub: value }));
+                        setNewDropdowns(prev => ({ ...prev, dropdown4: `${dropdowns.dropdown4Main} ${value}`.trim() }));
+                      }}
                     >
                       <SelectTrigger 
                         className="text-lg font-bold z-50"
