@@ -56,7 +56,10 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
       const savedEntries = JSON.parse(rawData || '[]') as StockEntryData[];
       console.log('SavedEntries - Parsed entries:', savedEntries.length, 'entries found');
       console.log('SavedEntries - First entry:', savedEntries[0]);
-      setEntries(savedEntries.sort((a, b) => b.timestamp - a.timestamp));
+      const sortedEntries = savedEntries.sort((a, b) => b.timestamp - a.timestamp);
+      console.log('SavedEntries - Setting state with entries:', sortedEntries.length);
+      setEntries(sortedEntries);
+      console.log('SavedEntries - State should now have', sortedEntries.length, 'entries');
     } catch (error) {
       console.error('SavedEntries - Error loading entries:', error);
       setEntries([]);
@@ -69,8 +72,13 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
   };
 
   useEffect(() => {
+    console.log('SavedEntries - useEffect triggered with refreshTrigger:', refreshTrigger);
     loadEntries();
   }, [refreshTrigger]);
+
+  useEffect(() => {
+    console.log('SavedEntries - Entries state updated, length:', entries.length);
+  }, [entries]);
 
   const deleteEntry = (indexToDelete: number) => {
     const updatedEntries = entries.filter((_, index) => index !== indexToDelete);
