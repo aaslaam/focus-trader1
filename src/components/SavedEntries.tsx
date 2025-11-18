@@ -32,6 +32,7 @@ interface StockEntryData {
   dropdown3Date?: Date | null;
   dropdown4Date?: Date | null;
   ogOpenA?: string;
+  ogCloseA?: string;
   notes?: string;
   imageUrl?: string;
   timestamp: number;
@@ -335,6 +336,16 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
                       <div className="px-3 py-2 rounded bg-indigo-50 border border-indigo-200 inline-block">
                         <div className="text-sm font-bold text-indigo-700 mb-1">OG OPEN A</div>
                         <span className="text-lg font-bold">{entry.ogOpenA}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* OG CLOSE A Dropdown */}
+                  {entry.ogCloseA && (
+                    <div className="mt-4">
+                      <div className="px-3 py-2 rounded bg-pink-50 border border-pink-200 inline-block">
+                        <div className="text-sm font-bold text-pink-700 mb-1">OG CLOSE A</div>
+                        <span className="text-lg font-bold">{entry.ogCloseA}</span>
                       </div>
                     </div>
                   )}
