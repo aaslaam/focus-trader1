@@ -36,6 +36,8 @@ interface StockEntryData {
   dropdown4Date?: Date | null;
   ogOpenA?: string;
   ogCloseA?: string;
+  ogOpenADate?: Date | null;
+  ogCloseADate?: Date | null;
   notes?: string;
   imageUrl?: string;
   timestamp: number;
@@ -525,65 +527,67 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
              </div>
             </div>
            </div>
-           
-           {/* OG OPEN A Dropdown */}
-           <div className="space-y-2">
-             <Label className="text-lg font-bold">OG OPEN A</Label>
-             <Select 
-               value={formData.ogOpenA}
-               onValueChange={(value) => setFormData(prev => ({ ...prev, ogOpenA: value }))}
-             >
-               <SelectTrigger 
-                 className="text-lg font-bold"
-                 style={{ backgroundColor: formData.ogOpenA ? '#dcfce7' : '#ffe3e2' }}
-               >
-                 <SelectValue placeholder="Select" />
-               </SelectTrigger>
-               <SelectContent className="bg-card z-[100]">
-                 <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
-                 <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
-                 <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
-                 <SelectItem value="OG-" className="text-lg font-bold">OG-</SelectItem>
-                 <SelectItem value="OG+" className="text-lg font-bold">OG+</SelectItem>
-                 <SelectItem value="OGB" className="text-lg font-bold">OGB</SelectItem>
-                 <SelectItem value="CG-" className="text-lg font-bold">CG-</SelectItem>
-                 <SelectItem value="CG+" className="text-lg font-bold">CG+</SelectItem>
-                 <SelectItem value="CGB" className="text-lg font-bold">CGB</SelectItem>
-                 <SelectItem value="CR-" className="text-lg font-bold">CR-</SelectItem>
-                 <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
-                 <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
-               </SelectContent>
-              </Select>
-            </div>
-            
-            {/* OG CLOSE A Dropdown */}
-            <div className="space-y-2">
-              <Label className="text-lg font-bold">OG CLOSE A</Label>
-              <Select 
-                value={formData.ogCloseA}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, ogCloseA: value }))}
-              >
-                <SelectTrigger 
-                  className="text-lg font-bold"
-                  style={{ backgroundColor: formData.ogCloseA ? '#dcfce7' : '#ffe3e2' }}
+            {/* OG OPEN A and OG CLOSE A in same row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* OG OPEN A */}
+              <div className="space-y-2">
+                <Label className="text-lg font-bold">OG OPEN A</Label>
+                <Select 
+                  value={formData.ogOpenA}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, ogOpenA: value }))}
                 >
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent className="bg-card z-[100]">
-                  <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
-                  <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
-                  <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
-                  <SelectItem value="OG-" className="text-lg font-bold">OG-</SelectItem>
-                  <SelectItem value="OG+" className="text-lg font-bold">OG+</SelectItem>
-                  <SelectItem value="OGB" className="text-lg font-bold">OGB</SelectItem>
-                  <SelectItem value="CG-" className="text-lg font-bold">CG-</SelectItem>
-                  <SelectItem value="CG+" className="text-lg font-bold">CG+</SelectItem>
-                  <SelectItem value="CGB" className="text-lg font-bold">CGB</SelectItem>
-                  <SelectItem value="CR-" className="text-lg font-bold">CR-</SelectItem>
-                  <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
-                  <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
-                </SelectContent>
-              </Select>
+                  <SelectTrigger 
+                    className="text-lg font-bold"
+                    style={{ backgroundColor: formData.ogOpenA ? '#dcfce7' : '#ffe3e2' }}
+                  >
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card z-[100]">
+                    <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
+                    <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
+                    <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
+                    <SelectItem value="OG-" className="text-lg font-bold">OG-</SelectItem>
+                    <SelectItem value="OG+" className="text-lg font-bold">OG+</SelectItem>
+                    <SelectItem value="OGB" className="text-lg font-bold">OGB</SelectItem>
+                    <SelectItem value="CG-" className="text-lg font-bold">CG-</SelectItem>
+                    <SelectItem value="CG+" className="text-lg font-bold">CG+</SelectItem>
+                    <SelectItem value="CGB" className="text-lg font-bold">CGB</SelectItem>
+                    <SelectItem value="CR-" className="text-lg font-bold">CR-</SelectItem>
+                    <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
+                    <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {/* OG CLOSE A */}
+              <div className="space-y-2">
+                <Label className="text-lg font-bold">OG CLOSE A</Label>
+                <Select 
+                  value={formData.ogCloseA}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, ogCloseA: value }))}
+                >
+                  <SelectTrigger 
+                    className="text-lg font-bold"
+                    style={{ backgroundColor: formData.ogCloseA ? '#dcfce7' : '#ffe3e2' }}
+                  >
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card z-[100]">
+                    <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
+                    <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
+                    <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
+                    <SelectItem value="OG-" className="text-lg font-bold">OG-</SelectItem>
+                    <SelectItem value="OG+" className="text-lg font-bold">OG+</SelectItem>
+                    <SelectItem value="OGB" className="text-lg font-bold">OGB</SelectItem>
+                    <SelectItem value="CG-" className="text-lg font-bold">CG-</SelectItem>
+                    <SelectItem value="CG+" className="text-lg font-bold">CG+</SelectItem>
+                    <SelectItem value="CGB" className="text-lg font-bold">CGB</SelectItem>
+                    <SelectItem value="CR-" className="text-lg font-bold">CR-</SelectItem>
+                    <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
+                    <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             
             <div className="space-y-2">
