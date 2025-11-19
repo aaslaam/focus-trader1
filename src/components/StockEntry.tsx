@@ -1168,7 +1168,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   value={newDropdowns.dropdown1}
                   onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown1: value }))}
                 >
-                  <SelectTrigger className="text-lg font-bold">
+                  <SelectTrigger 
+                    className="text-lg font-bold"
+                    style={{ backgroundColor: newDropdowns.dropdown1 ? '#dcfce7' : '#ffe3e2' }}
+                  >
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
                   <SelectContent className="bg-background">
@@ -1184,7 +1187,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   value={newDropdowns.dropdown2}
                   onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown2: value }))}
                 >
-                  <SelectTrigger className="text-lg font-bold">
+                  <SelectTrigger 
+                    className="text-lg font-bold"
+                    style={{ backgroundColor: newDropdowns.dropdown2 ? '#dcfce7' : '#ffe3e2' }}
+                  >
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
                   <SelectContent className="bg-background">
@@ -1203,7 +1209,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   value={newDropdowns.dropdown3}
                   onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown3: value }))}
                 >
-                  <SelectTrigger className="text-lg font-bold">
+                  <SelectTrigger 
+                    className="text-lg font-bold"
+                    style={{ backgroundColor: newDropdowns.dropdown3 ? '#dcfce7' : '#ffe3e2' }}
+                  >
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
                   <SelectContent className="bg-background">
@@ -1222,7 +1231,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   value={newDropdowns.dropdown4}
                   onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown4: value }))}
                 >
-                  <SelectTrigger className="text-lg font-bold">
+                  <SelectTrigger 
+                    className="text-lg font-bold"
+                    style={{ backgroundColor: newDropdowns.dropdown4 ? '#dcfce7' : '#ffe3e2' }}
+                  >
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
                   <SelectContent className="bg-background">
