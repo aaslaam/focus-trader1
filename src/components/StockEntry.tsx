@@ -221,8 +221,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check for missing fields, but exclude fields with "NILL" value
-    const isFieldMissing = (value: string) => !value || value.trim() === '';
+    // Check for missing fields - allow "NILL" as a valid value
+    const isFieldMissing = (value: string) => {
+      if (!value || value.trim() === '') return true;
+      if (value.toUpperCase() === 'NILL') return false; // "NILL" is a valid value
+      return false;
+    };
     
     if (isFieldMissing(formData.stock2) || isFieldMissing(formData.stock2b) || isFieldMissing(formData.stock3) || isFieldMissing(formData.stock4) || !formData.classification) {
       const missing = [];
@@ -302,10 +306,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       ...formData,
       ...selectedDates,
       classification: formData.classification as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL',
-      dropdown1: newDropdowns.dropdown1 || undefined,
-      dropdown2: newDropdowns.dropdown2 || undefined,
-      dropdown3: newDropdowns.dropdown3 || undefined,
-      dropdown4: newDropdowns.dropdown4 || undefined,
+      dropdown1: newDropdowns.dropdown1,
+      dropdown2: newDropdowns.dropdown2,
+      dropdown3: newDropdowns.dropdown3,
+      dropdown4: newDropdowns.dropdown4,
       imageUrl,
       timestamp: Date.now()
     };
