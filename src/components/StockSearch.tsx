@@ -5,7 +5,12 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Search, TrendingUp, TrendingDown } from 'lucide-react';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Search, TrendingUp, TrendingDown, Calendar, Filter, CalendarIcon, Copy } from 'lucide-react';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+import SimpleOptionSelector from '@/components/SimpleOptionSelector';
 import EditEntryDialog from './EditEntryDialog';
 import { formatValue } from '@/utils/valueFormatter';
 
@@ -15,25 +20,16 @@ interface StockEntryData {
   stock2b: string;
   stock2bColor?: string;
   stock3: string;
+  openb: string;
   stock4: string;
+  stock4b: string;
   stock1Date: Date | null;
   stock2Date: Date | null;
   stock3Date: Date | null;
   stock4Date: Date | null;
-  dropdown1Date?: Date | null;
-  dropdown2Date?: Date | null;
-  dropdown3Date?: Date | null;
-  dropdown4Date?: Date | null;
-  ogOpenADate?: Date | null;
-  ogCloseADate?: Date | null;
+  stock4bDate?: Date | null;
+  openbDate?: Date | null;
   classification: 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL';
-  dropdown1?: string;
-  dropdown2?: string;
-  dropdown3?: string;
-  dropdown4?: string;
-  ogCandle?: string;
-  ogOpenA?: string;
-  ogCloseA?: string;
   notes?: string;
   imageUrl?: string;
   timestamp: number;
@@ -42,65 +38,46 @@ interface StockEntryData {
 const StockSearch: React.FC = () => {
   const [searchData, setSearchData] = useState({
     stock1: '',
-    ogCandle: '',
-    ogOpenA: '',
-    ogCloseA: '',
+    stock2: '',
+    stock2b: '',
+    stock2bColor: '',
+    stock3: '',
+    openb: '',
+    stock4: '',
+    stock4b: '',
     serialNumber: '',
     notes: ''
   });
-
-  const [dropdowns, setDropdowns] = useState({
-    dropdown1Main: '',
-    dropdown1Sub: '',
-    dropdown2Main: '',
-    dropdown2Sub: '',
-    dropdown3Main: '',
-    dropdown3Sub: '',
-    dropdown4Main: '',
-    dropdown4Sub: '',
-    candleMain: '',
-    candleSub: ''
-  });
-
-  // Combine INTRO dropdowns
-  React.useEffect(() => {
-    const combined = [
-      dropdowns.dropdown1Main && dropdowns.dropdown1Sub ? `${dropdowns.dropdown1Main} ${dropdowns.dropdown1Sub}` : '',
-      dropdowns.dropdown2Main && dropdowns.dropdown2Sub ? `${dropdowns.dropdown2Main} ${dropdowns.dropdown2Sub}` : '',
-      dropdowns.dropdown3Main && dropdowns.dropdown3Sub ? `${dropdowns.dropdown3Main} ${dropdowns.dropdown3Sub}` : '',
-      dropdowns.dropdown4Main && dropdowns.dropdown4Sub ? `${dropdowns.dropdown4Main} ${dropdowns.dropdown4Sub}` : ''
-    ].filter(Boolean).join(' ');
-    setSearchData(prev => ({ ...prev, stock1: combined }));
-  }, [dropdowns.dropdown1Main, dropdowns.dropdown1Sub, dropdowns.dropdown2Main, dropdowns.dropdown2Sub, dropdowns.dropdown3Main, dropdowns.dropdown3Sub, dropdowns.dropdown4Main, dropdowns.dropdown4Sub]);
-
-  // Combine OG CANDLE dropdowns
-  React.useEffect(() => {
-    const combined = dropdowns.candleMain && dropdowns.candleSub ? `${dropdowns.candleMain} ${dropdowns.candleSub}` : '';
-    setSearchData(prev => ({ ...prev, ogCandle: combined }));
-  }, [dropdowns.candleMain, dropdowns.candleSub]);
-
   const [filter, setFilter] = useState<string>('');
+  const [searchResult, setSearchResult] = useState<{ classification: string; dates: { stock1Date: Date | null; stock3Date: Date | null; stock4Date: Date | null; }; notes?: string; imageUrl?: string; } | null>(null);
   const [allResults, setAllResults] = useState<StockEntryData[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [showOnlyDifferentResults, setShowOnlyDifferentResults] = useState(false);
   const [showSameDateDifferent, setShowSameDateDifferent] = useState(false);
 
+  // No longer needed - using SimpleOptionSelector
+
   const performSearch = () => {
     const existingEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
     const sortedEntries = existingEntries.sort((a, b) => b.timestamp - a.timestamp);
     
-    const hasStockFields = [searchData.stock1, searchData.ogCandle, searchData.ogOpenA, searchData.ogCloseA].some(field => field.trim() !== '');
+    // Check if any search criteria is provided
+    const hasStockFields = [searchData.stock1, searchData.stock2, searchData.stock2b, searchData.stock2bColor, searchData.stock3, searchData.openb, searchData.stock4, searchData.stock4b].some(field => field.trim() !== '');
     const hasSerialNumber = searchData.serialNumber.trim() !== '';
     const hasNotes = searchData.notes.trim() !== '';
     const hasFilter = filter !== '';
     
+    // If no search criteria at all, clear results
     if (!hasStockFields && !hasSerialNumber && !hasNotes && !hasFilter) {
+      setSearchResult(null);
       setAllResults([]);
       return;
     }
     
+    // Start with all entries, then filter
     let matchingEntries = sortedEntries;
     
+    // Filter by serial number if provided
     if (hasSerialNumber) {
       matchingEntries = matchingEntries.filter((entry, idx) => {
         const serialNum = (sortedEntries.length - idx).toString();
@@ -109,40 +86,49 @@ const StockSearch: React.FC = () => {
       });
     }
     
+    // Filter by classification if provided
     if (hasFilter) {
       matchingEntries = matchingEntries.filter(entry => 
         entry.classification.toLowerCase() === filter.toLowerCase()
       );
     }
     
+    // Filter by notes if provided
     if (hasNotes) {
       matchingEntries = matchingEntries.filter(entry => 
-        entry.notes?.toLowerCase().includes(searchData.notes.toLowerCase())
+        entry.notes && entry.notes.toLowerCase().includes(searchData.notes.toLowerCase())
       );
     }
     
+    // Filter by stock fields if provided
     if (hasStockFields) {
       matchingEntries = matchingEntries.filter(entry => {
-        const entryValues = [entry.stock1 || '', entry.ogCandle || '', entry.ogOpenA || '', entry.ogCloseA || ''];
-        const searchValues = [searchData.stock1, searchData.ogCandle, searchData.ogOpenA, searchData.ogCloseA];
+        const entryValues = [entry.stock1, entry.stock2, entry.stock2b || '', entry.stock2bColor || '', entry.stock3, entry.openb || '', entry.stock4, entry.stock4b || ''];
+        const searchValues = [searchData.stock1, searchData.stock2, searchData.stock2b, searchData.stock2bColor, searchData.stock3, searchData.openb, searchData.stock4, searchData.stock4b];
         
+        // Check if all selected search values match the entry
         return searchValues.every((searchValue, index) => {
           return !searchValue.trim() || entryValues[index].toLowerCase() === searchValue.toLowerCase();
         });
       });
     }
     
+    // Display all matching results
+    setSearchResult(null);
     setAllResults(matchingEntries);
   };
 
+  // Helper function to create a unique key for grouping entries
   const getEntryKey = (entry: StockEntryData) => {
-    return `${entry.stock1}|${entry.ogCandle}|${entry.ogOpenA}|${entry.ogCloseA}`;
+    return `${entry.stock2}|${entry.stock2b}|${entry.stock2bColor}|${entry.stock3}|${entry.openb}|${entry.stock4}|${entry.stock4b}`;
   };
 
+  // Find duplicates with different results
   const duplicatesWithDifferentResults = useMemo(() => {
     const allEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
     const sortedAllEntries = allEntries.sort((a, b) => b.timestamp - a.timestamp);
     
+    // Group entries by their stock values
     const groups = new Map<string, { entries: StockEntryData[]; indices: number[] }>();
     
     sortedAllEntries.forEach((entry, idx) => {
@@ -154,11 +140,14 @@ const StockSearch: React.FC = () => {
       groups.get(key)!.indices.push(idx);
     });
     
+    // Find groups with different classifications (different results)
     const duplicatesWithDifferent: StockEntryData[] = [];
     
     groups.forEach((group) => {
       if (group.entries.length > 1) {
         const classifications = new Set(group.entries.map(e => e.classification));
+        
+        // Include ONLY if they have different results (classifications)
         if (classifications.size > 1) {
           duplicatesWithDifferent.push(...group.entries);
         }
@@ -168,10 +157,14 @@ const StockSearch: React.FC = () => {
     return duplicatesWithDifferent;
   }, []);
 
+  // Find entries with same values, different dates, but same result
   const sameDateDifferentEntries = useMemo(() => {
     const allEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
     const sortedAllEntries = allEntries.sort((a, b) => b.timestamp - a.timestamp);
     
+    console.log('Total entries:', sortedAllEntries.length);
+    
+    // Group entries by their stock values
     const groups = new Map<string, { entries: StockEntryData[]; indices: number[] }>();
     
     sortedAllEntries.forEach((entry, idx) => {
@@ -183,17 +176,27 @@ const StockSearch: React.FC = () => {
       groups.get(key)!.indices.push(idx);
     });
     
+    console.log('Total groups:', groups.size);
+    
+    // Find groups with same classification but different dates
     const sameDateDifferent: StockEntryData[] = [];
     
-    groups.forEach((group) => {
+    groups.forEach((group, key) => {
       if (group.entries.length > 1) {
         const classifications = new Set(group.entries.map(e => e.classification));
         const timestamps = new Set(group.entries.map(e => e.timestamp));
+        
+        console.log('Group:', key, 'Entries:', group.entries.length, 'Classifications:', classifications.size, 'Timestamps:', timestamps.size);
+        
+        // Include if they have same result BUT different timestamps (dates)
         if (classifications.size === 1 && timestamps.size > 1) {
+          console.log('✓ Adding group with same classification but different timestamps');
           sameDateDifferent.push(...group.entries);
         }
       }
     });
+    
+    console.log('Same Date Different entries found:', sameDateDifferent.length);
     
     return sameDateDifferent;
   }, []);
@@ -204,27 +207,37 @@ const StockSearch: React.FC = () => {
     setShowSameDateDifferent(false);
     
     if (newValue && duplicatesWithDifferentResults.length > 0) {
+      // Show duplicate entries
       setAllResults(duplicatesWithDifferentResults);
       setHasSearched(true);
     } else if (!newValue && allResults.length > 0) {
+      // If turning off, rerun the search to show normal results
       performSearch();
     }
   };
 
   const handleShowSameDateDifferent = () => {
     const newValue = !showSameDateDifferent;
+    console.log('handleShowSameDateDifferent clicked, newValue:', newValue);
+    console.log('sameDateDifferentEntries.length:', sameDateDifferentEntries.length);
+    
     setShowSameDateDifferent(newValue);
     setShowOnlyDifferentResults(false);
     
     if (newValue && sameDateDifferentEntries.length > 0) {
+      console.log('Showing same date different entries:', sameDateDifferentEntries);
+      // Show entries with same values, different dates, same result
       setAllResults(sameDateDifferentEntries);
       setHasSearched(true);
     } else if (!newValue && allResults.length > 0) {
+      console.log('Turning off filter, running performSearch');
+      // If turning off, rerun the search to show normal results
       performSearch();
     }
   };
 
-  const handleEntryUpdated = () => {
+  const handleEntryUpdate = () => {
+    // Reload search results after editing
     performSearch();
   };
 
@@ -234,6 +247,7 @@ const StockSearch: React.FC = () => {
       [field]: value.toUpperCase()
     }));
     
+    // Trigger search after a short delay (debounce)
     setTimeout(() => {
       performSearch();
     }, 300);
@@ -245,33 +259,6 @@ const StockSearch: React.FC = () => {
     performSearch();
   };
 
-  const handleRefresh = () => {
-    setSearchData({
-      stock1: '',
-      ogCandle: '',
-      ogOpenA: '',
-      ogCloseA: '',
-      serialNumber: '',
-      notes: ''
-    });
-    setDropdowns({
-      dropdown1Main: '',
-      dropdown1Sub: '',
-      dropdown2Main: '',
-      dropdown2Sub: '',
-      dropdown3Main: '',
-      dropdown3Sub: '',
-      dropdown4Main: '',
-      dropdown4Sub: '',
-      candleMain: '',
-      candleSub: ''
-    });
-    setFilter('');
-    setAllResults([]);
-    setHasSearched(false);
-    setShowOnlyDifferentResults(false);
-    setShowSameDateDifferent(false);
-  };
 
   return (
     <Card className="shadow-card">
@@ -283,235 +270,72 @@ const StockSearch: React.FC = () => {
       </CardHeader>
       <CardContent className="p-6">
         <form onSubmit={handleSearch} className="space-y-4">
-          {/* INTRO Section */}
-          <div className="space-y-4 pb-4 mb-4 border-b">
-            <Label className="text-lg font-bold">INTRO</Label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* INTRO 1 */}
-              <div className="space-y-2">
-                <Label className="text-sm font-bold">INTRO 1</Label>
-                <div className="flex gap-2">
-                  <Select 
-                    value={dropdowns.dropdown1Main}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown1Main: value }))}
-                  >
-                    <SelectTrigger className="text-lg font-bold" style={{ backgroundColor: dropdowns.dropdown1Main ? '#dcfce7' : '#ffe3e2' }}>
-                      <SelectValue placeholder="" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="YG" className="text-lg font-bold">YG</SelectItem>
-                      <SelectItem value="YR" className="text-lg font-bold">YR</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select 
-                    value={dropdowns.dropdown1Sub}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown1Sub: value }))}
-                  >
-                    <SelectTrigger className="text-lg font-bold" style={{ backgroundColor: dropdowns.dropdown1Sub ? '#dcfce7' : '#ffe3e2' }}>
-                      <SelectValue placeholder="" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
-                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
-                      <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
-                      <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
-                      <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* INTRO 2 */}
-              <div className="space-y-2">
-                <Label className="text-sm font-bold">INTRO 2</Label>
-                <div className="flex gap-2">
-                  <Select 
-                    value={dropdowns.dropdown2Main}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown2Main: value }))}
-                  >
-                    <SelectTrigger className="text-lg font-bold" style={{ backgroundColor: dropdowns.dropdown2Main ? '#dcfce7' : '#ffe3e2' }}>
-                      <SelectValue placeholder="" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="WG" className="text-lg font-bold">WG</SelectItem>
-                      <SelectItem value="ER" className="text-lg font-bold">ER</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select 
-                    value={dropdowns.dropdown2Sub}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown2Sub: value }))}
-                  >
-                    <SelectTrigger className="text-lg font-bold" style={{ backgroundColor: dropdowns.dropdown2Sub ? '#dcfce7' : '#ffe3e2' }}>
-                      <SelectValue placeholder="" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
-                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
-                      <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
-                      <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
-                      <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* INTRO 3 */}
-              <div className="space-y-2">
-                <Label className="text-sm font-bold">INTRO 3</Label>
-                <div className="flex gap-2">
-                  <Select 
-                    value={dropdowns.dropdown3Main}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown3Main: value }))}
-                  >
-                    <SelectTrigger className="text-lg font-bold" style={{ backgroundColor: dropdowns.dropdown3Main ? '#dcfce7' : '#ffe3e2' }}>
-                      <SelectValue placeholder="" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="WG" className="text-lg font-bold">WG</SelectItem>
-                      <SelectItem value="ER" className="text-lg font-bold">ER</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select 
-                    value={dropdowns.dropdown3Sub}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown3Sub: value }))}
-                  >
-                    <SelectTrigger className="text-lg font-bold" style={{ backgroundColor: dropdowns.dropdown3Sub ? '#dcfce7' : '#ffe3e2' }}>
-                      <SelectValue placeholder="" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
-                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
-                      <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
-                      <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
-                      <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* INTRO 4 */}
-              <div className="space-y-2">
-                <Label className="text-sm font-bold">INTRO 4</Label>
-                <div className="flex gap-2">
-                  <Select 
-                    value={dropdowns.dropdown4Main}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Main: value }))}
-                  >
-                    <SelectTrigger className="text-lg font-bold" style={{ backgroundColor: dropdowns.dropdown4Main ? '#dcfce7' : '#ffe3e2' }}>
-                      <SelectValue placeholder="" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="WG" className="text-lg font-bold">WG</SelectItem>
-                      <SelectItem value="ER" className="text-lg font-bold">ER</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select 
-                    value={dropdowns.dropdown4Sub}
-                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Sub: value }))}
-                  >
-                    <SelectTrigger className="text-lg font-bold" style={{ backgroundColor: dropdowns.dropdown4Sub ? '#dcfce7' : '#ffe3e2' }}>
-                      <SelectValue placeholder="" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
-                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
-                      <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
-                      <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
-                      <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* OG CANDLE Section */}
-          <div className="space-y-2">
-            <Label className="text-lg font-bold">OG CANDLE</Label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Select 
-                value={dropdowns.candleMain}
-                onValueChange={(value) => setDropdowns(prev => ({ ...prev, candleMain: value }))}
-              >
-                <SelectTrigger className="text-lg font-bold" style={{ backgroundColor: dropdowns.candleMain ? '#dcfce7' : '#ffe3e2' }}>
-                  <SelectValue placeholder="Select Candle" />
-                </SelectTrigger>
-                <SelectContent className="bg-card z-[100]">
-                  {Array.from({ length: 25 }, (_, i) => i + 1).map(num => (
-                    <SelectItem key={num} value={`CANDLE ${num}`} className="text-lg font-bold">
-                      CANDLE {num}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              
-              <Select 
-                value={dropdowns.candleSub}
-                onValueChange={(value) => setDropdowns(prev => ({ ...prev, candleSub: value }))}
-              >
-                <SelectTrigger className="text-lg font-bold" style={{ backgroundColor: dropdowns.candleSub ? '#dcfce7' : '#ffe3e2' }}>
-                  <SelectValue placeholder="Select Color" />
-                </SelectTrigger>
-                <SelectContent className="bg-card z-[100]">
-                  <SelectItem value="RED" className="text-lg font-bold">RED</SelectItem>
-                  <SelectItem value="GREEN" className="text-lg font-bold">GREEN</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* OG OPEN A and OG CLOSE A */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-lg font-bold">OG OPEN A</Label>
-              <Select 
-                value={searchData.ogOpenA}
-                onValueChange={(value) => setSearchData(prev => ({ ...prev, ogOpenA: value }))}
-              >
-                <SelectTrigger className="text-lg font-bold" style={{ backgroundColor: searchData.ogOpenA ? '#dcfce7' : '#ffe3e2' }}>
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent className="bg-card z-[100]">
-                  <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
-                  <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
-                  <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
-                  <SelectItem value="OG-" className="text-lg font-bold">OG-</SelectItem>
-                  <SelectItem value="OG+" className="text-lg font-bold">OG+</SelectItem>
-                  <SelectItem value="OGB" className="text-lg font-bold">OGB</SelectItem>
-                  <SelectItem value="CG-" className="text-lg font-bold">CG-</SelectItem>
-                  <SelectItem value="CG+" className="text-lg font-bold">CG+</SelectItem>
-                  <SelectItem value="CGB" className="text-lg font-bold">CGB</SelectItem>
-                  <SelectItem value="CR-" className="text-lg font-bold">CR-</SelectItem>
-                  <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
-                  <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
-                </SelectContent>
-              </Select>
+              <SimpleOptionSelector
+                label="DIRECTION A"
+                selectedValue={searchData.stock2}
+                onValueChange={(value) => setSearchData(prev => ({ ...prev, stock2: value }))}
+                baseOptions={['CG UP', 'CG IN', 'CG DOWN', 'CR UP', 'CR IN', 'CR DOWN']}
+                hideModifier={true}
+              />
+              <SimpleOptionSelector
+                label="COLOUR"
+                selectedValue={searchData.stock2bColor || ''}
+                onValueChange={(value) => setSearchData(prev => ({ ...prev, stock2bColor: value }))}
+                baseOptions={['RED', 'GREEN']}
+                hideModifier={true}
+              />
             </div>
-
             <div className="space-y-2">
-              <Label className="text-lg font-bold">OG CLOSE A</Label>
-              <Select 
-                value={searchData.ogCloseA}
-                onValueChange={(value) => setSearchData(prev => ({ ...prev, ogCloseA: value }))}
-              >
-                <SelectTrigger className="text-lg font-bold" style={{ backgroundColor: searchData.ogCloseA ? '#dcfce7' : '#ffe3e2' }}>
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent className="bg-card z-[100]">
-                  <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
-                  <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
-                  <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
-                  <SelectItem value="OG-" className="text-lg font-bold">OG-</SelectItem>
-                  <SelectItem value="OG+" className="text-lg font-bold">OG+</SelectItem>
-                  <SelectItem value="OGB" className="text-lg font-bold">OGB</SelectItem>
-                  <SelectItem value="CG-" className="text-lg font-bold">CG-</SelectItem>
-                  <SelectItem value="CG+" className="text-lg font-bold">CG+</SelectItem>
-                  <SelectItem value="CGB" className="text-lg font-bold">CGB</SelectItem>
-                  <SelectItem value="CR-" className="text-lg font-bold">CR-</SelectItem>
-                  <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
-                  <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
-                </SelectContent>
-              </Select>
+              <SimpleOptionSelector
+                label="B"
+                selectedValue={searchData.stock2b}
+                onValueChange={(value) => setSearchData(prev => ({ ...prev, stock2b: value }))}
+                baseOptions={['CG IN', 'CG DOWN', 'CG UP', 'CR IN', 'CR UP', 'CR DOWN']}
+                hideModifier={true}
+                customBackgroundStyle={{ empty: { backgroundColor: '#ffe3e2' }, filled: { backgroundColor: '#dcfce7' } }}
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <SimpleOptionSelector
+                label="OPEN A"
+                selectedValue={searchData.stock3}
+                onValueChange={(value) => setSearchData(prev => ({ ...prev, stock3: value }))}
+                baseOptions={['CG+', 'CG-', 'CGB', 'CR+', 'CR-', 'CRB', 'OG+', 'OG-', 'OGB', 'OR+', 'OR-', 'ORB', 'NILL']}
+                hideModifier={true}
+              />
+            </div>
+            <div className="space-y-2">
+              <SimpleOptionSelector
+                label="OPEN B"
+                selectedValue={searchData.openb}
+                onValueChange={(value) => setSearchData(prev => ({ ...prev, openb: value }))}
+                baseOptions={['SD CG-', 'SD CG+', 'SD CGB', 'SD CR-', 'SD CR+', 'SD CRB', 'NILL']}
+                hideModifier={true}
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <SimpleOptionSelector
+                label="CLOSE A"
+                selectedValue={searchData.stock4}
+                onValueChange={(value) => setSearchData(prev => ({ ...prev, stock4: value }))}
+                baseOptions={['CG-', 'CG+', 'CGB', 'CR-', 'CR+', 'CRB', 'OG-', 'OG+', 'OGB', 'OR-', 'OR+', 'ORB', 'NILL']}
+                hideModifier={true}
+              />
+            </div>
+            <div className="space-y-2">
+              <SimpleOptionSelector
+                label="CLOSE B"
+                selectedValue={searchData.stock4b}
+                onValueChange={(value) => setSearchData(prev => ({ ...prev, stock4b: value }))}
+                baseOptions={['SD CG-', 'SD CG+', 'SD CGB', 'SD CR-', 'SD CR+', 'SD CRB', 'NILL']}
+                hideModifier={true}
+              />
             </div>
           </div>
 
@@ -536,7 +360,7 @@ const StockSearch: React.FC = () => {
               onChange={(e) => handleInputChange('notes', e.target.value)}
               className="text-base min-h-[80px]"
             />
-            {hasSearched && (searchData.stock1 || searchData.ogCandle || searchData.ogOpenA || searchData.ogCloseA || searchData.serialNumber || searchData.notes || filter) && allResults.length === 0 && (
+            {hasSearched && (searchData.stock1 || searchData.stock2 || searchData.stock2b || searchData.stock3 || searchData.openb || searchData.stock4 || searchData.serialNumber || searchData.notes || filter) && allResults.length === 0 && (
               <div className="bg-red-600 text-white font-bold text-2xl p-4 rounded-lg text-center">
                 No result
               </div>
@@ -556,48 +380,184 @@ const StockSearch: React.FC = () => {
                 <SelectItem value="Front Act" className="text-xl font-bold">Front Act</SelectItem>
                 <SelectItem value="Act" className="text-xl font-bold">Act</SelectItem>
                 <SelectItem value="Consolidation Close" className="text-xl font-bold">Consolidation Close</SelectItem>
-                <SelectItem value="Consolidation Act" className="text-xl font-bold">Consolidation Act</SelectItem>
                 <SelectItem value="Consolidation Front Act" className="text-xl font-bold">Consolidation Front Act</SelectItem>
+                <SelectItem value="Consolidation Act" className="text-xl font-bold">Consolidation Act</SelectItem>
                 <SelectItem value="Act doubt" className="text-xl font-bold">Act doubt</SelectItem>
                 <SelectItem value="3rd act" className="text-xl font-bold">3rd act</SelectItem>
                 <SelectItem value="4th act" className="text-xl font-bold">4th act</SelectItem>
                 <SelectItem value="5th act" className="text-xl font-bold">5th act</SelectItem>
-                <SelectItem value="NILL" className="text-xl font-bold">NILL</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <div className="flex gap-4 justify-center pt-4">
-            <Button type="submit" className="bg-green-600 hover:bg-green-700 text-white font-bold text-xl px-8 py-3">
-              Search
-            </Button>
-            <Button type="button" onClick={handleRefresh} className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xl px-8 py-3">
-              Refresh
-            </Button>
-          </div>
-
-          <div className="flex gap-4 justify-center pt-2">
-            <Button 
-              type="button" 
-              onClick={handleShowDuplicates}
-              className={`font-bold text-lg px-6 py-2 ${
-                showOnlyDifferentResults 
-                  ? 'bg-orange-600 hover:bg-orange-700 text-white' 
-                  : 'bg-orange-100 hover:bg-orange-200 text-orange-800'
-              }`}
-            >
-              {showOnlyDifferentResults ? 'Hide' : 'Show'} Duplicates ({duplicatesWithDifferentResults.length})
-            </Button>
-            <Button 
-              type="button" 
-              onClick={handleShowSameDateDifferent}
-              className={`font-bold text-lg px-6 py-2 text-white`}
-              style={{ backgroundColor: showSameDateDifferent ? '#2b6df5' : '#93c5fd' }}
-            >
-              {showSameDateDifferent ? 'Hide' : 'Show'} Same Result ({sameDateDifferentEntries.length})
-            </Button>
+          <div className="flex flex-col gap-3">
+            <div className="flex gap-3">
+              <Button type="submit" className="flex-1" variant="default">
+                <Search className="h-4 w-4 mr-2" />
+                Search & Filter
+              </Button>
+              <Button 
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setSearchData({ stock1: '', stock2: '', stock2b: '', stock2bColor: '', stock3: '', openb: '', stock4: '', stock4b: '', serialNumber: '', notes: '' });
+                  setFilter('');
+                  setSearchResult(null);
+                  setAllResults([]);
+                  setHasSearched(false);
+                  setShowOnlyDifferentResults(false);
+                  setShowSameDateDifferent(false);
+                }}
+                className="flex items-center gap-2 border-border bg-white text-green-600 hover:bg-white hover:text-green-700"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                  <path d="M21 3v5h-5"/>
+                  <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                  <path d="M3 21v-5h5"/>
+                </svg>
+                <span className="text-green-600 font-bold">Refresh</span>
+              </Button>
+            </div>
+            
+            <div className="flex gap-3">
+              <Button 
+                type="button"
+                onClick={handleShowDuplicates}
+                className="flex-1 flex items-center justify-center gap-2 text-gray-900 font-bold"
+                style={{ backgroundColor: showOnlyDifferentResults ? '#22c55e' : '#bbf7d0' }}
+              >
+                <Copy className="h-4 w-4" />
+                <span className="font-bold">
+                  {showOnlyDifferentResults ? 'Show All Results' : 'Show Duplicate Entries with Different Results'}
+                </span>
+                {duplicatesWithDifferentResults.length > 0 && (
+                  <Badge variant="secondary" className="ml-2">
+                    {duplicatesWithDifferentResults.length}
+                  </Badge>
+                )}
+              </Button>
+            </div>
+            
+            <div className="flex gap-3">
+              <Button 
+                type="button"
+                onClick={handleShowSameDateDifferent}
+                className="flex-1 flex items-center justify-center gap-2 text-gray-900 font-bold"
+                style={{ backgroundColor: showSameDateDifferent ? '#22c55e' : '#bbf7d0' }}
+              >
+                <Calendar className="h-4 w-4" />
+                <span>
+                  {showSameDateDifferent ? 'Show All Results' : 'Show duplicate with same result'}
+                </span>
+                {sameDateDifferentEntries.length > 0 && (
+                  <Badge variant="secondary" className="ml-2">
+                    {sameDateDifferentEntries.length}
+                  </Badge>
+                )}
+              </Button>
+            </div>
           </div>
         </form>
+
+        {searchResult && (
+          <div className="mt-6 p-4 rounded-lg border animate-fade-in">
+            <div className="flex items-center gap-3 mb-3">
+              <h3 className="font-semibold text-lg">Search Result:</h3>
+            </div>
+            <div className="space-y-3">
+              {searchResult.classification !== "Please enter all four stock names." && searchResult.classification !== "No match found." && (
+                <div className="grid grid-cols-2 gap-2 text-base text-muted-foreground">
+                   <div className="flex items-center gap-2">
+                     <span className="font-bold">A: </span>
+                     <span className="font-bold">{formatValue(searchData.stock2)}</span>
+                   </div>
+                   <div className="flex items-center gap-2">
+                     <span className="font-bold">B: </span>
+                     <span className="font-bold">{formatValue(searchData.stock2b)}</span>
+                   </div>
+                   <div className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    <span className="font-bold">3: </span>
+                     <span className="font-bold">{formatValue(searchData.stock3)}</span>
+                     <span className="ml-2">– {searchResult.dates.stock3Date ? format(searchResult.dates.stock3Date, "d/M/yyyy") : "NILL"}</span>
+                   </div>
+                   <div className="flex items-center gap-2">
+                     <Calendar className="h-4 w-4" />
+                     <span className="font-bold">4: </span>
+                     <span className="font-bold">{formatValue(searchData.stock4)}</span>
+                     <span className="ml-2">– {searchResult.dates.stock4Date ? format(searchResult.dates.stock4Date, "d/M/yyyy") : "NILL"}</span>
+                   </div>
+                </div>
+              )}
+              {searchResult.classification === "Act" ? (
+                <Badge variant="outline" className="bg-success-light text-success border-success flex items-center gap-1 w-fit text-lg">
+                  <TrendingUp className="h-4 w-4" />
+                  Act
+                </Badge>
+              ) : searchResult.classification === "Front Act" ? (
+                <Badge variant="outline" className="bg-destructive/10 text-destructive border-destructive flex items-center gap-1 w-fit text-lg">
+                  <TrendingDown className="h-4 w-4" />
+                  Front Act
+                </Badge>
+              ) : searchResult.classification === "Consolidation Act" ? (
+                <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-300 flex items-center gap-1 w-fit text-lg">
+                  <TrendingUp className="h-4 w-4" />
+                  Consolidation Act
+                </Badge>
+              ) : searchResult.classification === "Consolidation Front Act" ? (
+                <Badge variant="outline" className="bg-orange-100 text-orange-800 border-orange-300 flex items-center gap-1 w-fit text-lg">
+                  <TrendingDown className="h-4 w-4" />
+                  Consolidation Front Act
+                </Badge>
+              ) : searchResult.classification === "Consolidation Close" ? (
+                <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-300 flex items-center gap-1 w-fit text-lg">
+                  <TrendingUp className="h-4 w-4" />
+                  Consolidation Close
+                </Badge>
+              ) : searchResult.classification === "Act doubt" ? (
+                <Badge variant="outline" className="bg-purple-100 text-purple-800 border-purple-300 flex items-center gap-1 w-fit text-lg">
+                  <TrendingUp className="h-4 w-4" />
+                  Act doubt
+                </Badge>
+              ) : searchResult.classification === "3rd act" ? (
+                <Badge variant="outline" className="bg-indigo-100 text-indigo-800 border-indigo-300 flex items-center gap-1 w-fit text-lg">
+                  <TrendingUp className="h-4 w-4" />
+                  3rd act
+                </Badge>
+              ) : searchResult.classification === "4th act" ? (
+                <Badge variant="outline" className="bg-pink-100 text-pink-800 border-pink-300 flex items-center gap-1 w-fit text-lg">
+                  <TrendingUp className="h-4 w-4" />
+                  4th act
+                </Badge>
+              ) : searchResult.classification === "5th act" ? (
+                <Badge variant="outline" className="bg-teal-100 text-teal-800 border-teal-300 flex items-center gap-1 w-fit text-lg">
+                  <TrendingUp className="h-4 w-4" />
+                  5th act
+                </Badge>
+              ) : (
+                <Badge variant="outline" className="bg-muted text-muted-foreground w-fit text-lg">
+                  {searchResult.classification}
+                </Badge>
+              )}
+              {searchResult.notes && searchResult.classification !== "Please enter all four stock names." && searchResult.classification !== "No match found." && (
+                <div className="mt-3 p-3 bg-muted/50 rounded text-base">
+                  <span className="font-medium text-muted-foreground">Notes: </span>
+                  <span className="text-foreground">{searchResult.notes}</span>
+                </div>
+              )}
+              {searchResult.imageUrl && searchResult.classification !== "Please enter all four stock names." && searchResult.classification !== "No match found." && (
+                <div className="mt-3">
+                  <img
+                    src={searchResult.imageUrl}
+                    alt="Note image"
+                    className="max-w-full h-64 object-cover rounded-lg border"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {allResults.length > 0 && (
           <div className="mt-6 space-y-4">
@@ -614,96 +574,173 @@ const StockSearch: React.FC = () => {
                 </Badge>
               )}
             </h3>
-            {allResults.map((entry, idx) => {
+            {allResults.map((entry, index) => {
+              // Find the original index of this entry in the complete saved entries list
               const allEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
-              const sortedEntries = allEntries.sort((a, b) => b.timestamp - a.timestamp);
-              const serialNumber = sortedEntries.length - sortedEntries.findIndex(e => e.timestamp === entry.timestamp);
+              const sortedAllEntries = allEntries.sort((a, b) => b.timestamp - a.timestamp);
+              const originalIndex = sortedAllEntries.findIndex(savedEntry => savedEntry.timestamp === entry.timestamp);
               
-              return (
-                <Card key={idx} className="p-4 bg-card">
-                  <div className="flex justify-between items-start mb-3">
-                    <Badge variant="outline" className="bg-primary/10 text-primary font-bold text-lg">
-                      Entry #{serialNumber}
-                    </Badge>
-                    <EditEntryDialog 
-                      entry={entry}
-                      index={sortedEntries.findIndex(e => e.timestamp === entry.timestamp)}
-                      serialNumber={serialNumber}
-                      onEntryUpdated={handleEntryUpdated}
-                    />
+               const serialNumber = sortedAllEntries.length - originalIndex;
+               const displayNumber = index + 1; // Individual serial number for filtered results
+               
+                return (
+                <div key={index} className="p-4 border rounded-lg space-y-3">
+                  <div className="flex items-start gap-3">
+                    {(showOnlyDifferentResults || showSameDateDifferent) && (
+                      <div className="flex-shrink-0 w-16 h-10 bg-blue-500 text-white rounded-lg flex items-center justify-center font-extrabold text-2xl">
+                        {displayNumber}
+                      </div>
+                    )}
+                    <div className="flex-shrink-0 w-20 h-10 bg-red-200 text-gray-900 rounded-lg flex items-center justify-center font-extrabold text-2xl">
+                      {serialNumber}
+                    </div>
+                    <div className="flex-1 space-y-4">
+                      {/* Match the search form layout */}
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label className="text-xl font-extrabold">DIRECTION A</Label>
+                          <div className="px-3 py-2 rounded-md text-xl font-extrabold" style={{ backgroundColor: '#ffe3e2' }}>
+                            {formatValue(entry.stock2)}
+                          </div>
+                          {entry.stock2bColor && (
+                            <>
+                              <Label className="text-xl font-extrabold">COLOUR</Label>
+                              <div className="px-3 py-2 rounded-md text-xl font-extrabold" style={{ backgroundColor: '#fef3c7' }}>
+                                <span style={{ 
+                                  color: entry.stock2bColor.toUpperCase() === 'RED' 
+                                    ? '#FF0000' 
+                                    : entry.stock2bColor.toUpperCase() === 'GREEN' 
+                                    ? '#008000' 
+                                    : '#000000' 
+                                }}>
+                                  {entry.stock2bColor.toUpperCase()}
+                                  {entry.stock2Date && ` - ${format(new Date(entry.stock2Date), "d/M/yyyy")}`}
+                                </span>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-xl font-extrabold">B</Label>
+                          <div className="px-3 py-2 rounded-md text-xl font-extrabold" style={{ backgroundColor: '#ffe3e2' }}>
+                            {formatValue(entry.stock2b || '')}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label className="text-xl font-extrabold">OPEN A</Label>
+                          <div className="px-3 py-2 rounded-md text-xl font-extrabold" style={{ backgroundColor: '#dcfce7' }}>
+                            {formatValue(entry.stock3)}
+                            {entry.stock3Date && (
+                              <span className="ml-3 text-lg font-extrabold text-muted-foreground">
+                                {format(new Date(entry.stock3Date), "d/M/yyyy")}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-xl font-extrabold">OPEN B</Label>
+                          <div className="px-3 py-2 rounded-md text-xl font-extrabold" style={{ backgroundColor: '#dcfce7' }}>
+                            {formatValue(entry.openb || '')}
+                            {entry.openbDate && (
+                              <span className="ml-3 text-lg font-extrabold text-muted-foreground">
+                                {format(new Date(entry.openbDate), "d/M/yyyy")}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label className="text-xl font-extrabold">CLOSE A</Label>
+                          <div className="px-3 py-2 rounded-md text-xl font-extrabold" style={{ backgroundColor: '#dcfce7' }}>
+                            {formatValue(entry.stock4)}
+                            {entry.stock4Date && (
+                              <span className="ml-3 text-lg font-extrabold text-muted-foreground">
+                                {format(new Date(entry.stock4Date), "d/M/yyyy")}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-xl font-extrabold">CLOSE B</Label>
+                          <div className="px-3 py-2 rounded-md text-xl font-extrabold" style={{ backgroundColor: '#dcfce7' }}>
+                            {formatValue(entry.stock4b || '')}
+                            {entry.stock4bDate && (
+                              <span className="ml-3 text-lg font-extrabold text-muted-foreground">
+                                {format(new Date(entry.stock4bDate), "d/M/yyyy")}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-xl font-extrabold">RESULT</Label>
+                        <Badge
+                          variant="outline"
+                          className={
+                            entry.classification === 'Act'
+                              ? "bg-success-light text-success border-success text-2xl font-extrabold px-4 py-2"
+                              : entry.classification === 'Front Act'
+                              ? "bg-destructive/10 text-destructive border-destructive text-2xl font-extrabold px-4 py-2"
+                              : entry.classification === 'Consolidation Act'
+                              ? "bg-yellow-100 text-yellow-800 border-yellow-300 text-2xl font-extrabold px-4 py-2"
+                              : entry.classification === 'Consolidation Front Act'
+                              ? "bg-orange-100 text-orange-800 border-orange-300 text-2xl font-extrabold px-4 py-2"
+                              : entry.classification === 'Consolidation Close'
+                              ? "bg-blue-100 text-blue-800 border-blue-300 text-2xl font-extrabold px-4 py-2"
+                              : entry.classification === 'Act doubt'
+                              ? "bg-purple-100 text-purple-800 border-purple-300 text-2xl font-extrabold px-4 py-2"
+                              : entry.classification === '3rd act'
+                              ? "bg-indigo-100 text-indigo-800 border-indigo-300 text-2xl font-extrabold px-4 py-2"
+                              : entry.classification === '4th act'
+                              ? "bg-pink-100 text-pink-800 border-pink-300 text-2xl font-extrabold px-4 py-2"
+                              : "bg-teal-100 text-teal-800 border-teal-300 text-2xl font-extrabold px-4 py-2"
+                          }
+                        >
+                          {entry.classification === 'Act' || entry.classification === 'Consolidation Act' || entry.classification === 'Consolidation Close' || entry.classification === 'Act doubt' || entry.classification === '3rd act' || entry.classification === '4th act' || entry.classification === '5th act' ? (
+                            <TrendingUp className="h-6 w-6 mr-2" />
+                          ) : (
+                            <TrendingDown className="h-6 w-6 mr-2" />
+                          )}
+                         {entry.classification}
+                       </Badge>
+                      </div>
+
+                      {entry.notes && (
+                        <div className="space-y-2">
+                          <Label className="text-xl font-extrabold">NOTES</Label>
+                          <div className="px-3 py-2 bg-muted/50 rounded text-lg font-bold">
+                            {entry.notes}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {entry.imageUrl && (
+                        <div>
+                          <img
+                            src={entry.imageUrl}
+                            alt="Note image"
+                            className="max-w-full h-64 object-cover rounded-lg border"
+                          />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-shrink-0">
+                      <EditEntryDialog 
+                        entry={entry} 
+                        index={originalIndex}
+                        serialNumber={serialNumber}
+                        onEntryUpdated={handleEntryUpdate}
+                      />
+                    </div>
                   </div>
-                  <div className="space-y-3">
-                    {entry.stock1 && (
-                      <div className="text-lg">
-                        <span className="font-medium text-muted-foreground">INTRO: </span>
-                        <span className="font-bold">{formatValue(entry.stock1)}</span>
-                      </div>
-                    )}
-                    {entry.ogCandle && (
-                      <div className="text-lg">
-                        <span className="font-medium text-muted-foreground">OG CANDLE: </span>
-                        <span className="font-bold">{formatValue(entry.ogCandle)}</span>
-                      </div>
-                    )}
-                    {entry.ogOpenA && (
-                      <div className="text-lg">
-                        <span className="font-medium text-muted-foreground">OG OPEN A: </span>
-                        <span className="font-bold">{formatValue(entry.ogOpenA)}</span>
-                      </div>
-                    )}
-                    {entry.ogCloseA && (
-                      <div className="text-lg">
-                        <span className="font-medium text-muted-foreground">OG CLOSE A: </span>
-                        <span className="font-bold">{formatValue(entry.ogCloseA)}</span>
-                      </div>
-                    )}
-                    {entry.classification === "Act" ? (
-                      <Badge variant="outline" className="bg-green-100 text-green-800 border-green-300 flex items-center gap-1 w-fit text-lg">
-                        <TrendingUp className="h-4 w-4" />
-                        Act
-                      </Badge>
-                    ) : entry.classification === "Front Act" ? (
-                      <Badge variant="outline" className="bg-red-100 text-red-800 border-red-300 flex items-center gap-1 w-fit text-lg">
-                        <TrendingDown className="h-4 w-4" />
-                        Front Act
-                      </Badge>
-                    ) : entry.classification === "Consolidation Act" ? (
-                      <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-300 flex items-center gap-1 w-fit text-lg">
-                        <TrendingUp className="h-4 w-4" />
-                        Consolidation Act
-                      </Badge>
-                    ) : entry.classification === "Consolidation Front Act" ? (
-                      <Badge variant="outline" className="bg-orange-100 text-orange-800 border-orange-300 flex items-center gap-1 w-fit text-lg">
-                        <TrendingDown className="h-4 w-4" />
-                        Consolidation Front Act
-                      </Badge>
-                    ) : entry.classification === "Consolidation Close" ? (
-                      <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-300 flex items-center gap-1 w-fit text-lg">
-                        <TrendingUp className="h-4 w-4" />
-                        Consolidation Close
-                      </Badge>
-                    ) : (
-                      <Badge variant="outline" className="bg-muted text-muted-foreground w-fit text-lg">
-                        {entry.classification}
-                      </Badge>
-                    )}
-                    {entry.notes && (
-                      <div className="mt-3 p-3 bg-muted/50 rounded text-base">
-                        <span className="font-medium text-muted-foreground">Notes: </span>
-                        <span className="text-foreground">{entry.notes}</span>
-                      </div>
-                    )}
-                    {entry.imageUrl && (
-                      <div className="mt-3">
-                        <img
-                          src={entry.imageUrl}
-                          alt="Note image"
-                          className="max-w-full h-64 object-cover rounded-lg border"
-                        />
-                      </div>
-                    )}
-                  </div>
-                </Card>
+                </div>
               );
             })}
           </div>
