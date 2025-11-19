@@ -291,6 +291,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     console.log('StockEntry - Saving to localStorage');
     console.log('StockEntry - Existing entries:', existingEntries.length);
     console.log('StockEntry - New dropdowns state before save:', newDropdowns);
+    console.log("🟦 DEBUG BEFORE SAVE", {
+  formData,
+  selectedDates,
+  newDropdowns,
+  existingEntriesCount: existingEntries.length,
+});
 
     const newEntry: StockEntryData = {
       ...formData,
