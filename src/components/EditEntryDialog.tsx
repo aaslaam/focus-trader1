@@ -34,6 +34,7 @@ interface StockEntryData {
   dropdown2Date?: Date | null;
   dropdown3Date?: Date | null;
   dropdown4Date?: Date | null;
+  ogCandle?: string;
   ogOpenA?: string;
   ogCloseA?: string;
   ogOpenADate?: Date | null;
@@ -59,9 +60,14 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
     stock3: '',
     stock4: '',
     classification: '' as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL' | '',
+    ogCandle: '',
     ogOpenA: '',
     ogCloseA: '',
     notes: ''
+  });
+  const [candleDropdowns, setCandleDropdowns] = useState({
+    candleMain: '',
+    candleSub: ''
   });
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
@@ -93,6 +99,12 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
 
   // No longer needed - using SimpleOptionSelector
 
+  // Update combined OG CANDLE value whenever candle dropdowns change
+  useEffect(() => {
+    const combined = `${candleDropdowns.candleMain} ${candleDropdowns.candleSub}`.trim();
+    setFormData(prev => ({ ...prev, ogCandle: combined }));
+  }, [candleDropdowns.candleMain, candleDropdowns.candleSub]);
+
   useEffect(() => {
     if (open) {
       // Normalize classification value from legacy uppercase to current format
@@ -110,10 +122,25 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
         stock3: entry.stock3,
         stock4: entry.stock4,
         classification: normalizeClassification(entry.classification),
+        ogCandle: entry.ogCandle || '',
         ogOpenA: entry.ogOpenA || '',
         ogCloseA: entry.ogCloseA || '',
         notes: entry.notes || ''
       });
+      
+      // Parse ogCandle back into dropdowns
+      if (entry.ogCandle) {
+        const parts = entry.ogCandle.split(' ');
+        if (parts.length >= 2) {
+          setCandleDropdowns({
+            candleMain: parts.slice(0, -1).join(' '), // Everything except last part
+            candleSub: parts[parts.length - 1] // Last part
+          });
+        }
+      } else {
+        setCandleDropdowns({ candleMain: '', candleSub: '' });
+      }
+      
       setSelectedDates({
         stock1Date: entry.stock1Date ? new Date(entry.stock1Date) : null,
         stock2Date: entry.stock2Date ? new Date(entry.stock2Date) : null,
@@ -527,6 +554,50 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
              </div>
             </div>
            </div>
+           
+            {/* OG CANDLE Section */}
+            <div className="space-y-2">
+              <Label className="text-lg font-bold">OG CANDLE</Label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* First Dropdown: CANDLE 1-25 */}
+                <Select 
+                  value={candleDropdowns.candleMain}
+                  onValueChange={(value) => setCandleDropdowns(prev => ({ ...prev, candleMain: value }))}
+                >
+                  <SelectTrigger 
+                    className="text-lg font-bold"
+                    style={{ backgroundColor: candleDropdowns.candleMain ? '#dcfce7' : '#ffe3e2' }}
+                  >
+                    <SelectValue placeholder="Select Candle" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card z-[100]">
+                    {Array.from({ length: 25 }, (_, i) => i + 1).map(num => (
+                      <SelectItem key={num} value={`CANDLE ${num}`} className="text-lg font-bold">
+                        CANDLE {num}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                
+                {/* Second Dropdown: RED/GREEN */}
+                <Select 
+                  value={candleDropdowns.candleSub}
+                  onValueChange={(value) => setCandleDropdowns(prev => ({ ...prev, candleSub: value }))}
+                >
+                  <SelectTrigger 
+                    className="text-lg font-bold"
+                    style={{ backgroundColor: candleDropdowns.candleSub ? '#dcfce7' : '#ffe3e2' }}
+                  >
+                    <SelectValue placeholder="Select Color" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card z-[100]">
+                    <SelectItem value="RED" className="text-lg font-bold">RED</SelectItem>
+                    <SelectItem value="GREEN" className="text-lg font-bold">GREEN</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+           
             {/* OG OPEN A and OG CLOSE A in same row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* OG OPEN A */}

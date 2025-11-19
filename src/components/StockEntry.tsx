@@ -36,6 +36,7 @@ interface StockEntryData {
   dropdown2?: string;
   dropdown3?: string;
   dropdown4?: string;
+  ogCandle?: string;
   ogOpenA?: string;
   ogCloseA?: string;
   notes?: string;
@@ -57,6 +58,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     stock3: '',
     stock4: '',
     classification: '' as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL' | '',
+    ogCandle: '',
     ogOpenA: '',
     ogCloseA: '',
     notes: ''
@@ -75,7 +77,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     dropdown3Main: '',
     dropdown3Sub: '',
     dropdown4Main: '',
-    dropdown4Sub: ''
+    dropdown4Sub: '',
+    candleMain: '',
+    candleSub: ''
   });
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -147,6 +151,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     console.log('StockEntry - Individual dropdown states:', dropdowns);
     setNewDropdowns(combined);
   }, [dropdowns]);
+  
+  // Update combined OG CANDLE value whenever candle dropdowns change
+  useEffect(() => {
+    const combined = `${dropdowns.candleMain} ${dropdowns.candleSub}`.trim();
+    setFormData(prev => ({ ...prev, ogCandle: combined }));
+  }, [dropdowns.candleMain, dropdowns.candleSub]);
   
   // Refs for auto-focus functionality
   const stock1Ref = useRef<HTMLInputElement>(null);
@@ -345,6 +355,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock3: '',
       stock4: '',
       classification: '',
+      ogCandle: '',
       ogOpenA: '',
       ogCloseA: '',
       notes: ''
@@ -363,7 +374,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       dropdown3Main: '',
       dropdown3Sub: '',
       dropdown4Main: '',
-      dropdown4Sub: ''
+      dropdown4Sub: '',
+      candleMain: '',
+      candleSub: ''
     });
     setSelectedDates({
       stock1Date: new Date(),
@@ -406,6 +419,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock3: '',
       stock4: '',
       classification: '',
+      ogCandle: '',
       ogOpenA: '',
       ogCloseA: '',
       notes: ''
@@ -424,7 +438,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       dropdown3Main: '',
       dropdown3Sub: '',
       dropdown4Main: '',
-      dropdown4Sub: ''
+      dropdown4Sub: '',
+      candleMain: '',
+      candleSub: ''
     });
     setSelectedDates({
       stock1Date: new Date(),
@@ -493,6 +509,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         stock4: 'NILL',
         ...selectedDates,
         classification: 'NILL',
+        ogCandle: 'NILL',
         notes: formData.notes,
         imageUrl,
         timestamp: Date.now()
@@ -525,6 +542,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         stock3: '',
         stock4: '',
         classification: '',
+        ogCandle: '',
         ogOpenA: '',
         ogCloseA: '',
         notes: ''
@@ -543,7 +561,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         dropdown3Main: '',
         dropdown3Sub: '',
         dropdown4Main: '',
-        dropdown4Sub: ''
+        dropdown4Sub: '',
+        candleMain: '',
+        candleSub: ''
       });
       setSelectedDates({
         stock1Date: new Date(),
@@ -1260,6 +1280,49 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               >
                 NILL
               </Button>
+            </div>
+          </div>
+          
+          {/* OG CANDLE Section */}
+          <div className="space-y-2">
+            <Label className="text-lg font-bold">OG CANDLE</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* First Dropdown: CANDLE 1-25 */}
+              <Select 
+                value={dropdowns.candleMain}
+                onValueChange={(value) => setDropdowns(prev => ({ ...prev, candleMain: value }))}
+              >
+                <SelectTrigger 
+                  className="text-lg font-bold"
+                  style={{ backgroundColor: dropdowns.candleMain ? '#dcfce7' : '#ffe3e2' }}
+                >
+                  <SelectValue placeholder="Select Candle" />
+                </SelectTrigger>
+                <SelectContent className="bg-card z-[100]">
+                  {Array.from({ length: 25 }, (_, i) => i + 1).map(num => (
+                    <SelectItem key={num} value={`CANDLE ${num}`} className="text-lg font-bold">
+                      CANDLE {num}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              
+              {/* Second Dropdown: RED/GREEN */}
+              <Select 
+                value={dropdowns.candleSub}
+                onValueChange={(value) => setDropdowns(prev => ({ ...prev, candleSub: value }))}
+              >
+                <SelectTrigger 
+                  className="text-lg font-bold"
+                  style={{ backgroundColor: dropdowns.candleSub ? '#dcfce7' : '#ffe3e2' }}
+                >
+                  <SelectValue placeholder="Select Color" />
+                </SelectTrigger>
+                <SelectContent className="bg-card z-[100]">
+                  <SelectItem value="RED" className="text-lg font-bold">RED</SelectItem>
+                  <SelectItem value="GREEN" className="text-lg font-bold">GREEN</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           

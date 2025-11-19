@@ -31,6 +31,7 @@ interface StockEntryData {
   dropdown2Date?: Date | null;
   dropdown3Date?: Date | null;
   dropdown4Date?: Date | null;
+  ogCandle?: string;
   ogOpenA?: string;
   ogCloseA?: string;
   ogOpenADate?: Date | null;
@@ -364,6 +365,16 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
                             )}
                           </div>
                         )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* OG CANDLE */}
+                  {entry.ogCandle && (
+                    <div className="mt-4">
+                      <div className="px-3 py-2 rounded bg-purple-50 border border-purple-200">
+                        <div className="text-sm font-bold text-purple-700 mb-1">OG CANDLE</div>
+                        <span className="text-lg font-bold">{entry.ogCandle}</span>
                       </div>
                     </div>
                   )}
