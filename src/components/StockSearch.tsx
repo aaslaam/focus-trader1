@@ -15,20 +15,18 @@ import EditEntryDialog from './EditEntryDialog';
 import { formatValue } from '@/utils/valueFormatter';
 
 interface StockEntryData {
-  stock1: string;
-  stock2: string;
-  stock2b: string;
-  stock2bColor?: string;
-  stock3: string;
-  openb: string;
-  stock4: string;
-  stock4b: string;
-  stock1Date: Date | null;
-  stock2Date: Date | null;
-  stock3Date: Date | null;
-  stock4Date: Date | null;
-  stock4bDate?: Date | null;
-  openbDate?: Date | null;
+  intro: string;
+  ogCandle: string;
+  ogOpenA: string;
+  ogHighA: string;
+  ogLowA: string;
+  ogCloseA: string;
+  introDate: Date | null;
+  ogCandleDate: Date | null;
+  ogOpenADate: Date | null;
+  ogHighADate: Date | null;
+  ogLowADate: Date | null;
+  ogCloseADate: Date | null;
   classification: 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL';
   notes?: string;
   imageUrl?: string;
@@ -37,19 +35,47 @@ interface StockEntryData {
 
 const StockSearch: React.FC = () => {
   const [searchData, setSearchData] = useState({
-    stock1: '',
-    stock2: '',
-    stock2b: '',
-    stock2bColor: '',
-    stock3: '',
-    openb: '',
-    stock4: '',
-    stock4b: '',
+    intro: '',
+    ogCandle: '',
+    ogOpenA: '',
+    ogHighA: '',
+    ogLowA: '',
+    ogCloseA: '',
     serialNumber: '',
     notes: ''
   });
+
+  const [dropdowns, setDropdowns] = useState({
+    dropdown1: '',
+    dropdown2: '',
+    dropdown3: '',
+    dropdown4: '',
+    candleMain: '',
+    candleSub: ''
+  });
+
+  // Combine INTRO dropdowns
+  React.useEffect(() => {
+    const { dropdown1, dropdown2, dropdown3, dropdown4 } = dropdowns;
+    if (dropdown1 || dropdown2 || dropdown3 || dropdown4) {
+      const combined = [dropdown1, dropdown2, dropdown3, dropdown4].filter(Boolean).join(' ');
+      setSearchData(prev => ({ ...prev, intro: combined }));
+    } else {
+      setSearchData(prev => ({ ...prev, intro: '' }));
+    }
+  }, [dropdowns.dropdown1, dropdowns.dropdown2, dropdowns.dropdown3, dropdowns.dropdown4]);
+
+  // Combine OG CANDLE dropdowns
+  React.useEffect(() => {
+    const { candleMain, candleSub } = dropdowns;
+    if (candleMain && candleSub) {
+      setSearchData(prev => ({ ...prev, ogCandle: `${candleMain} ${candleSub}` }));
+    } else {
+      setSearchData(prev => ({ ...prev, ogCandle: '' }));
+    }
+  }, [dropdowns.candleMain, dropdowns.candleSub]);
   const [filter, setFilter] = useState<string>('');
-  const [searchResult, setSearchResult] = useState<{ classification: string; dates: { stock1Date: Date | null; stock3Date: Date | null; stock4Date: Date | null; }; notes?: string; imageUrl?: string; } | null>(null);
+  const [searchResult, setSearchResult] = useState<{ classification: string; dates: { introDate: Date | null; ogOpenADate: Date | null; ogCloseADate: Date | null; }; notes?: string; imageUrl?: string; } | null>(null);
   const [allResults, setAllResults] = useState<StockEntryData[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [showOnlyDifferentResults, setShowOnlyDifferentResults] = useState(false);
@@ -62,7 +88,7 @@ const StockSearch: React.FC = () => {
     const sortedEntries = existingEntries.sort((a, b) => b.timestamp - a.timestamp);
     
     // Check if any search criteria is provided
-    const hasStockFields = [searchData.stock1, searchData.stock2, searchData.stock2b, searchData.stock2bColor, searchData.stock3, searchData.openb, searchData.stock4, searchData.stock4b].some(field => field.trim() !== '');
+    const hasStockFields = [searchData.intro, searchData.ogCandle, searchData.ogOpenA, searchData.ogHighA, searchData.ogLowA, searchData.ogCloseA].some(field => field.trim() !== '');
     const hasSerialNumber = searchData.serialNumber.trim() !== '';
     const hasNotes = searchData.notes.trim() !== '';
     const hasFilter = filter !== '';
@@ -103,8 +129,8 @@ const StockSearch: React.FC = () => {
     // Filter by stock fields if provided
     if (hasStockFields) {
       matchingEntries = matchingEntries.filter(entry => {
-        const entryValues = [entry.stock1, entry.stock2, entry.stock2b || '', entry.stock2bColor || '', entry.stock3, entry.openb || '', entry.stock4, entry.stock4b || ''];
-        const searchValues = [searchData.stock1, searchData.stock2, searchData.stock2b, searchData.stock2bColor, searchData.stock3, searchData.openb, searchData.stock4, searchData.stock4b];
+        const entryValues = [entry.intro || '', entry.ogCandle || '', entry.ogOpenA, entry.ogHighA, entry.ogLowA, entry.ogCloseA];
+        const searchValues = [searchData.intro, searchData.ogCandle, searchData.ogOpenA, searchData.ogHighA, searchData.ogLowA, searchData.ogCloseA];
         
         // Check if all selected search values match the entry
         return searchValues.every((searchValue, index) => {
@@ -120,7 +146,7 @@ const StockSearch: React.FC = () => {
 
   // Helper function to create a unique key for grouping entries
   const getEntryKey = (entry: StockEntryData) => {
-    return `${entry.stock2}|${entry.stock2b}|${entry.stock2bColor}|${entry.stock3}|${entry.openb}|${entry.stock4}|${entry.stock4b}`;
+    return `${entry.intro}|${entry.ogCandle}|${entry.ogOpenA}|${entry.ogHighA}|${entry.ogLowA}|${entry.ogCloseA}`;
   };
 
   // Find duplicates with different results
