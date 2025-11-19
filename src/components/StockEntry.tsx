@@ -231,7 +231,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check for missing fields - allow "NILL" as a valid value
+    // Check for missing required fields only
+    // Optional fields: dropdown1-4 (OG DIRECTION A-D), ogCandle, ogOpenA, ogCloseA
+    // Required fields: stock2 (A DIRECTION), stock2b (B), stock3 (OPEN A), stock4 (CLOSE A), classification
     const isFieldMissing = (value: string) => {
       if (!value || value.trim() === '') return true;
       if (value.toUpperCase() === 'NILL') return false; // "NILL" is a valid value
