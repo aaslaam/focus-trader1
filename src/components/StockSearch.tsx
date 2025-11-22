@@ -500,55 +500,145 @@ const StockSearch: React.FC = () => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
                   <Label className="text-sm font-bold">OG DIRECTION A</Label>
-                  <input
-                    type="text"
+                  <Select 
                     value={searchData.dropdown1}
-                    onChange={(e) => handleInputChange('dropdown1', e.target.value)}
-                    className="w-full px-3 py-2 text-base border rounded-md"
-                    placeholder="e.g. OG, OR"
-                  />
+                    onValueChange={(value) => {
+                      setSearchData(prev => ({ ...prev, dropdown1: value }));
+                      setTimeout(() => performSearch(), 100);
+                    }}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold"
+                      style={{ backgroundColor: searchData.dropdown1 ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background z-[100]">
+                      <SelectItem value="OG" className="text-lg font-bold">OG</SelectItem>
+                      <SelectItem value="OR" className="text-lg font-bold">OR</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label className="text-sm font-bold">OG DIRECTION B</Label>
-                  <input
-                    type="text"
+                  <Select 
                     value={searchData.dropdown2}
-                    onChange={(e) => handleInputChange('dropdown2', e.target.value)}
-                    className="w-full px-3 py-2 text-base border rounded-md"
-                    placeholder="e.g. FORWARD, IN"
-                  />
+                    onValueChange={(value) => {
+                      setSearchData(prev => ({ ...prev, dropdown2: value }));
+                      setTimeout(() => performSearch(), 100);
+                    }}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold"
+                      style={{ backgroundColor: searchData.dropdown2 ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background z-[100]">
+                      <SelectItem value="FORWARD" className="text-lg font-bold">FORWARD</SelectItem>
+                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                      <SelectItem value="REVERSE" className="text-lg font-bold">REVERSE</SelectItem>
+                      <SelectItem value="RETURN" className="text-lg font-bold">RETURN</SelectItem>
+                      <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label className="text-sm font-bold">OG DIRECTION C</Label>
-                  <input
-                    type="text"
+                  <Select 
                     value={searchData.dropdown3}
-                    onChange={(e) => handleInputChange('dropdown3', e.target.value)}
-                    className="w-full px-3 py-2 text-base border rounded-md"
-                    placeholder="e.g. FORWARD, IN"
-                  />
+                    onValueChange={(value) => {
+                      setSearchData(prev => ({ ...prev, dropdown3: value }));
+                      setTimeout(() => performSearch(), 100);
+                    }}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold"
+                      style={{ backgroundColor: searchData.dropdown3 ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background z-[100]">
+                      <SelectItem value="FORWARD" className="text-lg font-bold">FORWARD</SelectItem>
+                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                      <SelectItem value="REVERSE" className="text-lg font-bold">REVERSE</SelectItem>
+                      <SelectItem value="RETURN" className="text-lg font-bold">RETURN</SelectItem>
+                      <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label className="text-sm font-bold">OG DIRECTION D</Label>
-                  <input
-                    type="text"
+                  <Select 
                     value={searchData.dropdown4}
-                    onChange={(e) => handleInputChange('dropdown4', e.target.value)}
-                    className="w-full px-3 py-2 text-base border rounded-md"
-                    placeholder="e.g. FORWARD, IN"
-                  />
+                    onValueChange={(value) => {
+                      setSearchData(prev => ({ ...prev, dropdown4: value }));
+                      setTimeout(() => performSearch(), 100);
+                    }}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold"
+                      style={{ backgroundColor: searchData.dropdown4 ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background z-[100]">
+                      <SelectItem value="FORWARD" className="text-lg font-bold">FORWARD</SelectItem>
+                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                      <SelectItem value="REVERSE" className="text-lg font-bold">REVERSE</SelectItem>
+                      <SelectItem value="RETURN" className="text-lg font-bold">RETURN</SelectItem>
+                      <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label className="text-sm font-bold">OG CANDLE</Label>
-                <input
-                  type="text"
-                  value={searchData.ogCandle}
-                  onChange={(e) => handleInputChange('ogCandle', e.target.value)}
-                  className="w-full px-3 py-2 text-base border rounded-md"
-                  placeholder="e.g. CANDLE 1 RED"
-                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Select 
+                    value={searchData.ogCandle.split(' ')[0] + ' ' + searchData.ogCandle.split(' ')[1] || ''}
+                    onValueChange={(value) => {
+                      const color = searchData.ogCandle.split(' ')[2] || '';
+                      setSearchData(prev => ({ ...prev, ogCandle: color ? `${value} ${color}` : value }));
+                      setTimeout(() => performSearch(), 100);
+                    }}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold"
+                      style={{ backgroundColor: searchData.ogCandle.includes('CANDLE') ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Select Candle" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-[100]">
+                      {Array.from({ length: 25 }, (_, i) => i + 1).map(num => (
+                        <SelectItem key={num} value={`CANDLE ${num}`} className="text-lg font-bold">
+                          CANDLE {num}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  
+                  <Select 
+                    value={searchData.ogCandle.split(' ')[2] || ''}
+                    onValueChange={(value) => {
+                      const candle = `${searchData.ogCandle.split(' ')[0] || ''} ${searchData.ogCandle.split(' ')[1] || ''}`.trim();
+                      setSearchData(prev => ({ ...prev, ogCandle: candle ? `${candle} ${value}` : value }));
+                      setTimeout(() => performSearch(), 100);
+                    }}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold"
+                      style={{ backgroundColor: (searchData.ogCandle.includes('RED') || searchData.ogCandle.includes('GREEN')) ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Select Color" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-[100]">
+                      <SelectItem value="RED" className="text-lg font-bold">RED</SelectItem>
+                      <SelectItem value="GREEN" className="text-lg font-bold">GREEN</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
