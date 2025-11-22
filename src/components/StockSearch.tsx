@@ -373,6 +373,49 @@ const StockSearch: React.FC = () => {
                 </div>
               </div>
 
+              {/* INTRO Fields */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-sm font-bold">INTRO 1</Label>
+                  <input
+                    type="text"
+                    value={searchData.dropdown1}
+                    onChange={(e) => {
+                      handleInputChange('dropdown1', e.target.value);
+                      setTimeout(() => performSearch(), 100);
+                    }}
+                    placeholder="e.g. MG UP"
+                    className="w-full px-3 py-2 text-base border rounded-md"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-bold">INTRO 2</Label>
+                  <input
+                    type="text"
+                    value={searchData.dropdown2}
+                    onChange={(e) => {
+                      handleInputChange('dropdown2', e.target.value);
+                      setTimeout(() => performSearch(), 100);
+                    }}
+                    placeholder="e.g. WG UP"
+                    className="w-full px-3 py-2 text-base border rounded-md"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-bold">INTRO 3</Label>
+                  <input
+                    type="text"
+                    value={searchData.dropdown3}
+                    onChange={(e) => {
+                      handleInputChange('dropdown3', e.target.value);
+                      setTimeout(() => performSearch(), 100);
+                    }}
+                    placeholder="e.g. DG UP"
+                    className="w-full px-3 py-2 text-base border rounded-md"
+                  />
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="serial-number-part1" className="text-xl font-bold">SERIAL NUMBER</Label>
                 <input
@@ -394,7 +437,7 @@ const StockSearch: React.FC = () => {
                   onChange={(e) => handleInputChange('notes', e.target.value)}
                   className="text-base min-h-[80px]"
                 />
-                {hasSearched && (searchData.stock2 || searchData.stock2b || searchData.stock3 || searchData.openb || searchData.serialNumber || searchData.notes || filter) && allResults.length === 0 && (
+                {hasSearched && (searchData.stock2 || searchData.stock2b || searchData.stock3 || searchData.stock4 || searchData.dropdown1 || searchData.dropdown2 || searchData.dropdown3 || searchData.serialNumber || searchData.notes || filter) && allResults.length === 0 && (
                   <div className="bg-red-600 text-white font-bold text-2xl p-4 rounded-lg text-center">
                     No result
                   </div>
@@ -851,6 +894,49 @@ const StockSearch: React.FC = () => {
                 onValueChange={(value) => setSearchData(prev => ({ ...prev, stock4b: value }))}
                 baseOptions={['SD CG-', 'SD CG+', 'SD CGB', 'SD CR-', 'SD CR+', 'SD CRB', 'NILL']}
                 hideModifier={true}
+              />
+            </div>
+          </div>
+
+          {/* INTRO Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div className="space-y-2">
+              <Label className="text-sm font-bold">INTRO 1</Label>
+              <input
+                type="text"
+                value={searchData.dropdown1}
+                onChange={(e) => {
+                  handleInputChange('dropdown1', e.target.value);
+                  setTimeout(() => performSearch(), 100);
+                }}
+                placeholder="e.g. MG UP"
+                className="w-full px-3 py-2 text-base border rounded-md"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-bold">INTRO 2</Label>
+              <input
+                type="text"
+                value={searchData.dropdown2}
+                onChange={(e) => {
+                  handleInputChange('dropdown2', e.target.value);
+                  setTimeout(() => performSearch(), 100);
+                }}
+                placeholder="e.g. WG UP"
+                className="w-full px-3 py-2 text-base border rounded-md"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-bold">INTRO 3</Label>
+              <input
+                type="text"
+                value={searchData.dropdown3}
+                onChange={(e) => {
+                  handleInputChange('dropdown3', e.target.value);
+                  setTimeout(() => performSearch(), 100);
+                }}
+                placeholder="e.g. DG UP"
+                className="w-full px-3 py-2 text-base border rounded-md"
               />
             </div>
           </div>
