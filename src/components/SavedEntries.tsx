@@ -167,6 +167,7 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
 
   const renderEntry = (entry: StockEntryData, index: number) => {
     const serialNumber = filteredEntries.length - index;
+    const entryType = entry.type || 'common';
     
     return (
       <>
@@ -178,36 +179,38 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
           </div>
           
           <div className="space-y-4">
-            {/* DIRECTION A & B */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex flex-col">
-                <div className="flex items-center gap-1">
-                  <span className="px-3 py-3 rounded inline-flex flex-col items-start gap-1" style={{ backgroundColor: '#ffe3e2' }}>
-                    <div className="flex items-center gap-1">
-                      <span className="text-xl font-extrabold">DIRECTION A:</span>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <span className="text-xl font-extrabold">{formatValue(entry.stock2)}</span>
-                    </div>
-                  </span>
+            {/* DIRECTION A & B - Only show for Part 1 and Common entries */}
+            {entryType !== 'part2' && (entry.stock2 || entry.stock2b) && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-1">
+                    <span className="px-3 py-3 rounded inline-flex flex-col items-start gap-1" style={{ backgroundColor: '#ffe3e2' }}>
+                      <div className="flex items-center gap-1">
+                        <span className="text-xl font-extrabold">DIRECTION A:</span>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <span className="text-xl font-extrabold">{formatValue(entry.stock2)}</span>
+                      </div>
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-1">
+                    <span className="px-3 py-3 rounded inline-flex flex-col items-start gap-1" style={{ backgroundColor: '#ffe3e2' }}>
+                      <div className="flex items-center gap-1">
+                        <span className="text-xl font-extrabold">B:</span>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <span className="text-xl font-extrabold">{formatValue(entry.stock2b || '')}</span>
+                      </div>
+                    </span>
+                  </div>
                 </div>
               </div>
-              <div className="flex flex-col">
-                <div className="flex items-center gap-1">
-                  <span className="px-3 py-3 rounded inline-flex flex-col items-start gap-1" style={{ backgroundColor: '#ffe3e2' }}>
-                    <div className="flex items-center gap-1">
-                      <span className="text-xl font-extrabold">B:</span>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <span className="text-xl font-extrabold">{formatValue(entry.stock2b || '')}</span>
-                    </div>
-                  </span>
-                </div>
-              </div>
-            </div>
+            )}
 
-            {/* COLOUR with DATE OF COLOUR */}
-            {entry.stock2bColor && (
+            {/* COLOUR with DATE OF COLOUR - Only show for Part 1 and Common entries */}
+            {entryType !== 'part2' && entry.stock2bColor && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col">
                   <div className="flex items-center gap-1">
@@ -236,44 +239,48 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
               </div>
             )}
 
-            {/* OPEN A and CLOSE A */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex flex-col">
-                <div className="flex items-center gap-1">
-                  <span className="px-3 py-3 rounded inline-flex flex-col items-start gap-1" style={{ backgroundColor: '#dcfce7' }}>
+            {/* OPEN A and CLOSE A - Only show for Part 1 and Common entries */}
+            {entryType !== 'part2' && (entry.stock3 || entry.stock4) && (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex flex-col">
                     <div className="flex items-center gap-1">
-                      {getVisualStyle(entry.stock3).showIcon && getVisualStyle(entry.stock3).iconType === 'candle' && (
-                        <TrendingUp className="w-5 h-5 lg:w-6 lg:h-6" />
-                      )}
-                      <span className="text-xl font-extrabold">OPEN A:</span>
+                      <span className="px-3 py-3 rounded inline-flex flex-col items-start gap-1" style={{ backgroundColor: '#dcfce7' }}>
+                        <div className="flex items-center gap-1">
+                          {getVisualStyle(entry.stock3).showIcon && getVisualStyle(entry.stock3).iconType === 'candle' && (
+                            <TrendingUp className="w-5 h-5 lg:w-6 lg:h-6" />
+                          )}
+                          <span className="text-xl font-extrabold">OPEN A:</span>
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <span className="text-xl font-extrabold">{formatValue(entry.stock3)}</span>
+                          <span className="text-lg font-extrabold text-muted-foreground">{entry.stock3Date ? format(new Date(entry.stock3Date), "d/M/yyyy") : "NILL"}</span>
+                        </div>
+                      </span>
                     </div>
-                    <div className="flex flex-col gap-1">
-                      <span className="text-xl font-extrabold">{formatValue(entry.stock3)}</span>
-                      <span className="text-lg font-extrabold text-muted-foreground">{entry.stock3Date ? format(new Date(entry.stock3Date), "d/M/yyyy") : "NILL"}</span>
-                    </div>
-                  </span>
+                  </div>
                 </div>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex flex-col">
-                <div className="flex items-center gap-1">
-                  <span className="px-3 py-3 rounded inline-flex flex-col items-start gap-1" style={{ backgroundColor: '#dcfce7' }}>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex flex-col">
                     <div className="flex items-center gap-1">
-                      {getVisualStyle(entry.stock4).showIcon && getVisualStyle(entry.stock4).iconType === 'candle' && (
-                        <TrendingUp className="w-5 h-5 lg:w-6 lg:h-6" />
-                      )}
-                      <span className="text-xl font-extrabold">CLOSE A:</span>
+                      <span className="px-3 py-3 rounded inline-flex flex-col items-start gap-1" style={{ backgroundColor: '#dcfce7' }}>
+                        <div className="flex items-center gap-1">
+                          {getVisualStyle(entry.stock4).showIcon && getVisualStyle(entry.stock4).iconType === 'candle' && (
+                            <TrendingUp className="w-5 h-5 lg:w-6 lg:h-6" />
+                          )}
+                          <span className="text-xl font-extrabold">CLOSE A:</span>
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <span className="text-xl font-extrabold">{formatValue(entry.stock4)}</span>
+                          <span className="text-lg font-extrabold text-muted-foreground">{entry.stock4Date ? format(new Date(entry.stock4Date), "d/M/yyyy") : "NILL"}</span>
+                        </div>
+                      </span>
                     </div>
-                    <div className="flex flex-col gap-1">
-                      <span className="text-xl font-extrabold">{formatValue(entry.stock4)}</span>
-                      <span className="text-lg font-extrabold text-muted-foreground">{entry.stock4Date ? format(new Date(entry.stock4Date), "d/M/yyyy") : "NILL"}</span>
-                    </div>
-                  </span>
+                  </div>
                 </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
 
           {/* INTRO Dropdowns */}
