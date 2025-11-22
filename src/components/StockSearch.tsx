@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Search, TrendingUp, TrendingDown, Calendar, Filter, CalendarIcon, Copy } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -33,9 +34,12 @@ interface StockEntryData {
   notes?: string;
   imageUrl?: string;
   timestamp: number;
+  part1Result?: string;
+  part2Result?: string;
 }
 
 const StockSearch: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<string>('common');
   const [searchData, setSearchData] = useState({
     stock1: '',
     stock2: '',
@@ -76,6 +80,16 @@ const StockSearch: React.FC = () => {
     
     // Start with all entries, then filter
     let matchingEntries = sortedEntries;
+    
+    // Filter by tab (Part 1, Part 2, or Common)
+    if (activeTab === 'part1') {
+      // Only entries with part1Result and NO part2Result
+      matchingEntries = matchingEntries.filter(entry => entry.part1Result && !entry.part2Result);
+    } else if (activeTab === 'part2') {
+      // Only entries with part2Result and NO part1Result
+      matchingEntries = matchingEntries.filter(entry => entry.part2Result && !entry.part1Result);
+    }
+    // For 'common', show all entries (no additional filtering)
     
     // Filter by serial number if provided
     if (hasSerialNumber) {
@@ -269,7 +283,336 @@ const StockSearch: React.FC = () => {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6">
-        <form onSubmit={handleSearch} className="space-y-4">
+        <Tabs value={activeTab} onValueChange={(value) => {
+          setActiveTab(value);
+          setTimeout(() => performSearch(), 100);
+        }} className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsTrigger value="part1" className="text-lg font-bold">PART 1</TabsTrigger>
+            <TabsTrigger value="part2" className="text-lg font-bold">PART 2</TabsTrigger>
+            <TabsTrigger value="common" className="text-lg font-bold">COMMON</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="part1">
+            <form onSubmit={handleSearch} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <SimpleOptionSelector
+                    label="DIRECTION A"
+                    selectedValue={searchData.stock2}
+                    onValueChange={(value) => setSearchData(prev => ({ ...prev, stock2: value }))}
+                    baseOptions={['CG UP', 'CG IN', 'CG DOWN', 'CR UP', 'CR IN', 'CR DOWN']}
+                    hideModifier={true}
+                  />
+                  <SimpleOptionSelector
+                    label="COLOUR"
+                    selectedValue={searchData.stock2bColor || ''}
+                    onValueChange={(value) => setSearchData(prev => ({ ...prev, stock2bColor: value }))}
+                    baseOptions={['RED', 'GREEN']}
+                    hideModifier={true}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <SimpleOptionSelector
+                    label="B"
+                    selectedValue={searchData.stock2b}
+                    onValueChange={(value) => setSearchData(prev => ({ ...prev, stock2b: value }))}
+                    baseOptions={['CG IN', 'CG DOWN', 'CG UP', 'CR IN', 'CR UP', 'CR DOWN']}
+                    hideModifier={true}
+                    customBackgroundStyle={{ empty: { backgroundColor: '#ffe3e2' }, filled: { backgroundColor: '#dcfce7' } }}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <SimpleOptionSelector
+                    label="OPEN A"
+                    selectedValue={searchData.stock3}
+                    onValueChange={(value) => setSearchData(prev => ({ ...prev, stock3: value }))}
+                    baseOptions={['CG+', 'CG-', 'CGB', 'CR+', 'CR-', 'CRB', 'OG+', 'OG-', 'OGB', 'OR+', 'OR-', 'ORB', 'NILL']}
+                    hideModifier={true}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <SimpleOptionSelector
+                    label="OPEN B"
+                    selectedValue={searchData.openb}
+                    onValueChange={(value) => setSearchData(prev => ({ ...prev, openb: value }))}
+                    baseOptions={['SD CG-', 'SD CG+', 'SD CGB', 'SD CR-', 'SD CR+', 'SD CRB', 'NILL']}
+                    hideModifier={true}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="serial-number-part1" className="text-xl font-bold">SERIAL NUMBER</Label>
+                <input
+                  id="serial-number-part1"
+                  type="text"
+                  placeholder="Search by serial number..."
+                  value={searchData.serialNumber}
+                  onChange={(e) => handleInputChange('serialNumber', e.target.value)}
+                  className="w-full px-3 py-2 text-base border rounded-md"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="search-notes-part1" className="text-xl font-bold">NOTES</Label>
+                <Textarea
+                  id="search-notes-part1"
+                  placeholder="Search by notes..."
+                  value={searchData.notes}
+                  onChange={(e) => handleInputChange('notes', e.target.value)}
+                  className="text-base min-h-[80px]"
+                />
+                {hasSearched && (searchData.stock2 || searchData.stock2b || searchData.stock3 || searchData.openb || searchData.serialNumber || searchData.notes || filter) && allResults.length === 0 && (
+                  <div className="bg-red-600 text-white font-bold text-2xl p-4 rounded-lg text-center">
+                    No result
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <div className="text-xl font-bold">RESULT</div>
+                <Select onValueChange={(value) => {
+                  setFilter(value);
+                  setTimeout(() => performSearch(), 100);
+                }} value={filter}>
+                  <SelectTrigger className={`text-xl font-bold ${filter ? 'bg-green-100 hover:bg-green-200' : 'bg-yellow-100 hover:bg-yellow-200'}`}>
+                    <SelectValue placeholder="" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Front Act" className="text-xl font-bold">Front Act</SelectItem>
+                    <SelectItem value="Act" className="text-xl font-bold">Act</SelectItem>
+                    <SelectItem value="Consolidation Close" className="text-xl font-bold">Consolidation Close</SelectItem>
+                    <SelectItem value="Consolidation Front Act" className="text-xl font-bold">Consolidation Front Act</SelectItem>
+                    <SelectItem value="Consolidation Act" className="text-xl font-bold">Consolidation Act</SelectItem>
+                    <SelectItem value="Act doubt" className="text-xl font-bold">Act doubt</SelectItem>
+                    <SelectItem value="3rd act" className="text-xl font-bold">3rd act</SelectItem>
+                    <SelectItem value="4th act" className="text-xl font-bold">4th act</SelectItem>
+                    <SelectItem value="5th act" className="text-xl font-bold">5th act</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <div className="flex gap-3">
+                  <Button type="submit" className="flex-1" variant="default">
+                    <Search className="h-4 w-4 mr-2" />
+                    Search & Filter
+                  </Button>
+                  <Button 
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setSearchData({ stock1: '', stock2: '', stock2b: '', stock2bColor: '', stock3: '', openb: '', stock4: '', stock4b: '', serialNumber: '', notes: '' });
+                      setFilter('');
+                      setSearchResult(null);
+                      setAllResults([]);
+                      setHasSearched(false);
+                      setShowOnlyDifferentResults(false);
+                      setShowSameDateDifferent(false);
+                    }}
+                    className="flex items-center gap-2 border-border bg-white text-green-600 hover:bg-white hover:text-green-700"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                      <path d="M21 3v5h-5"/>
+                      <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                      <path d="M3 21v-5h5"/>
+                    </svg>
+                    <span className="text-green-600 font-bold">Refresh</span>
+                  </Button>
+                </div>
+                
+                <div className="flex gap-3">
+                  <Button 
+                    type="button"
+                    onClick={handleShowDuplicates}
+                    className="flex-1 flex items-center justify-center gap-2 text-gray-900 font-bold"
+                    style={{ backgroundColor: showOnlyDifferentResults ? '#22c55e' : '#bbf7d0' }}
+                  >
+                    <Copy className="h-4 w-4" />
+                    <span className="font-bold">
+                      {showOnlyDifferentResults ? 'Show All Results' : 'Show Duplicate Entries with Different Results'}
+                    </span>
+                    {duplicatesWithDifferentResults.length > 0 && (
+                      <Badge variant="secondary" className="ml-2">
+                        {duplicatesWithDifferentResults.length}
+                      </Badge>
+                    )}
+                  </Button>
+                </div>
+                
+                <div className="flex gap-3">
+                  <Button 
+                    type="button"
+                    onClick={handleShowSameDateDifferent}
+                    className="flex-1 flex items-center justify-center gap-2 text-gray-900 font-bold"
+                    style={{ backgroundColor: showSameDateDifferent ? '#22c55e' : '#bbf7d0' }}
+                  >
+                    <Calendar className="h-4 w-4" />
+                    <span>
+                      {showSameDateDifferent ? 'Show All Results' : 'Show duplicate with same result'}
+                    </span>
+                    {sameDateDifferentEntries.length > 0 && (
+                      <Badge variant="secondary" className="ml-2">
+                        {sameDateDifferentEntries.length}
+                      </Badge>
+                    )}
+                  </Button>
+            </div>
+          </div>
+        </form>
+      </TabsContent>
+
+      <TabsContent value="part2">
+            <form onSubmit={handleSearch} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <SimpleOptionSelector
+                    label="CLOSE A"
+                    selectedValue={searchData.stock4}
+                    onValueChange={(value) => setSearchData(prev => ({ ...prev, stock4: value }))}
+                    baseOptions={['CG-', 'CG+', 'CGB', 'CR-', 'CR+', 'CRB', 'OG-', 'OG+', 'OGB', 'OR-', 'OR+', 'ORB', 'NILL']}
+                    hideModifier={true}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <SimpleOptionSelector
+                    label="CLOSE B"
+                    selectedValue={searchData.stock4b}
+                    onValueChange={(value) => setSearchData(prev => ({ ...prev, stock4b: value }))}
+                    baseOptions={['SD CG-', 'SD CG+', 'SD CGB', 'SD CR-', 'SD CR+', 'SD CRB', 'NILL']}
+                    hideModifier={true}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="serial-number-part2" className="text-xl font-bold">SERIAL NUMBER</Label>
+                <input
+                  id="serial-number-part2"
+                  type="text"
+                  placeholder="Search by serial number..."
+                  value={searchData.serialNumber}
+                  onChange={(e) => handleInputChange('serialNumber', e.target.value)}
+                  className="w-full px-3 py-2 text-base border rounded-md"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="search-notes-part2" className="text-xl font-bold">NOTES</Label>
+                <Textarea
+                  id="search-notes-part2"
+                  placeholder="Search by notes..."
+                  value={searchData.notes}
+                  onChange={(e) => handleInputChange('notes', e.target.value)}
+                  className="text-base min-h-[80px]"
+                />
+                {hasSearched && (searchData.stock4 || searchData.stock4b || searchData.serialNumber || searchData.notes || filter) && allResults.length === 0 && (
+                  <div className="bg-red-600 text-white font-bold text-2xl p-4 rounded-lg text-center">
+                    No result
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <div className="text-xl font-bold">RESULT</div>
+                <Select onValueChange={(value) => {
+                  setFilter(value);
+                  setTimeout(() => performSearch(), 100);
+                }} value={filter}>
+                  <SelectTrigger className={`text-xl font-bold ${filter ? 'bg-green-100 hover:bg-green-200' : 'bg-yellow-100 hover:bg-yellow-200'}`}>
+                    <SelectValue placeholder="" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Front Act" className="text-xl font-bold">Front Act</SelectItem>
+                    <SelectItem value="Act" className="text-xl font-bold">Act</SelectItem>
+                    <SelectItem value="Consolidation Close" className="text-xl font-bold">Consolidation Close</SelectItem>
+                    <SelectItem value="Consolidation Front Act" className="text-xl font-bold">Consolidation Front Act</SelectItem>
+                    <SelectItem value="Consolidation Act" className="text-xl font-bold">Consolidation Act</SelectItem>
+                    <SelectItem value="Act doubt" className="text-xl font-bold">Act doubt</SelectItem>
+                    <SelectItem value="3rd act" className="text-xl font-bold">3rd act</SelectItem>
+                    <SelectItem value="4th act" className="text-xl font-bold">4th act</SelectItem>
+                    <SelectItem value="5th act" className="text-xl font-bold">5th act</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <div className="flex gap-3">
+                  <Button type="submit" className="flex-1" variant="default">
+                    <Search className="h-4 w-4 mr-2" />
+                    Search & Filter
+                  </Button>
+                  <Button 
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setSearchData({ stock1: '', stock2: '', stock2b: '', stock2bColor: '', stock3: '', openb: '', stock4: '', stock4b: '', serialNumber: '', notes: '' });
+                      setFilter('');
+                      setSearchResult(null);
+                      setAllResults([]);
+                      setHasSearched(false);
+                      setShowOnlyDifferentResults(false);
+                      setShowSameDateDifferent(false);
+                    }}
+                    className="flex items-center gap-2 border-border bg-white text-green-600 hover:bg-white hover:text-green-700"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                      <path d="M21 3v5h-5"/>
+                      <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                      <path d="M3 21v-5h5"/>
+                    </svg>
+                    <span className="text-green-600 font-bold">Refresh</span>
+                  </Button>
+                </div>
+                
+                <div className="flex gap-3">
+                  <Button 
+                    type="button"
+                    onClick={handleShowDuplicates}
+                    className="flex-1 flex items-center justify-center gap-2 text-gray-900 font-bold"
+                    style={{ backgroundColor: showOnlyDifferentResults ? '#22c55e' : '#bbf7d0' }}
+                  >
+                    <Copy className="h-4 w-4" />
+                    <span className="font-bold">
+                      {showOnlyDifferentResults ? 'Show All Results' : 'Show Duplicate Entries with Different Results'}
+                    </span>
+                    {duplicatesWithDifferentResults.length > 0 && (
+                      <Badge variant="secondary" className="ml-2">
+                        {duplicatesWithDifferentResults.length}
+                      </Badge>
+                    )}
+                  </Button>
+                </div>
+                
+                <div className="flex gap-3">
+                  <Button 
+                    type="button"
+                    onClick={handleShowSameDateDifferent}
+                    className="flex-1 flex items-center justify-center gap-2 text-gray-900 font-bold"
+                    style={{ backgroundColor: showSameDateDifferent ? '#22c55e' : '#bbf7d0' }}
+                  >
+                    <Calendar className="h-4 w-4" />
+                    <span>
+                      {showSameDateDifferent ? 'Show All Results' : 'Show duplicate with same result'}
+                    </span>
+                    {sameDateDifferentEntries.length > 0 && (
+                      <Badge variant="secondary" className="ml-2">
+                        {sameDateDifferentEntries.length}
+                      </Badge>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </form>
+          </TabsContent>
+
+          <TabsContent value="common">
+            <form onSubmit={handleSearch} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <SimpleOptionSelector
@@ -459,6 +802,8 @@ const StockSearch: React.FC = () => {
             </div>
           </div>
         </form>
+      </TabsContent>
+    </Tabs>
 
         {searchResult && (
           <div className="mt-6 p-4 rounded-lg border animate-fade-in">
