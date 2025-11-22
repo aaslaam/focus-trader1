@@ -88,6 +88,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     part2Result: '' as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL' | ''
   });
   const [part1SavedData, setPart1SavedData] = useState<Part1Data | null>(null);
+  const [activeTab, setActiveTab] = useState<string>('part1');
   const [newDropdowns, setNewDropdowns] = useState({
     dropdown1: '',
     dropdown2: '',
@@ -676,11 +677,11 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       <CardHeader className="bg-gradient-primary text-primary-foreground rounded-t-lg">
         <CardTitle className="flex items-center gap-2">
           <Plus className="h-5 w-5" />
-          Add Entry <span className="font-bold">#{nextEntryNumber}</span>
+          ADD ENTRY <span className="font-bold">#{nextEntryNumber}</span> {activeTab === 'part1' ? 'PART 1' : 'PART 2'}
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6">
-        <Tabs defaultValue="part1" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="part1" className="text-lg font-bold">Part 1</TabsTrigger>
             <TabsTrigger value="part2" className="text-lg font-bold">Part 2</TabsTrigger>
