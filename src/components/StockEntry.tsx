@@ -1302,6 +1302,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   </SelectTrigger>
                   <SelectContent className="bg-background">
                     <SelectItem value="FORWARD" className="text-lg font-bold">FORWARD</SelectItem>
+                    <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
                     <SelectItem value="REVERSE" className="text-lg font-bold">REVERSE</SelectItem>
                     <SelectItem value="RETURN" className="text-lg font-bold">RETURN</SelectItem>
                     <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
