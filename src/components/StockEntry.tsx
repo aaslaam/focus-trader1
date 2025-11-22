@@ -40,6 +40,27 @@ interface StockEntryData {
   notes?: string;
   imageUrl?: string;
   timestamp: number;
+  part1Result?: string;
+  part2Result?: string;
+}
+
+interface Part1Data {
+  stock1: string;
+  stock2: string;
+  stock2b: string;
+  stock2bColor?: string;
+  stock3: string;
+  stock4: string;
+  stock1Date: Date | null;
+  stock2Date: Date | null;
+  stock3Date: Date | null;
+  stock4Date: Date | null;
+  dropdown1Date?: Date | null;
+  dropdown2Date?: Date | null;
+  dropdown3Date?: Date | null;
+  part1Result: string;
+  part1Notes: string;
+  timestamp: number;
 }
 
 interface StockEntryProps {
@@ -59,8 +80,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     ogCandle: '',
     ogOpenA: '',
     ogCloseA: '',
-    notes: ''
+    notes: '',
+    part1Result: '' as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL' | '',
+    part1Notes: '',
+    part2Result: '' as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL' | ''
   });
+  const [part1SavedData, setPart1SavedData] = useState<Part1Data | null>(null);
   const [newDropdowns, setNewDropdowns] = useState({
     dropdown1: '',
     dropdown2: '',
@@ -218,25 +243,21 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     return urlData.publicUrl;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Check for missing required fields only
-    // Optional fields: dropdown1-4 (OG DIRECTION A-D), ogCandle, ogOpenA, ogCloseA
-    // Required fields: stock2 (A DIRECTION), stock2b (B), stock3 (OPEN A), stock4 (CLOSE A), classification
+  const handlePart1Submit = async () => {
+    // Validate Part 1 required fields
     const isFieldMissing = (value: string) => {
       if (!value || value.trim() === '') return true;
-      if (value.toUpperCase() === 'NILL') return false; // "NILL" is a valid value
+      if (value.toUpperCase() === 'NILL') return false;
       return false;
     };
     
-    if (isFieldMissing(formData.stock2) || isFieldMissing(formData.stock2b) || isFieldMissing(formData.stock3) || isFieldMissing(formData.stock4) || !formData.classification) {
+    if (isFieldMissing(formData.stock2) || isFieldMissing(formData.stock2b) || isFieldMissing(formData.stock3) || isFieldMissing(formData.stock4) || !formData.part1Result) {
       const missing = [];
       if (isFieldMissing(formData.stock2)) missing.push("A DIRECTION");
       if (isFieldMissing(formData.stock2b)) missing.push("B");
       if (isFieldMissing(formData.stock3)) missing.push("OPEN A");
       if (isFieldMissing(formData.stock4)) missing.push("CLOSE A");
-      if (!formData.classification) missing.push("Classification");
+      if (!formData.part1Result) missing.push("Part 1 RESULT");
       
       setMissingFields(missing);
       setShowMissingInfo(true);
@@ -247,97 +268,143 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       return;
     }
 
-    console.log('StockEntry submit - classification:', formData.classification);
-    setUploading(true);
-
-    // Check for duplicates (excluding notes - only check field values and dates)
-    const existingEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
-    
-    const fmt = (d: Date | string) => format(new Date(d), 'yyyy-MM-dd');
-    const currentDates = {
-      stock1Date: fmt(selectedDates.stock1Date),
-      stock2Date: fmt(selectedDates.stock2Date),
-      stock3Date: fmt(selectedDates.stock3Date),
-      stock4Date: fmt(selectedDates.stock4Date)
+    const part1Data: Part1Data = {
+      stock1: formData.stock1,
+      stock2: formData.stock2,
+      stock2b: formData.stock2b,
+      stock2bColor: formData.stock2bColor,
+      stock3: formData.stock3,
+      stock4: formData.stock4,
+      stock1Date: selectedDates.stock1Date,
+      stock2Date: selectedDates.stock2Date,
+      stock3Date: selectedDates.stock3Date,
+      stock4Date: selectedDates.stock4Date,
+      dropdown1Date: selectedDates.dropdown1Date,
+      dropdown2Date: selectedDates.dropdown2Date,
+      dropdown3Date: selectedDates.dropdown3Date,
+      part1Result: formData.part1Result,
+      part1Notes: formData.part1Notes,
+      timestamp: Date.now()
     };
-    
-    // Find duplicate entry (checking field values and notes, not dates)
-    const duplicateEntryIndex = existingEntries.findIndex(entry => {
-      return (
-        entry.stock1 === formData.stock1 &&
-        entry.stock2 === formData.stock2 &&
-        entry.stock2b === formData.stock2b &&
-        entry.stock3 === formData.stock3 &&
-        entry.stock4 === formData.stock4 &&
-        entry.classification === formData.classification &&
-        (entry.notes || '') === (formData.notes || '')
-      );
-    });
 
-    if (duplicateEntryIndex !== -1) {
-      // Duplicate found - show message with serial number
-      const serialNumber = duplicateEntryIndex + 1;
-      setDuplicateSerialNumber(serialNumber);
-      setShowDuplicateEntry(true);
+    setPart1SavedData(part1Data);
+    
+    toast({
+      title: "Part 1 Saved",
+      description: "Part 1 data has been saved. You can now fill Part 2.",
+      variant: "default"
+    });
+  };
+
+  const handlePart2Submit = async () => {
+    // Save only Part 2 fields
+    if (!formData.part2Result) {
+      setMissingFields(["Part 2 RESULT"]);
+      setShowMissingInfo(true);
       setTimeout(() => {
-        setShowDuplicateEntry(false);
-        setDuplicateSerialNumber(0);
+        setShowMissingInfo(false);
+        setMissingFields([]);
       }, 5000);
-      setUploading(false);
       return;
     }
+
+    setUploading(true);
+
+    const existingEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
+
+    const newEntry: StockEntryData = {
+      stock1: '',
+      stock2: '',
+      stock2b: '',
+      stock3: '',
+      stock4: '',
+      stock1Date: null,
+      stock2Date: null,
+      stock3Date: null,
+      stock4Date: null,
+      classification: formData.part2Result as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL',
+      dropdown1: newDropdowns.dropdown1,
+      dropdown2: newDropdowns.dropdown2,
+      dropdown3: newDropdowns.dropdown3,
+      ogCandle: formData.ogCandle,
+      ogOpenA: formData.ogOpenA,
+      ogCloseA: formData.ogCloseA,
+      ogOpenADate: selectedDates.ogOpenADate,
+      ogCloseADate: selectedDates.ogCloseADate,
+      part2Result: formData.part2Result,
+      timestamp: Date.now()
+    };
+
+    const updatedEntries = [...existingEntries, newEntry];
+    localStorage.setItem('stockEntries', JSON.stringify(updatedEntries));
     
-    // If duplicate without notes but notes are different, allow saving (continue below)
+    toast({
+      title: "Part 2 Saved",
+      description: "Part 2 entry has been saved.",
+      variant: "default"
+    });
+
+    setUploading(false);
+    onEntryAdded();
+  };
+
+  const handleCommonSave = async () => {
+    if (!part1SavedData) {
+      toast({
+        title: "Error",
+        description: "Please save Part 1 first.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!formData.part2Result) {
+      setMissingFields(["Part 2 RESULT"]);
+      setShowMissingInfo(true);
+      setTimeout(() => {
+        setShowMissingInfo(false);
+        setMissingFields([]);
+      }, 5000);
+      return;
+    }
+
+    setUploading(true);
+
+    const existingEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
 
     let imageUrl: string | undefined;
     if (selectedImage) {
       imageUrl = (await uploadImage(selectedImage)) || undefined;
     }
 
-    console.log('StockEntry - Saving to localStorage');
-    console.log('StockEntry - Existing entries:', existingEntries.length);
-    console.log('StockEntry - New dropdowns state before save:', newDropdowns);
-    console.log("🟦 DEBUG BEFORE SAVE", {
-  formData,
-  selectedDates,
-  newDropdowns,
-  existingEntriesCount: existingEntries.length,
-});
-
-    const newEntry: StockEntryData = {
-      ...formData,
-      ...selectedDates,
-      classification: formData.classification as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL',
+    const combinedEntry: StockEntryData = {
+      ...part1SavedData,
+      classification: formData.part2Result as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL',
       dropdown1: newDropdowns.dropdown1,
       dropdown2: newDropdowns.dropdown2,
       dropdown3: newDropdowns.dropdown3,
+      ogCandle: formData.ogCandle,
+      ogOpenA: formData.ogOpenA,
+      ogCloseA: formData.ogCloseA,
+      ogOpenADate: selectedDates.ogOpenADate,
+      ogCloseADate: selectedDates.ogCloseADate,
+      notes: part1SavedData.part1Notes,
+      part1Result: part1SavedData.part1Result,
+      part2Result: formData.part2Result,
       imageUrl,
       timestamp: Date.now()
     };
 
-    console.log('StockEntry - New entry with dropdowns:', newEntry);
-
-    const updatedEntries = [...existingEntries, newEntry];
+    const updatedEntries = [...existingEntries, combinedEntry];
     localStorage.setItem('stockEntries', JSON.stringify(updatedEntries));
-    console.log('StockEntry - Saved to localStorage, total entries:', updatedEntries.length);
-    console.log('StockEntry - Calling onEntryAdded callback');
     
     toast({
-      title: "Entry Added",
-      description: `Entry combination result: ${formData.classification}`,
+      title: "Combined Entry Saved",
+      description: "Part 1 and Part 2 have been combined and saved.",
       variant: "default"
     });
 
-    // Show entry saved message with serial number
-    setLastSavedEntry(newEntry);
-    setEntrySerialNumber(updatedEntries.length);
-    setShowEntrySaved(true);
-    setTimeout(() => {
-      setShowEntrySaved(false);
-      setLastSavedEntry(null);
-    }, 5000);
-
-    // Reset form
+    // Reset all form data
     setFormData({
       stock1: '',
       stock2: '',
@@ -349,7 +416,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       ogCandle: '',
       ogOpenA: '',
       ogCloseA: '',
-      notes: ''
+      notes: '',
+      part1Result: '',
+      part1Notes: '',
+      part2Result: ''
     });
     setNewDropdowns({
       dropdown1: '',
@@ -390,6 +460,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     });
     setSelectedImage(null);
     setImagePreview(null);
+    setPart1SavedData(null);
     setUploading(false);
 
     onEntryAdded();
@@ -408,8 +479,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       ogCandle: '',
       ogOpenA: '',
       ogCloseA: '',
-      notes: ''
+      notes: '',
+      part1Result: '',
+      part1Notes: '',
+      part2Result: ''
     });
+    setPart1SavedData(null);
     setNewDropdowns({
       dropdown1: '',
       dropdown2: '',
@@ -523,16 +598,20 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         stock3: '',
         stock4: '',
         classification: '',
-        ogCandle: '',
-        ogOpenA: '',
-        ogCloseA: '',
-        notes: ''
-      });
-      setNewDropdowns({
-        dropdown1: '',
-        dropdown2: '',
-        dropdown3: ''
-      });
+      ogCandle: '',
+      ogOpenA: '',
+      ogCloseA: '',
+      notes: '',
+      part1Result: '',
+      part1Notes: '',
+      part2Result: ''
+    });
+    setPart1SavedData(null);
+    setNewDropdowns({
+      dropdown1: '',
+      dropdown2: '',
+      dropdown3: ''
+    });
       setDropdowns({
         dropdown1Main: '',
         dropdown1Sub: '',
@@ -574,15 +653,17 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
   };
 
   return (
-    <Card className="shadow-card">
-      <CardHeader className="bg-gradient-primary text-primary-foreground rounded-t-lg">
-        <CardTitle className="flex items-center gap-2">
-          <Plus className="h-5 w-5" />
-          Add Entry <span className="font-bold">#{nextEntryNumber}</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="space-y-6">
+      {/* Part 1 */}
+      <Card className="shadow-card">
+        <CardHeader className="bg-gradient-primary text-primary-foreground rounded-t-lg">
+          <CardTitle className="flex items-center gap-2">
+            <Plus className="h-5 w-5" />
+            Part 1 - Entry <span className="font-bold">#{nextEntryNumber}</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="space-y-4">
           {/* 4 Dropdown Pairs Section */}
           <div className="space-y-4 pb-4 mb-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1044,7 +1125,85 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               </div>
             </div>
           </div>
-          
+
+          {/* Part 1 RESULT */}
+          <div className="space-y-2">
+            <Label htmlFor="part1Result" className="text-xl font-bold">RESULT</Label>
+            <Select 
+              value={formData.part1Result}
+              onValueChange={(value) => setFormData(prev => ({ ...prev, part1Result: value as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL' | '' }))}
+            >
+              <SelectTrigger className={`text-xl font-bold ${formData.part1Result ? 'bg-green-100 hover:bg-green-200' : 'bg-red-100 hover:bg-red-200'}`}>
+                <SelectValue placeholder="Select Result" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Act" className="text-xl font-bold">Act</SelectItem>
+                <SelectItem value="Front Act" className="text-xl font-bold">Front Act</SelectItem>
+                <SelectItem value="Consolidation Act" className="text-xl font-bold">Consolidation Act</SelectItem>
+                <SelectItem value="Consolidation Front Act" className="text-xl font-bold">Consolidation Front Act</SelectItem>
+                <SelectItem value="Consolidation Close" className="text-xl font-bold">Consolidation Close</SelectItem>
+                <SelectItem value="Act doubt" className="text-xl font-bold">Act doubt</SelectItem>
+                <SelectItem value="3rd act" className="text-xl font-bold">3rd act</SelectItem>
+                <SelectItem value="4th act" className="text-xl font-bold">4th act</SelectItem>
+                <SelectItem value="5th act" className="text-xl font-bold">5th act</SelectItem>
+                <SelectItem value="NILL" className="text-xl font-bold">NILL</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Part 1 Notes */}
+          <div className="space-y-2">
+            <Label htmlFor="part1Notes" className="text-xl font-bold">NOTES</Label>
+            <Textarea
+              id="part1Notes"
+              placeholder=""
+              value={formData.part1Notes}
+              onChange={(e) => setFormData(prev => ({ ...prev, part1Notes: e.target.value.toUpperCase() }))}
+              className="min-h-[80px]"
+            />
+          </div>
+
+          {/* Part 1 Buttons */}
+          <div className="flex gap-2">
+            <Button 
+              type="button" 
+              onClick={handleRefresh} 
+              className="flex-1 bg-white text-green-600 border border-border hover:bg-white hover:text-green-700 font-bold" 
+              variant="outline"
+            >
+              REFRESH
+            </Button>
+            <Button 
+              type="button"
+              onClick={handlePart1Submit}
+              className="flex-1"
+              variant="default"
+            >
+              Save Part 1
+            </Button>
+          </div>
+
+          {part1SavedData && (
+            <div className="p-4 bg-green-100 border-2 border-green-500 rounded-lg">
+              <div className="text-sm font-bold text-green-800">
+                ✓ Part 1 Saved! You can now fill Part 2.
+              </div>
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+
+    {/* Part 2 */}
+    <Card className="shadow-card">
+      <CardHeader className="bg-gradient-primary text-primary-foreground rounded-t-lg">
+        <CardTitle className="flex items-center gap-2">
+          <Plus className="h-5 w-5" />
+          Part 2 - Entry <span className="font-bold">#{nextEntryNumber}</span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-6">
+        <div className="space-y-4">
           {/* Four Dropdowns Row */}
           <div className="space-y-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -1357,17 +1516,15 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
             </div>
           </div>
           
+          {/* Part 2 RESULT */}
           <div className="space-y-2">
-            <Label htmlFor="classification" className="text-xl font-bold">RESULT</Label>
+            <Label htmlFor="part2Result" className="text-xl font-bold">RESULT</Label>
             <Select 
-              value={formData.classification}
-              onValueChange={(value) => {
-                console.log('StockEntry classification selected:', value);
-                setFormData(prev => ({ ...prev, classification: value as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL' }));
-              }}
+              value={formData.part2Result}
+              onValueChange={(value) => setFormData(prev => ({ ...prev, part2Result: value as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL' | '' }))}
             >
-              <SelectTrigger ref={classificationRef} className={`text-xl font-bold ${formData.classification ? 'bg-green-100 hover:bg-green-200' : 'bg-red-100 hover:bg-red-200'}`}>
-                <SelectValue />
+              <SelectTrigger className={`text-xl font-bold ${formData.part2Result ? 'bg-green-100 hover:bg-green-200' : 'bg-red-100 hover:bg-red-200'}`}>
+                <SelectValue placeholder="Select Result" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Act" className="text-xl font-bold">Act</SelectItem>
@@ -1384,114 +1541,43 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
             </Select>
           </div>
 
-          <div className="space-y-2">
-            {showDuplicateEntry && (
-              <div className="p-4 bg-red-600 border-2 border-red-700 text-white rounded-lg animate-fade-in">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-2xl font-bold">⚠ Duplicate Entry #{duplicateSerialNumber}</span>
-                </div>
-                <div className="text-sm">
-                  This entry already exists in your records.
-                </div>
+          {/* Status Messages */}
+          {showMissingInfo && (
+            <div className="p-4 bg-destructive border-2 border-destructive text-destructive-foreground rounded-lg animate-fade-in">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-2xl font-bold">✗ Missing Information</span>
               </div>
-            )}
-            {showMissingInfo && (
-              <div className="p-4 bg-destructive border-2 border-destructive text-destructive-foreground rounded-lg animate-fade-in">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-2xl font-bold">✗ Missing Information</span>
-                </div>
-                <div className="text-sm">
-                  <span className="font-bold">Please fill in:</span> {missingFields.join(", ")}
-                </div>
+              <div className="text-sm">
+                <span className="font-bold">Please fill in:</span> {missingFields.join(", ")}
               </div>
-            )}
-            {showEntrySaved && lastSavedEntry && (
-              <div className="p-4 bg-green-100 border-2 border-green-500 rounded-lg animate-fade-in">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-2xl font-bold text-green-800">✓ Entry Saved!</span>
-                  <span className="text-xl font-bold text-gray-900 bg-blue-200 px-3 py-1 rounded-md">#{entrySerialNumber}</span>
-                </div>
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div><span className="font-bold">A DIRECTION:</span> {lastSavedEntry.stock2}</div>
-                  <div><span className="font-bold">B:</span> {lastSavedEntry.stock2b}</div>
-                  <div><span className="font-bold">3 OPEN:</span> {lastSavedEntry.stock3}</div>
-                  <div><span className="font-bold">4 CLOSE:</span> {lastSavedEntry.stock4}</div>
-                  <div className="col-span-2"><span className="font-bold">Classification:</span> {lastSavedEntry.classification}</div>
-                </div>
-              </div>
-            )}
-            <Label htmlFor="notes" className="text-xl font-bold">NOTES</Label>
-            <div className="relative">
-              <Textarea
-                id="notes"
-                placeholder=""
-                value={formData.notes}
-                onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value.toUpperCase() }))}
-                className="min-h-[80px] pr-10"
-              />
-              <input
-                type="file"
-                id="image"
-                accept="image/*"
-                onChange={handleImageSelect}
-                className="hidden"
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => document.getElementById('image')?.click()}
-                className="absolute top-2 right-2 h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
-                title="Attach image"
-              >
-                <Paperclip className="h-4 w-4" />
-              </Button>
             </div>
-            {imagePreview && (
-              <div className="relative inline-block">
-                <img
-                  src={imagePreview}
-                  alt="Preview"
-                  className="max-w-full h-32 object-cover rounded-lg border"
-                />
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="sm"
-                  onClick={removeImage}
-                  className="absolute top-1 right-1"
-                >
-                  <X className="h-3 w-3" />
-                </Button>
-              </div>
-            )}
-          </div>
+          )}
 
+          {/* Part 2 Buttons */}
           <div className="flex gap-2">
             <Button 
-              type="button" 
-              onClick={handleRefresh} 
-              className="flex-1 bg-white text-green-600 border border-border hover:bg-white hover:text-green-700 font-bold" 
-              variant="outline"
+              type="button"
+              onClick={handlePart2Submit}
+              className="flex-1"
+              variant="default"
+              disabled={uploading}
             >
-              REFRESH
+              {uploading ? 'Saving...' : 'Part 2 Save'}
             </Button>
             <Button 
               type="button"
-              size="sm"
-              onClick={handleSetAllNill}
-              className="text-white font-bold"
-              style={{ backgroundColor: '#1f3b8a' }}
+              onClick={handleCommonSave}
+              className="flex-1"
+              variant="default"
+              disabled={uploading || !part1SavedData}
             >
-              OK
-            </Button>
-            <Button type="submit" className="flex-1" variant="default" disabled={uploading}>
-              {uploading ? 'Saving...' : 'Save Entry'}
+              {uploading ? 'Saving...' : 'Common Save'}
             </Button>
           </div>
-        </form>
+        </div>
       </CardContent>
     </Card>
+  </div>
   );
 };
 
