@@ -855,14 +855,10 @@ const StockSearch: React.FC = () => {
             </div>
           </div>
 
-          {/* Part 2 Fields */}
-          <div className="mt-6 pt-6 border-t-2 border-border">
-            <h3 className="text-lg font-bold mb-4 text-primary">Part 2 Fields</h3>
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-              <div className="space-y-2">
-                <Label className="text-sm font-bold">OG DIRECTION A</Label>
-                <Select 
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+            <div className="space-y-2">
+              <Label className="text-sm font-bold">OG DIRECTION A</Label>
+              <Select
                   value={searchData.dropdown1}
                   onValueChange={(value) => {
                     setSearchData(prev => ({ ...prev, dropdown1: value }));
@@ -1023,7 +1019,6 @@ const StockSearch: React.FC = () => {
                 />
               </div>
             </div>
-          </div>
 
           <div className="space-y-2">
             <Label htmlFor="serial-number" className="text-xl font-bold">SERIAL NUMBER</Label>
