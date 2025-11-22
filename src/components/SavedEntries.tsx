@@ -27,6 +27,7 @@ interface StockEntryData {
   dropdown1?: string;
   dropdown2?: string;
   dropdown3?: string;
+  dropdown4?: string;
   dropdown1Date?: Date | null;
   dropdown2Date?: Date | null;
   dropdown3Date?: Date | null;
@@ -283,44 +284,120 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
             )}
           </div>
 
-          {/* INTRO Dropdowns */}
-          {(entry.dropdown1 || entry.dropdown2 || entry.dropdown3) && (
+          {/* INTRO Dropdowns for Part 1 / OG DIRECTION for Part 2 */}
+          {(entry.dropdown1 || entry.dropdown2 || entry.dropdown3 || entry.dropdown4) && (
             <div className="mt-4 space-y-3">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                {entry.dropdown1 && (
-                  <div className="px-3 py-2 rounded bg-blue-50 border border-blue-200">
-                    <div className="text-sm font-bold text-blue-700 mb-1">INTRO 1</div>
-                    <span className="text-lg font-bold">{entry.dropdown1}</span>
-                    {entry.dropdown1Date && (
-                      <div className="text-xs text-blue-600 mt-1">
-                        {format(new Date(entry.dropdown1Date), "d/M/yyyy")}
+              {entryType === 'part1' && (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {entry.dropdown1 && (
+                    <div className="px-3 py-2 rounded bg-blue-50 border border-blue-200">
+                      <div className="text-sm font-bold text-blue-700 mb-1">INTRO 1</div>
+                      <span className="text-lg font-bold">{entry.dropdown1}</span>
+                      {entry.dropdown1Date && (
+                        <div className="text-xs text-blue-600 mt-1">
+                          {format(new Date(entry.dropdown1Date), "d/M/yyyy")}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {entry.dropdown2 && (
+                    <div className="px-3 py-2 rounded bg-green-50 border border-green-200">
+                      <div className="text-sm font-bold text-green-700 mb-1">INTRO 2</div>
+                      <span className="text-lg font-bold">{entry.dropdown2}</span>
+                      {entry.dropdown2Date && (
+                        <div className="text-xs text-green-600 mt-1">
+                          {format(new Date(entry.dropdown2Date), "d/M/yyyy")}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {entry.dropdown3 && (
+                    <div className="px-3 py-2 rounded bg-purple-50 border border-purple-200">
+                      <div className="text-sm font-bold text-purple-700 mb-1">INTRO 3</div>
+                      <span className="text-lg font-bold">{entry.dropdown3}</span>
+                      {entry.dropdown3Date && (
+                        <div className="text-xs text-purple-600 mt-1">
+                          {format(new Date(entry.dropdown3Date), "d/M/yyyy")}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+              {entryType === 'part2' && (
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    {entry.dropdown1 && (
+                      <div className="px-3 py-2 rounded bg-blue-50 border border-blue-200">
+                        <div className="text-sm font-bold text-blue-700 mb-1">OG DIRECTION A</div>
+                        <span className="text-lg font-bold">{entry.dropdown1}</span>
+                      </div>
+                    )}
+                    {entry.dropdown2 && (
+                      <div className="px-3 py-2 rounded bg-green-50 border border-green-200">
+                        <div className="text-sm font-bold text-green-700 mb-1">OG DIRECTION B</div>
+                        <span className="text-lg font-bold">{entry.dropdown2}</span>
+                      </div>
+                    )}
+                    {entry.dropdown3 && (
+                      <div className="px-3 py-2 rounded bg-purple-50 border border-purple-200">
+                        <div className="text-sm font-bold text-purple-700 mb-1">OG DIRECTION C</div>
+                        <span className="text-lg font-bold">{entry.dropdown3}</span>
+                      </div>
+                    )}
+                    {entry.dropdown4 && (
+                      <div className="px-3 py-2 rounded bg-pink-50 border border-pink-200">
+                        <div className="text-sm font-bold text-pink-700 mb-1">OG DIRECTION D</div>
+                        <span className="text-lg font-bold">{entry.dropdown4}</span>
                       </div>
                     )}
                   </div>
-                )}
-                {entry.dropdown2 && (
-                  <div className="px-3 py-2 rounded bg-green-50 border border-green-200">
-                    <div className="text-sm font-bold text-green-700 mb-1">INTRO 2</div>
-                    <span className="text-lg font-bold">{entry.dropdown2}</span>
-                    {entry.dropdown2Date && (
-                      <div className="text-xs text-green-600 mt-1">
-                        {format(new Date(entry.dropdown2Date), "d/M/yyyy")}
-                      </div>
-                    )}
-                  </div>
-                )}
-                {entry.dropdown3 && (
-                  <div className="px-3 py-2 rounded bg-purple-50 border border-purple-200">
-                    <div className="text-sm font-bold text-purple-700 mb-1">INTRO 3</div>
-                    <span className="text-lg font-bold">{entry.dropdown3}</span>
-                    {entry.dropdown3Date && (
-                      <div className="text-xs text-purple-600 mt-1">
-                        {format(new Date(entry.dropdown3Date), "d/M/yyyy")}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
+                  {/* Single Date for all OG DIRECTION fields */}
+                  {entry.dropdown1Date && (
+                    <div className="flex items-center gap-2 px-3 py-2 rounded bg-slate-100 border border-slate-300">
+                      <Calendar className="h-4 w-4 text-slate-600" />
+                      <span className="text-sm font-semibold">OG DIRECTION Date: {format(new Date(entry.dropdown1Date), "d/M/yyyy")}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+              {entryType === 'common' && (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {entry.dropdown1 && (
+                    <div className="px-3 py-2 rounded bg-blue-50 border border-blue-200">
+                      <div className="text-sm font-bold text-blue-700 mb-1">INTRO 1</div>
+                      <span className="text-lg font-bold">{entry.dropdown1}</span>
+                      {entry.dropdown1Date && (
+                        <div className="text-xs text-blue-600 mt-1">
+                          {format(new Date(entry.dropdown1Date), "d/M/yyyy")}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {entry.dropdown2 && (
+                    <div className="px-3 py-2 rounded bg-green-50 border border-green-200">
+                      <div className="text-sm font-bold text-green-700 mb-1">INTRO 2</div>
+                      <span className="text-lg font-bold">{entry.dropdown2}</span>
+                      {entry.dropdown2Date && (
+                        <div className="text-xs text-green-600 mt-1">
+                          {format(new Date(entry.dropdown2Date), "d/M/yyyy")}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {entry.dropdown3 && (
+                    <div className="px-3 py-2 rounded bg-purple-50 border border-purple-200">
+                      <div className="text-sm font-bold text-purple-700 mb-1">INTRO 3</div>
+                      <span className="text-lg font-bold">{entry.dropdown3}</span>
+                      {entry.dropdown3Date && (
+                        <div className="text-xs text-purple-600 mt-1">
+                          {format(new Date(entry.dropdown3Date), "d/M/yyyy")}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
 

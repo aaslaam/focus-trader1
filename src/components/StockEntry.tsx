@@ -58,6 +58,9 @@ interface Part1Data {
   stock2Date: Date | null;
   stock3Date: Date | null;
   stock4Date: Date | null;
+  dropdown1?: string;
+  dropdown2?: string;
+  dropdown3?: string;
   dropdown1Date?: Date | null;
   dropdown2Date?: Date | null;
   dropdown3Date?: Date | null;
@@ -285,6 +288,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       stock2Date: selectedDates.stock2Date,
       stock3Date: selectedDates.stock3Date,
       stock4Date: selectedDates.stock4Date,
+      dropdown1: newDropdowns.dropdown1,
+      dropdown2: newDropdowns.dropdown2,
+      dropdown3: newDropdowns.dropdown3,
       dropdown1Date: selectedDates.dropdown1Date,
       dropdown2Date: selectedDates.dropdown2Date,
       dropdown3Date: selectedDates.dropdown3Date,
@@ -337,6 +343,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       dropdown2: newDropdowns.dropdown2,
       dropdown3: newDropdowns.dropdown3,
       dropdown4: newDropdowns.dropdown4,
+      dropdown1Date: selectedDates.dropdown1Date,
+      dropdown2Date: selectedDates.dropdown2Date,
+      dropdown3Date: selectedDates.dropdown3Date,
       ogCandle: formData.ogCandle,
       ogOpenA: formData.ogOpenA,
       ogCloseA: formData.ogCloseA,
