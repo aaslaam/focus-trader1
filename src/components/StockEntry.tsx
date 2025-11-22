@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Plus, CalendarIcon, Paperclip, X } from 'lucide-react';
 import { format } from 'date-fns';
@@ -671,17 +672,22 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
   };
 
   return (
-    <div className="space-y-6">
-      {/* Part 1 */}
-      <Card className="shadow-card">
-        <CardHeader className="bg-gradient-primary text-primary-foreground rounded-t-lg">
-          <CardTitle className="flex items-center gap-2">
-            <Plus className="h-5 w-5" />
-            Part 1 - Entry <span className="font-bold">#{nextEntryNumber}</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="space-y-4">
+    <Card className="shadow-card">
+      <CardHeader className="bg-gradient-primary text-primary-foreground rounded-t-lg">
+        <CardTitle className="flex items-center gap-2">
+          <Plus className="h-5 w-5" />
+          Add Entry <span className="font-bold">#{nextEntryNumber}</span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-6">
+        <Tabs defaultValue="part1" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsTrigger value="part1" className="text-lg font-bold">Part 1</TabsTrigger>
+            <TabsTrigger value="part2" className="text-lg font-bold">Part 2</TabsTrigger>
+          </TabsList>
+          
+          {/* Part 1 Tab */}
+          <TabsContent value="part1" className="space-y-4">
           {/* 4 Dropdown Pairs Section */}
           <div className="space-y-4 pb-4 mb-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1201,27 +1207,17 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
             </Button>
           </div>
 
-          {part1SavedData && (
-            <div className="p-4 bg-green-100 border-2 border-green-500 rounded-lg">
-              <div className="text-sm font-bold text-green-800">
-                ✓ Part 1 Saved! You can now fill Part 2.
+            {part1SavedData && (
+              <div className="p-4 bg-green-100 border-2 border-green-500 rounded-lg">
+                <div className="text-sm font-bold text-green-800">
+                  ✓ Part 1 Saved! You can now fill Part 2.
+                </div>
               </div>
-            </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+            )}
+          </TabsContent>
 
-    {/* Part 2 */}
-    <Card className="shadow-card">
-      <CardHeader className="bg-gradient-primary text-primary-foreground rounded-t-lg">
-        <CardTitle className="flex items-center gap-2">
-          <Plus className="h-5 w-5" />
-          Part 2 - Entry <span className="font-bold">#{nextEntryNumber}</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-6">
-        <div className="space-y-4">
+          {/* Part 2 Tab */}
+          <TabsContent value="part2" className="space-y-4">
           {/* Four Dropdowns Row */}
           <div className="space-y-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -1614,10 +1610,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               {uploading ? 'Saving...' : 'Common Save'}
             </Button>
           </div>
-        </div>
-      </CardContent>
-    </Card>
-  </div>
+        </TabsContent>
+      </Tabs>
+    </CardContent>
+  </Card>
   );
 };
 
