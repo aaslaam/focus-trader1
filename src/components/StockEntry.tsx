@@ -297,17 +297,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
   };
 
   const handlePart2Submit = async () => {
-    // Save only Part 2 fields
-    if (!formData.part2Result) {
-      setMissingFields(["Part 2 RESULT"]);
-      setShowMissingInfo(true);
-      setTimeout(() => {
-        setShowMissingInfo(false);
-        setMissingFields([]);
-      }, 5000);
-      return;
-    }
-
+    // Part 2 is optional - can save with or without data
     setUploading(true);
 
     const existingEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
@@ -343,6 +333,25 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       description: "Part 2 entry has been saved.",
       variant: "default"
     });
+
+    // Reset Part 2 fields
+    setFormData(prev => ({
+      ...prev,
+      ogCandle: '',
+      ogOpenA: '',
+      ogCloseA: '',
+      part2Result: ''
+    }));
+    setNewDropdowns({
+      dropdown1: '',
+      dropdown2: '',
+      dropdown3: ''
+    });
+    setDropdowns(prev => ({
+      ...prev,
+      candleMain: '',
+      candleSub: ''
+    }));
 
     setUploading(false);
     onEntryAdded();
@@ -1562,7 +1571,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               variant="default"
               disabled={uploading}
             >
-              {uploading ? 'Saving...' : 'Part 2 Save'}
+              {uploading ? 'Saving...' : 'Part 2 Save (Optional)'}
             </Button>
             <Button 
               type="button"
