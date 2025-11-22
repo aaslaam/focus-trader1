@@ -293,13 +293,27 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       timestamp: Date.now()
     };
 
+    // Save to component state for Common Save
     setPart1SavedData(part1Data);
+
+    // Also save to localStorage as a Part 1 entry
+    const existingEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
+    const part1Entry: StockEntryData = {
+      ...part1Data,
+      classification: part1Data.part1Result as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL',
+      notes: part1Data.part1Notes,
+      type: 'part1'
+    };
+    const updatedEntries = [...existingEntries, part1Entry];
+    localStorage.setItem('stockEntries', JSON.stringify(updatedEntries));
     
     toast({
       title: "Part 1 Saved",
-      description: "Part 1 data has been saved. You can now fill Part 2.",
+      description: "Part 1 entry has been saved and is visible in PART 1 tab.",
       variant: "default"
     });
+
+    onEntryAdded();
   };
 
   const handlePart2Submit = async () => {
