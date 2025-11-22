@@ -44,6 +44,7 @@ interface StockEntryData {
   timestamp: number;
   part1Result?: string;
   part2Result?: string;
+  type: 'part1' | 'part2' | 'common';
 }
 
 interface Part1Data {
@@ -328,7 +329,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       ogOpenADate: selectedDates.ogOpenADate,
       ogCloseADate: selectedDates.ogCloseADate,
       part2Result: formData.part2Result,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      type: 'part2'
     };
 
     const updatedEntries = [...existingEntries, newEntry];
@@ -409,7 +411,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       part1Result: part1SavedData.part1Result,
       part2Result: formData.part2Result,
       imageUrl,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      type: 'common'
     };
 
     const updatedEntries = [...existingEntries, combinedEntry];
@@ -587,7 +590,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         ogCandle: 'NILL',
         notes: formData.notes,
         imageUrl,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        type: 'part1'
       };
 
       const updatedEntries = [...existingEntries, newEntry];

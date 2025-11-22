@@ -40,6 +40,7 @@ interface StockEntryData {
   notes?: string;
   imageUrl?: string;
   timestamp: number;
+  type?: 'part1' | 'part2' | 'common';
 }
 
 interface EditEntryDialogProps {
