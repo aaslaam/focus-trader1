@@ -352,9 +352,11 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     
     toast({
       title: "Part 2 Saved",
-      description: "Part 2 entry has been saved.",
+      description: "Part 2 entry has been saved and is visible in PART 2 tab.",
       variant: "default"
     });
+
+    onEntryAdded();
 
     // Reset Part 2 fields
     setFormData(prev => ({
