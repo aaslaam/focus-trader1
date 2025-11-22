@@ -34,6 +34,7 @@ interface StockEntryData {
   dropdown1?: string;
   dropdown2?: string;
   dropdown3?: string;
+  dropdown4?: string;
   ogCandle?: string;
   ogOpenA?: string;
   ogCloseA?: string;
@@ -89,7 +90,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
   const [newDropdowns, setNewDropdowns] = useState({
     dropdown1: '',
     dropdown2: '',
-    dropdown3: ''
+    dropdown3: '',
+    dropdown4: ''
   });
   const [dropdowns, setDropdowns] = useState({
     dropdown1Main: '',
@@ -160,7 +162,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     const combined = {
       dropdown1: `${dropdowns.dropdown1Main} ${dropdowns.dropdown1Sub}`.trim(),
       dropdown2: `${dropdowns.dropdown2Main} ${dropdowns.dropdown2Sub}`.trim(),
-      dropdown3: `${dropdowns.dropdown3Main} ${dropdowns.dropdown3Sub}`.trim()
+      dropdown3: `${dropdowns.dropdown3Main} ${dropdowns.dropdown3Sub}`.trim(),
+      dropdown4: ''
     };
     console.log('StockEntry - useEffect updating combined dropdowns:', combined);
     console.log('StockEntry - Individual dropdown states:', dropdowns);
@@ -316,6 +319,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       dropdown1: newDropdowns.dropdown1,
       dropdown2: newDropdowns.dropdown2,
       dropdown3: newDropdowns.dropdown3,
+      dropdown4: newDropdowns.dropdown4,
       ogCandle: formData.ogCandle,
       ogOpenA: formData.ogOpenA,
       ogCloseA: formData.ogCloseA,
@@ -345,7 +349,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     setNewDropdowns({
       dropdown1: '',
       dropdown2: '',
-      dropdown3: ''
+      dropdown3: '',
+      dropdown4: ''
     });
     setDropdowns(prev => ({
       ...prev,
@@ -392,6 +397,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       dropdown1: newDropdowns.dropdown1,
       dropdown2: newDropdowns.dropdown2,
       dropdown3: newDropdowns.dropdown3,
+      dropdown4: newDropdowns.dropdown4,
       ogCandle: formData.ogCandle,
       ogOpenA: formData.ogOpenA,
       ogCloseA: formData.ogCloseA,
@@ -433,7 +439,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     setNewDropdowns({
       dropdown1: '',
       dropdown2: '',
-      dropdown3: ''
+      dropdown3: '',
+      dropdown4: ''
     });
     setDropdowns({
       dropdown1Main: '',
@@ -497,7 +504,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     setNewDropdowns({
       dropdown1: '',
       dropdown2: '',
-      dropdown3: ''
+      dropdown3: '',
+      dropdown4: ''
     });
     setDropdowns({
       dropdown1Main: '',
@@ -619,7 +627,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     setNewDropdowns({
       dropdown1: '',
       dropdown2: '',
-      dropdown3: ''
+      dropdown3: '',
+      dropdown4: ''
     });
       setDropdowns({
         dropdown1Main: '',
@@ -1274,6 +1283,26 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                     <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
                     <SelectItem value="REVERSE" className="text-lg font-bold">REVERSE</SelectItem>
                     <SelectItem value="RETURN" className="text-lg font-bold">RETURN</SelectItem>
+                    <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
+                <Label className="text-lg font-bold">OG DIRECTION D</Label>
+                <Select 
+                  value={newDropdowns.dropdown4}
+                  onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown4: value }))}
+                >
+                  <SelectTrigger 
+                    className="text-lg font-bold"
+                    style={{ backgroundColor: newDropdowns.dropdown4 ? '#dcfce7' : '#ffe3e2' }}
+                  >
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background">
+                    <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                    <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
                     <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
                   </SelectContent>
                 </Select>
