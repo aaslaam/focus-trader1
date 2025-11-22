@@ -171,7 +171,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     console.log('StockEntry - useEffect updating combined dropdowns:', combined);
     console.log('StockEntry - Individual dropdown states:', dropdowns);
     setNewDropdowns(combined);
-  }, [dropdowns]);
+  }, [dropdowns.dropdown1Main, dropdowns.dropdown1Sub, dropdowns.dropdown2Main, dropdowns.dropdown2Sub, dropdowns.dropdown3Main, dropdowns.dropdown3Sub]);
   
   // Update combined OG CANDLE value whenever candle dropdowns change
   useEffect(() => {
