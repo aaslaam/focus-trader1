@@ -26,11 +26,9 @@ interface StockEntryData {
   dropdown1?: string;
   dropdown2?: string;
   dropdown3?: string;
-  dropdown4?: string;
   dropdown1Date?: Date | null;
   dropdown2Date?: Date | null;
   dropdown3Date?: Date | null;
-  dropdown4Date?: Date | null;
   ogCandle?: string;
   ogOpenA?: string;
   ogCloseA?: string;
@@ -318,7 +316,7 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
                   </div>
 
                   {/* INTRO Dropdowns */}
-                  {(entry.dropdown1 || entry.dropdown2 || entry.dropdown3 || entry.dropdown4) && (
+                  {(entry.dropdown1 || entry.dropdown2 || entry.dropdown3) && (
                     <div className="mt-4 space-y-3">
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                         {entry.dropdown1 && (
@@ -350,17 +348,6 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
                             {entry.dropdown3Date && (
                               <div className="text-xs text-purple-600 mt-1">
                                 {format(new Date(entry.dropdown3Date), "d/M/yyyy")}
-                              </div>
-                            )}
-                          </div>
-                        )}
-                        {entry.dropdown4 && (
-                          <div className="px-3 py-2 rounded bg-orange-50 border border-orange-200">
-                            <div className="text-sm font-bold text-orange-700 mb-1">INTRO 4</div>
-                            <span className="text-lg font-bold">{entry.dropdown4}</span>
-                            {entry.dropdown4Date && (
-                              <div className="text-xs text-orange-600 mt-1">
-                                {format(new Date(entry.dropdown4Date), "d/M/yyyy")}
                               </div>
                             )}
                           </div>

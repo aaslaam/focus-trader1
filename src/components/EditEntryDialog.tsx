@@ -29,11 +29,9 @@ interface StockEntryData {
   dropdown1?: string;
   dropdown2?: string;
   dropdown3?: string;
-  dropdown4?: string;
   dropdown1Date?: Date | null;
   dropdown2Date?: Date | null;
   dropdown3Date?: Date | null;
-  dropdown4Date?: Date | null;
   ogCandle?: string;
   ogOpenA?: string;
   ogCloseA?: string;
