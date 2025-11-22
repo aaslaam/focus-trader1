@@ -30,6 +30,13 @@ interface StockEntryData {
   stock4Date: Date | null;
   stock4bDate?: Date | null;
   openbDate?: Date | null;
+  dropdown1?: string;
+  dropdown2?: string;
+  dropdown3?: string;
+  dropdown4?: string;
+  ogCandle?: string;
+  ogOpenA?: string;
+  ogCloseA?: string;
   classification: 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL';
   notes?: string;
   imageUrl?: string;
@@ -49,6 +56,13 @@ const StockSearch: React.FC = () => {
     openb: '',
     stock4: '',
     stock4b: '',
+    dropdown1: '',
+    dropdown2: '',
+    dropdown3: '',
+    dropdown4: '',
+    ogCandle: '',
+    ogOpenA: '',
+    ogCloseA: '',
     serialNumber: '',
     notes: ''
   });
@@ -66,7 +80,12 @@ const StockSearch: React.FC = () => {
     const sortedEntries = existingEntries.sort((a, b) => b.timestamp - a.timestamp);
     
     // Check if any search criteria is provided
-    const hasStockFields = [searchData.stock1, searchData.stock2, searchData.stock2b, searchData.stock2bColor, searchData.stock3, searchData.openb, searchData.stock4, searchData.stock4b].some(field => field.trim() !== '');
+    const hasStockFields = [
+      searchData.stock1, searchData.stock2, searchData.stock2b, searchData.stock2bColor, 
+      searchData.stock3, searchData.openb, searchData.stock4, searchData.stock4b,
+      searchData.dropdown1, searchData.dropdown2, searchData.dropdown3, searchData.dropdown4,
+      searchData.ogCandle, searchData.ogOpenA, searchData.ogCloseA
+    ].some(field => field.trim() !== '');
     const hasSerialNumber = searchData.serialNumber.trim() !== '';
     const hasNotes = searchData.notes.trim() !== '';
     const hasFilter = filter !== '';
@@ -117,8 +136,18 @@ const StockSearch: React.FC = () => {
     // Filter by stock fields if provided
     if (hasStockFields) {
       matchingEntries = matchingEntries.filter(entry => {
-        const entryValues = [entry.stock1, entry.stock2, entry.stock2b || '', entry.stock2bColor || '', entry.stock3, entry.openb || '', entry.stock4, entry.stock4b || ''];
-        const searchValues = [searchData.stock1, searchData.stock2, searchData.stock2b, searchData.stock2bColor, searchData.stock3, searchData.openb, searchData.stock4, searchData.stock4b];
+        const entryValues = [
+          entry.stock1, entry.stock2, entry.stock2b || '', entry.stock2bColor || '', 
+          entry.stock3, entry.openb || '', entry.stock4, entry.stock4b || '',
+          entry.dropdown1 || '', entry.dropdown2 || '', entry.dropdown3 || '', entry.dropdown4 || '',
+          entry.ogCandle || '', entry.ogOpenA || '', entry.ogCloseA || ''
+        ];
+        const searchValues = [
+          searchData.stock1, searchData.stock2, searchData.stock2b, searchData.stock2bColor, 
+          searchData.stock3, searchData.openb, searchData.stock4, searchData.stock4b,
+          searchData.dropdown1, searchData.dropdown2, searchData.dropdown3, searchData.dropdown4,
+          searchData.ogCandle, searchData.ogOpenA, searchData.ogCloseA
+        ];
         
         // Check if all selected search values match the entry
         return searchValues.every((searchValue, index) => {
@@ -329,16 +358,16 @@ const StockSearch: React.FC = () => {
                     label="OPEN A"
                     selectedValue={searchData.stock3}
                     onValueChange={(value) => setSearchData(prev => ({ ...prev, stock3: value }))}
-                    baseOptions={['CG+', 'CG-', 'CGB', 'CR+', 'CR-', 'CRB', 'OG+', 'OG-', 'OGB', 'OR+', 'OR-', 'ORB', 'NILL']}
+                    baseOptions={['CG+', 'CG-', 'CGB', 'CR+', 'CR-', 'CRB', 'OG+', 'OG-', 'OGB', 'OR+', 'OR-', 'ORB', 'SD CG-', 'SD CG+', 'SD CGB', 'SD CR-', 'SD CR+', 'SD CRB', 'NILL']}
                     hideModifier={true}
                   />
                 </div>
                 <div className="space-y-2">
                   <SimpleOptionSelector
-                    label="OPEN B"
-                    selectedValue={searchData.openb}
-                    onValueChange={(value) => setSearchData(prev => ({ ...prev, openb: value }))}
-                    baseOptions={['SD CG-', 'SD CG+', 'SD CGB', 'SD CR-', 'SD CR+', 'SD CRB', 'NILL']}
+                    label="CLOSE A"
+                    selectedValue={searchData.stock4}
+                    onValueChange={(value) => setSearchData(prev => ({ ...prev, stock4: value }))}
+                    baseOptions={['CG-', 'CG+', 'CGB', 'CR-', 'CR+', 'CRB', 'OG-', 'OG+', 'OGB', 'OR-', 'OR+', 'ORB', 'NILL']}
                     hideModifier={true}
                   />
                 </div>
@@ -405,7 +434,7 @@ const StockSearch: React.FC = () => {
                     type="button"
                     variant="outline"
                     onClick={() => {
-                      setSearchData({ stock1: '', stock2: '', stock2b: '', stock2bColor: '', stock3: '', openb: '', stock4: '', stock4b: '', serialNumber: '', notes: '' });
+                      setSearchData({ stock1: '', stock2: '', stock2b: '', stock2bColor: '', stock3: '', openb: '', stock4: '', stock4b: '', dropdown1: '', dropdown2: '', dropdown3: '', dropdown4: '', ogCandle: '', ogOpenA: '', ogCloseA: '', serialNumber: '', notes: '' });
                       setFilter('');
                       setSearchResult(null);
                       setAllResults([]);
@@ -468,22 +497,76 @@ const StockSearch: React.FC = () => {
 
       <TabsContent value="part2">
             <form onSubmit={handleSearch} className="space-y-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-sm font-bold">OG DIRECTION A</Label>
+                  <input
+                    type="text"
+                    value={searchData.dropdown1}
+                    onChange={(e) => handleInputChange('dropdown1', e.target.value)}
+                    className="w-full px-3 py-2 text-base border rounded-md"
+                    placeholder="e.g. OG, OR"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-bold">OG DIRECTION B</Label>
+                  <input
+                    type="text"
+                    value={searchData.dropdown2}
+                    onChange={(e) => handleInputChange('dropdown2', e.target.value)}
+                    className="w-full px-3 py-2 text-base border rounded-md"
+                    placeholder="e.g. FORWARD, IN"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-bold">OG DIRECTION C</Label>
+                  <input
+                    type="text"
+                    value={searchData.dropdown3}
+                    onChange={(e) => handleInputChange('dropdown3', e.target.value)}
+                    className="w-full px-3 py-2 text-base border rounded-md"
+                    placeholder="e.g. FORWARD, IN"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-bold">OG DIRECTION D</Label>
+                  <input
+                    type="text"
+                    value={searchData.dropdown4}
+                    onChange={(e) => handleInputChange('dropdown4', e.target.value)}
+                    className="w-full px-3 py-2 text-base border rounded-md"
+                    placeholder="e.g. FORWARD, IN"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-sm font-bold">OG CANDLE</Label>
+                <input
+                  type="text"
+                  value={searchData.ogCandle}
+                  onChange={(e) => handleInputChange('ogCandle', e.target.value)}
+                  className="w-full px-3 py-2 text-base border rounded-md"
+                  placeholder="e.g. CANDLE 1 RED"
+                />
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <SimpleOptionSelector
-                    label="CLOSE A"
-                    selectedValue={searchData.stock4}
-                    onValueChange={(value) => setSearchData(prev => ({ ...prev, stock4: value }))}
-                    baseOptions={['CG-', 'CG+', 'CGB', 'CR-', 'CR+', 'CRB', 'OG-', 'OG+', 'OGB', 'OR-', 'OR+', 'ORB', 'NILL']}
+                    label="OG OPEN A"
+                    selectedValue={searchData.ogOpenA}
+                    onValueChange={(value) => setSearchData(prev => ({ ...prev, ogOpenA: value }))}
+                    baseOptions={['OR-', 'OR+', 'ORB', 'OG-', 'OG+', 'OGB', 'CG-', 'CG+', 'CGB', 'CR-', 'CR+', 'CRB']}
                     hideModifier={true}
                   />
                 </div>
                 <div className="space-y-2">
                   <SimpleOptionSelector
-                    label="CLOSE B"
-                    selectedValue={searchData.stock4b}
-                    onValueChange={(value) => setSearchData(prev => ({ ...prev, stock4b: value }))}
-                    baseOptions={['SD CG-', 'SD CG+', 'SD CGB', 'SD CR-', 'SD CR+', 'SD CRB', 'NILL']}
+                    label="OG CLOSE A"
+                    selectedValue={searchData.ogCloseA}
+                    onValueChange={(value) => setSearchData(prev => ({ ...prev, ogCloseA: value }))}
+                    baseOptions={['OR-', 'OR+', 'ORB', 'OG-', 'OG+', 'OGB', 'CG-', 'CG+', 'CGB', 'CR-', 'CR+', 'CRB']}
                     hideModifier={true}
                   />
                 </div>
@@ -510,7 +593,7 @@ const StockSearch: React.FC = () => {
                   onChange={(e) => handleInputChange('notes', e.target.value)}
                   className="text-base min-h-[80px]"
                 />
-                {hasSearched && (searchData.stock4 || searchData.stock4b || searchData.serialNumber || searchData.notes || filter) && allResults.length === 0 && (
+                {hasSearched && (searchData.dropdown1 || searchData.dropdown2 || searchData.dropdown3 || searchData.dropdown4 || searchData.ogCandle || searchData.ogOpenA || searchData.ogCloseA || searchData.serialNumber || searchData.notes || filter) && allResults.length === 0 && (
                   <div className="bg-red-600 text-white font-bold text-2xl p-4 rounded-lg text-center">
                     No result
                   </div>
@@ -550,7 +633,7 @@ const StockSearch: React.FC = () => {
                     type="button"
                     variant="outline"
                     onClick={() => {
-                      setSearchData({ stock1: '', stock2: '', stock2b: '', stock2bColor: '', stock3: '', openb: '', stock4: '', stock4b: '', serialNumber: '', notes: '' });
+                      setSearchData({ stock1: '', stock2: '', stock2b: '', stock2bColor: '', stock3: '', openb: '', stock4: '', stock4b: '', dropdown1: '', dropdown2: '', dropdown3: '', dropdown4: '', ogCandle: '', ogOpenA: '', ogCloseA: '', serialNumber: '', notes: '' });
                       setFilter('');
                       setSearchResult(null);
                       setAllResults([]);
@@ -743,7 +826,7 @@ const StockSearch: React.FC = () => {
                 type="button"
                 variant="outline"
                 onClick={() => {
-                  setSearchData({ stock1: '', stock2: '', stock2b: '', stock2bColor: '', stock3: '', openb: '', stock4: '', stock4b: '', serialNumber: '', notes: '' });
+                  setSearchData({ stock1: '', stock2: '', stock2b: '', stock2bColor: '', stock3: '', openb: '', stock4: '', stock4b: '', dropdown1: '', dropdown2: '', dropdown3: '', dropdown4: '', ogCandle: '', ogOpenA: '', ogCloseA: '', serialNumber: '', notes: '' });
                   setFilter('');
                   setSearchResult(null);
                   setAllResults([]);
