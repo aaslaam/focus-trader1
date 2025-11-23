@@ -277,6 +277,28 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
     const dropdown3 = `${dropdowns.dropdown3Main} ${dropdowns.dropdown3Sub}`.trim();
     const ogCandle = `${dropdowns.candleMain} ${dropdowns.candleSub}`.trim();
 
+    // Check if this was a Part 1 entry and Part 2 values are now added
+    const wasPart1Entry = entry.type === 'part1';
+    const hasPart2Values = !!(
+      ogDirections.dropdown1 || 
+      ogDirections.dropdown2 || 
+      ogDirections.dropdown3 || 
+      ogDirections.dropdown4 || 
+      ogCandle || 
+      formData.ogOpenA || 
+      formData.ogCloseA
+    );
+
+    // Determine new type and timestamp
+    let newType = entry.type;
+    let newTimestamp = entry.timestamp;
+    
+    if (wasPart1Entry && hasPart2Values) {
+      // Convert to Common and assign new serial number (newest timestamp)
+      newType = 'common';
+      newTimestamp = Date.now();
+    }
+
     const updatedEntry: StockEntryData = {
       ...formData,
       ...selectedDates,
@@ -287,22 +309,37 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
       dropdown4: ogDirections.dropdown4,
       ogCandle,
       imageUrl,
-      timestamp: entry.timestamp,
-      type: entry.type
+      timestamp: newTimestamp,
+      type: newType
     };
 
     const existingEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
-    const entryIndex = existingEntries.findIndex(e => e.timestamp === entry.timestamp);
-    if (entryIndex !== -1) {
-      existingEntries[entryIndex] = updatedEntry;
-      localStorage.setItem('stockEntries', JSON.stringify(existingEntries));
-    }
     
-    toast({
-      title: "Entry Updated",
-      description: `Entry updated successfully`,
-      variant: "default"
-    });
+    if (wasPart1Entry && hasPart2Values) {
+      // Remove old entry and add as new entry (with new serial number)
+      const filteredEntries = existingEntries.filter(e => e.timestamp !== entry.timestamp);
+      filteredEntries.push(updatedEntry);
+      localStorage.setItem('stockEntries', JSON.stringify(filteredEntries));
+      
+      toast({
+        title: "Entry Moved to Common",
+        description: `Part 2 values added. Entry moved to Common section with new serial number #${filteredEntries.length}`,
+        variant: "default"
+      });
+    } else {
+      // Regular update (keep same serial number)
+      const entryIndex = existingEntries.findIndex(e => e.timestamp === entry.timestamp);
+      if (entryIndex !== -1) {
+        existingEntries[entryIndex] = updatedEntry;
+        localStorage.setItem('stockEntries', JSON.stringify(existingEntries));
+      }
+      
+      toast({
+        title: "Entry Updated",
+        description: `Entry updated successfully`,
+        variant: "default"
+      });
+    }
 
     setOpen(false);
     setUploading(false);
