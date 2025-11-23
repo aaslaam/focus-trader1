@@ -167,7 +167,9 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
   });
 
   const renderEntry = (entry: StockEntryData, index: number) => {
-    const serialNumber = filteredEntries.length - index;
+    // Calculate serial number based on position in all entries (continuous numbering)
+    const entryIndexInAll = entries.findIndex(e => e.timestamp === entry.timestamp);
+    const serialNumber = entries.length - entryIndexInAll;
     const entryType = entry.type || 'common';
     
     return (
