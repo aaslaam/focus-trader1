@@ -815,7 +815,7 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
 
             {/* Part 2 Fields */}
             <div className="space-y-4 border-t pt-4">
-              <h3 className="text-lg font-bold">Part 2 Fields</h3>
+              <h3 className="text-lg font-bold underline" style={{ color: '#e1f2ff' }}>PART 2 FIELDS</h3>
               
               {/* OG DIRECTION A, B, C, D */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

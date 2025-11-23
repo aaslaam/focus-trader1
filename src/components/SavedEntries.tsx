@@ -582,9 +582,9 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
       <CardContent className="p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="part1">PART 1</TabsTrigger>
-            <TabsTrigger value="part2">PART 2</TabsTrigger>
-            <TabsTrigger value="common">COMMON</TabsTrigger>
+            <TabsTrigger value="part1" className="font-bold">PART 1</TabsTrigger>
+            <TabsTrigger value="part2" className="font-bold">PART 2</TabsTrigger>
+            <TabsTrigger value="common" className="font-bold">COMMON</TabsTrigger>
           </TabsList>
           
           <TabsContent value="part1">
