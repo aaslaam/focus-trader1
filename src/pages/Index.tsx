@@ -105,7 +105,7 @@ const Index = () => {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <BarChart3 className="h-10 w-10" />
-              <h1 className="text-4xl font-bold">Focus Trader 1st candle</h1>
+              <h1 className="text-4xl font-bold">Final App.</h1>
             </div>
             <div className="flex items-center gap-2">
               <Button
@@ -196,7 +196,7 @@ const Index = () => {
       <footer className="bg-muted/30 border-t mt-16">
         <div className="container mx-auto px-4 py-6">
           <div className="text-center text-sm text-muted-foreground">
-            <p>Focus Trader 1st candle - Organize your investment insights</p>
+            <p>Final App. - Organize your investment insights</p>
           </div>
         </div>
       </footer>
