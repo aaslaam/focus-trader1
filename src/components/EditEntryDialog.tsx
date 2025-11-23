@@ -289,45 +289,49 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
       formData.ogCloseA
     );
 
-    // Determine new type and timestamp
-    let newType = entry.type;
-    let newTimestamp = entry.timestamp;
-    
-    if (wasPart1Entry && hasPart2Values) {
-      // Convert to Common and assign new serial number (newest timestamp)
-      newType = 'common';
-      newTimestamp = Date.now();
-    }
-
-    const updatedEntry: StockEntryData = {
-      ...formData,
-      ...selectedDates,
-      classification: formData.classification as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL',
-      dropdown1,
-      dropdown2,
-      dropdown3,
-      dropdown4: ogDirections.dropdown4,
-      ogCandle,
-      imageUrl,
-      timestamp: newTimestamp,
-      type: newType
-    };
-
     const existingEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
     
     if (wasPart1Entry && hasPart2Values) {
-      // Remove old entry and add as new entry (with new serial number)
-      const filteredEntries = existingEntries.filter(e => e.timestamp !== entry.timestamp);
-      filteredEntries.push(updatedEntry);
-      localStorage.setItem('stockEntries', JSON.stringify(filteredEntries));
+      // Keep original Part 1 entry unchanged
+      // Create NEW combined entry in Common with next serial number
+      const newCombinedEntry: StockEntryData = {
+        ...formData,
+        ...selectedDates,
+        classification: formData.classification as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL',
+        dropdown1,
+        dropdown2,
+        dropdown3,
+        dropdown4: ogDirections.dropdown4,
+        ogCandle,
+        imageUrl,
+        timestamp: Date.now(), // New serial number
+        type: 'common'
+      };
+      
+      existingEntries.push(newCombinedEntry);
+      localStorage.setItem('stockEntries', JSON.stringify(existingEntries));
       
       toast({
-        title: "Entry Moved to Common",
-        description: `Part 2 values added. Entry moved to Common section with new serial number #${filteredEntries.length}`,
+        title: "Combined Entry Created",
+        description: `Original Part 1 entry preserved. New combined entry created in Common with serial #${existingEntries.length}`,
         variant: "default"
       });
     } else {
-      // Regular update (keep same serial number)
+      // Regular update (keep same serial number and position)
+      const updatedEntry: StockEntryData = {
+        ...formData,
+        ...selectedDates,
+        classification: formData.classification as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL',
+        dropdown1,
+        dropdown2,
+        dropdown3,
+        dropdown4: ogDirections.dropdown4,
+        ogCandle,
+        imageUrl,
+        timestamp: entry.timestamp,
+        type: entry.type
+      };
+      
       const entryIndex = existingEntries.findIndex(e => e.timestamp === entry.timestamp);
       if (entryIndex !== -1) {
         existingEntries[entryIndex] = updatedEntry;
