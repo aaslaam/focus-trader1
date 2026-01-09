@@ -737,6 +737,89 @@ const StockSearch: React.FC = () => {
                 </div>
               </div>
 
+              {/* 15 Minute Section */}
+              <div className="space-y-2">
+                <Label className="text-lg font-bold">15 Minute</Label>
+                <div className="grid grid-cols-3 gap-4">
+                  <Select 
+                    value={searchData.dropdown1?.split(' ')[0] || ''}
+                    onValueChange={(value) => {
+                      const sub = searchData.dropdown1?.split(' ')[1] || '';
+                      setSearchData(prev => ({ ...prev, dropdown1: sub ? `${value} ${sub}` : value }));
+                      setTimeout(() => performSearch(), 100);
+                    }}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold"
+                      style={{ backgroundColor: searchData.dropdown1?.split(' ')[0] ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background z-[100]">
+                      <SelectItem value="OG" className="text-lg font-bold">OG</SelectItem>
+                      <SelectItem value="OR" className="text-lg font-bold">OR</SelectItem>
+                      <SelectItem value="CG" className="text-lg font-bold">CG</SelectItem>
+                      <SelectItem value="CR" className="text-lg font-bold">CR</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  
+                  <Select 
+                    value={searchData.dropdown1?.split(' ')[1] || ''}
+                    onValueChange={(value) => {
+                      const main = searchData.dropdown1?.split(' ')[0] || '';
+                      setSearchData(prev => ({ ...prev, dropdown1: main ? `${main} ${value}` : value }));
+                      setTimeout(() => performSearch(), 100);
+                    }}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold"
+                      style={{ backgroundColor: searchData.dropdown1?.split(' ')[1] ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background z-[100]">
+                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                      <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
+                      <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                      <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <div className="flex gap-2">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className={cn(
+                            "flex-1 justify-start text-left font-normal bg-green-100 hover:bg-green-200"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          <span>NILL</span>
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <CalendarComponent
+                          mode="single"
+                          initialFocus
+                          className={cn("p-3 pointer-events-auto")}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="bg-green-100 hover:bg-green-200 text-gray-900"
+                    >
+                      NILL
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <Label className="text-sm font-bold">OPEN</Label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
