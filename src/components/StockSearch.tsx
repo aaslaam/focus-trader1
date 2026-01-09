@@ -527,21 +527,11 @@ const StockSearch: React.FC = () => {
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="search-notes-part1" className="text-xl font-bold">NOTES</Label>
-                <Textarea
-                  id="search-notes-part1"
-                  placeholder="Search by notes..."
-                  value={searchData.notes}
-                  onChange={(e) => handleInputChange('notes', e.target.value)}
-                  className="text-base min-h-[80px]"
-                />
-                {hasSearched && (searchData.stock2 || searchData.stock2b || searchData.stock3 || searchData.stock4 || searchData.dropdown1 || searchData.dropdown2 || searchData.dropdown3 || searchData.serialNumber || searchData.notes || filter) && allResults.length === 0 && (
-                  <div className="bg-red-600 text-white font-bold text-2xl p-4 rounded-lg text-center">
-                    No result
-                  </div>
-                )}
-              </div>
+              {hasSearched && (searchData.stock2 || searchData.stock2b || searchData.stock3 || searchData.stock4 || searchData.dropdown1 || searchData.dropdown2 || searchData.dropdown3 || searchData.serialNumber || filter) && allResults.length === 0 && (
+                <div className="bg-red-600 text-white font-bold text-2xl p-4 rounded-lg text-center">
+                  No result
+                </div>
+              )}
 
               <div className="space-y-2">
                 <div className="text-xl font-bold">RESULT</div>
