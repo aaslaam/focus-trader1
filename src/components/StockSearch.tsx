@@ -1105,34 +1105,365 @@ const StockSearch: React.FC = () => {
 
           <TabsContent value="common">
             <form onSubmit={handleSearch} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <SimpleOptionSelector
-                label="DIRECTION A"
-                selectedValue={searchData.stock2}
-                onValueChange={(value) => setSearchData(prev => ({ ...prev, stock2: value }))}
-                baseOptions={['CG UP', 'CG IN', 'CG DOWN', 'CR UP', 'CR IN', 'CR DOWN']}
-                hideModifier={true}
-              />
-              <SimpleOptionSelector
-                label="COLOUR"
-                selectedValue={searchData.stock2bColor || ''}
-                onValueChange={(value) => setSearchData(prev => ({ ...prev, stock2bColor: value }))}
-                baseOptions={['RED', 'GREEN']}
-                hideModifier={true}
-              />
-            </div>
-            <div className="space-y-2">
-              <SimpleOptionSelector
-                label="B"
-                selectedValue={searchData.stock2b}
-                onValueChange={(value) => setSearchData(prev => ({ ...prev, stock2b: value }))}
-                baseOptions={['CG IN', 'CG DOWN', 'CG UP', 'CR IN', 'CR UP', 'CR DOWN']}
-                hideModifier={true}
-                customBackgroundStyle={{ empty: { backgroundColor: '#ffe3e2' }, filled: { backgroundColor: '#dcfce7' } }}
-              />
-            </div>
-          </div>
+              {/* PART 1 FIELDS */}
+              <div className="border-b pb-4 mb-4">
+                <h3 className="text-lg font-bold mb-3 text-primary">PART 1 FIELDS</h3>
+                
+                {/* Monthly Open and Monthly Close Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  {/* MONTHLY OPEN */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-bold text-foreground">MONTHLY OPEN</Label>
+                    <div className="flex gap-2 items-center">
+                      <div className="flex-1">
+                        <Select 
+                          value={searchData.dropdown1.split(' ')[0] || ''}
+                          onValueChange={(value) => {
+                            const sub = searchData.dropdown1.split(' ')[1] || '';
+                            setSearchData(prev => ({ ...prev, dropdown1: sub ? `${value} ${sub}` : value }));
+                            setTimeout(() => performSearch(), 100);
+                          }}
+                        >
+                          <SelectTrigger 
+                            className="text-lg font-bold"
+                            style={{ backgroundColor: searchData.dropdown1.split(' ')[0] ? '#dcfce7' : '#ffe3e2' }}
+                          >
+                            <SelectValue placeholder="" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card z-[100]">
+                            <SelectItem value="MG" className="text-lg font-bold">MG</SelectItem>
+                            <SelectItem value="MR" className="text-lg font-bold">MR</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Select 
+                          value={searchData.dropdown1.split(' ')[1] || ''}
+                          onValueChange={(value) => {
+                            const main = searchData.dropdown1.split(' ')[0] || '';
+                            setSearchData(prev => ({ ...prev, dropdown1: main ? `${main} ${value}` : value }));
+                            setTimeout(() => performSearch(), 100);
+                          }}
+                        >
+                          <SelectTrigger 
+                            className="text-lg font-bold"
+                            style={{ backgroundColor: searchData.dropdown1.split(' ')[1] ? '#dcfce7' : '#ffe3e2' }}
+                          >
+                            <SelectValue placeholder="" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card z-[100]">
+                            <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                            <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                            <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                            <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                            <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* MONTHLY CLOSE */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-bold text-foreground">MONTHLY CLOSE</Label>
+                    <div className="flex gap-2 items-center">
+                      <div className="flex-1">
+                        <Select 
+                          value={searchData.dropdown2.split(' ')[0] || ''}
+                          onValueChange={(value) => {
+                            const sub = searchData.dropdown2.split(' ')[1] || '';
+                            setSearchData(prev => ({ ...prev, dropdown2: sub ? `${value} ${sub}` : value }));
+                            setTimeout(() => performSearch(), 100);
+                          }}
+                        >
+                          <SelectTrigger 
+                            className="text-lg font-bold"
+                            style={{ backgroundColor: searchData.dropdown2.split(' ')[0] ? '#dcfce7' : '#ffe3e2' }}
+                          >
+                            <SelectValue placeholder="" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card z-[100]">
+                            <SelectItem value="MG" className="text-lg font-bold">MG</SelectItem>
+                            <SelectItem value="MR" className="text-lg font-bold">MR</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Select 
+                          value={searchData.dropdown2.split(' ')[1] || ''}
+                          onValueChange={(value) => {
+                            const main = searchData.dropdown2.split(' ')[0] || '';
+                            setSearchData(prev => ({ ...prev, dropdown2: main ? `${main} ${value}` : value }));
+                            setTimeout(() => performSearch(), 100);
+                          }}
+                        >
+                          <SelectTrigger 
+                            className="text-lg font-bold"
+                            style={{ backgroundColor: searchData.dropdown2.split(' ')[1] ? '#dcfce7' : '#ffe3e2' }}
+                          >
+                            <SelectValue placeholder="" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card z-[100]">
+                            <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                            <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                            <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                            <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                            <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Weekly Open and Weekly Close Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  {/* WEEKLY OPEN */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-bold text-foreground">WEEKLY OPEN</Label>
+                    <div className="flex gap-2 items-center">
+                      <div className="flex-1">
+                        <Select 
+                          value={searchData.dropdown3.split(' ')[0] || ''}
+                          onValueChange={(value) => {
+                            const sub = searchData.dropdown3.split(' ')[1] || '';
+                            setSearchData(prev => ({ ...prev, dropdown3: sub ? `${value} ${sub}` : value }));
+                            setTimeout(() => performSearch(), 100);
+                          }}
+                        >
+                          <SelectTrigger 
+                            className="text-lg font-bold"
+                            style={{ backgroundColor: searchData.dropdown3.split(' ')[0] ? '#dcfce7' : '#ffe3e2' }}
+                          >
+                            <SelectValue placeholder="" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card z-[100]">
+                            <SelectItem value="WG" className="text-lg font-bold">WG</SelectItem>
+                            <SelectItem value="WR" className="text-lg font-bold">WR</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Select 
+                          value={searchData.dropdown3.split(' ')[1] || ''}
+                          onValueChange={(value) => {
+                            const main = searchData.dropdown3.split(' ')[0] || '';
+                            setSearchData(prev => ({ ...prev, dropdown3: main ? `${main} ${value}` : value }));
+                            setTimeout(() => performSearch(), 100);
+                          }}
+                        >
+                          <SelectTrigger 
+                            className="text-lg font-bold"
+                            style={{ backgroundColor: searchData.dropdown3.split(' ')[1] ? '#dcfce7' : '#ffe3e2' }}
+                          >
+                            <SelectValue placeholder="" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card z-[100]">
+                            <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                            <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                            <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                            <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                            <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* WEEKLY CLOSE */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-bold text-foreground">WEEKLY CLOSE</Label>
+                    <div className="flex gap-2 items-center">
+                      <div className="flex-1">
+                        <Select 
+                          value={searchData.dropdown4.split(' ')[0] || ''}
+                          onValueChange={(value) => {
+                            const sub = searchData.dropdown4.split(' ')[1] || '';
+                            setSearchData(prev => ({ ...prev, dropdown4: sub ? `${value} ${sub}` : value }));
+                            setTimeout(() => performSearch(), 100);
+                          }}
+                        >
+                          <SelectTrigger 
+                            className="text-lg font-bold"
+                            style={{ backgroundColor: searchData.dropdown4.split(' ')[0] ? '#dcfce7' : '#ffe3e2' }}
+                          >
+                            <SelectValue placeholder="" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card z-[100]">
+                            <SelectItem value="WG" className="text-lg font-bold">WG</SelectItem>
+                            <SelectItem value="WR" className="text-lg font-bold">WR</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Select 
+                          value={searchData.dropdown4.split(' ')[1] || ''}
+                          onValueChange={(value) => {
+                            const main = searchData.dropdown4.split(' ')[0] || '';
+                            setSearchData(prev => ({ ...prev, dropdown4: main ? `${main} ${value}` : value }));
+                            setTimeout(() => performSearch(), 100);
+                          }}
+                        >
+                          <SelectTrigger 
+                            className="text-lg font-bold"
+                            style={{ backgroundColor: searchData.dropdown4.split(' ')[1] ? '#dcfce7' : '#ffe3e2' }}
+                          >
+                            <SelectValue placeholder="" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card z-[100]">
+                            <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                            <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                            <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                            <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                            <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Daily Open and Daily Close Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  {/* DAILY OPEN */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-bold text-foreground">DAILY OPEN</Label>
+                    <div className="flex gap-2 items-center">
+                      <div className="flex-1">
+                        <Select 
+                          value={searchData.stock3.split(' ')[0] || ''}
+                          onValueChange={(value) => {
+                            const sub = searchData.stock3.split(' ')[1] || '';
+                            setSearchData(prev => ({ ...prev, stock3: sub ? `${value} ${sub}` : value }));
+                            setTimeout(() => performSearch(), 100);
+                          }}
+                        >
+                          <SelectTrigger 
+                            className="text-lg font-bold"
+                            style={{ backgroundColor: searchData.stock3.split(' ')[0] ? '#dcfce7' : '#ffe3e2' }}
+                          >
+                            <SelectValue placeholder="" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card z-[100]">
+                            <SelectItem value="DG" className="text-lg font-bold">DG</SelectItem>
+                            <SelectItem value="DR" className="text-lg font-bold">DR</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Select 
+                          value={searchData.stock3.split(' ')[1] || ''}
+                          onValueChange={(value) => {
+                            const main = searchData.stock3.split(' ')[0] || '';
+                            setSearchData(prev => ({ ...prev, stock3: main ? `${main} ${value}` : value }));
+                            setTimeout(() => performSearch(), 100);
+                          }}
+                        >
+                          <SelectTrigger 
+                            className="text-lg font-bold"
+                            style={{ backgroundColor: searchData.stock3.split(' ')[1] ? '#dcfce7' : '#ffe3e2' }}
+                          >
+                            <SelectValue placeholder="" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card z-[100]">
+                            <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                            <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                            <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                            <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                            <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* DAILY CLOSE */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-bold text-foreground">DAILY CLOSE</Label>
+                    <div className="flex gap-2 items-center">
+                      <div className="flex-1">
+                        <Select 
+                          value={searchData.stock4.split(' ')[0] || ''}
+                          onValueChange={(value) => {
+                            const sub = searchData.stock4.split(' ')[1] || '';
+                            setSearchData(prev => ({ ...prev, stock4: sub ? `${value} ${sub}` : value }));
+                            setTimeout(() => performSearch(), 100);
+                          }}
+                        >
+                          <SelectTrigger 
+                            className="text-lg font-bold"
+                            style={{ backgroundColor: searchData.stock4.split(' ')[0] ? '#dcfce7' : '#ffe3e2' }}
+                          >
+                            <SelectValue placeholder="" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card z-[100]">
+                            <SelectItem value="DG" className="text-lg font-bold">DG</SelectItem>
+                            <SelectItem value="DR" className="text-lg font-bold">DR</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Select 
+                          value={searchData.stock4.split(' ')[1] || ''}
+                          onValueChange={(value) => {
+                            const main = searchData.stock4.split(' ')[0] || '';
+                            setSearchData(prev => ({ ...prev, stock4: main ? `${main} ${value}` : value }));
+                            setTimeout(() => performSearch(), 100);
+                          }}
+                        >
+                          <SelectTrigger 
+                            className="text-lg font-bold"
+                            style={{ backgroundColor: searchData.stock4.split(' ')[1] ? '#dcfce7' : '#ffe3e2' }}
+                          >
+                            <SelectValue placeholder="" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card z-[100]">
+                            <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                            <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                            <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                            <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                            <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* DIRECTION A, COLOUR, B */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <SimpleOptionSelector
+                      label="DIRECTION A"
+                      selectedValue={searchData.stock2}
+                      onValueChange={(value) => setSearchData(prev => ({ ...prev, stock2: value }))}
+                      baseOptions={['CG UP', 'CG IN', 'CG DOWN', 'CR UP', 'CR IN', 'CR DOWN']}
+                      hideModifier={true}
+                    />
+                    <SimpleOptionSelector
+                      label="COLOUR"
+                      selectedValue={searchData.stock2bColor || ''}
+                      onValueChange={(value) => setSearchData(prev => ({ ...prev, stock2bColor: value }))}
+                      baseOptions={['RED', 'GREEN']}
+                      hideModifier={true}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <SimpleOptionSelector
+                      label="B"
+                      selectedValue={searchData.stock2b}
+                      onValueChange={(value) => setSearchData(prev => ({ ...prev, stock2b: value }))}
+                      baseOptions={['CG IN', 'CG DOWN', 'CG UP', 'CR IN', 'CR UP', 'CR DOWN']}
+                      hideModifier={true}
+                      customBackgroundStyle={{ empty: { backgroundColor: '#ffe3e2' }, filled: { backgroundColor: '#dcfce7' } }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* PART 2 FIELDS */}
+              <div className="border-b pb-4 mb-4">
+                <h3 className="text-lg font-bold mb-3 text-primary">PART 2 FIELDS</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <SimpleOptionSelector
@@ -1480,6 +1811,7 @@ const StockSearch: React.FC = () => {
                 />
               </div>
             </div>
+              </div>
 
           <div className="space-y-2">
             <Label htmlFor="serial-number" className="text-xl font-bold">SERIAL NUMBER</Label>
