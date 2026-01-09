@@ -32,6 +32,7 @@ interface StockEntryData {
   dropdown1Date?: Date | null;
   dropdown2Date?: Date | null;
   dropdown3Date?: Date | null;
+  dropdown4Date?: Date | null;
   ogCandle?: string;
   ogOpenA?: string;
   ogCloseA?: string;
@@ -71,6 +72,8 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
     dropdown2Sub: '',
     dropdown3Main: '',
     dropdown3Sub: '',
+    dropdown4Main: '',
+    dropdown4Sub: '',
     candleMain: '',
     candleSub: ''
   });
@@ -93,6 +96,7 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
     dropdown1Date: Date | null;
     dropdown2Date: Date | null;
     dropdown3Date: Date | null;
+    dropdown4Date: Date | null;
     ogOpenADate: Date | null;
     ogCloseADate: Date | null;
   }>({
@@ -103,6 +107,7 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
     dropdown1Date: new Date(),
     dropdown2Date: new Date(),
     dropdown3Date: new Date(),
+    dropdown4Date: new Date(),
     ogOpenADate: new Date(),
     ogCloseADate: new Date()
   });
@@ -115,6 +120,7 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
     dropdown1Date: boolean;
     dropdown2Date: boolean;
     dropdown3Date: boolean;
+    dropdown4Date: boolean;
     ogOpenADate: boolean;
     ogCloseADate: boolean;
   }>({
@@ -125,6 +131,7 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
     dropdown1Date: false,
     dropdown2Date: false,
     dropdown3Date: false,
+    dropdown4Date: false,
     ogOpenADate: false,
     ogCloseADate: false
   });
@@ -208,6 +215,7 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
         dropdown1Date: entry.dropdown1Date ? new Date(entry.dropdown1Date) : null,
         dropdown2Date: entry.dropdown2Date ? new Date(entry.dropdown2Date) : null,
         dropdown3Date: entry.dropdown3Date ? new Date(entry.dropdown3Date) : null,
+        dropdown4Date: entry.dropdown4Date ? new Date(entry.dropdown4Date) : null,
         ogOpenADate: entry.ogOpenADate ? new Date(entry.ogOpenADate) : null,
         ogCloseADate: entry.ogCloseADate ? new Date(entry.ogCloseADate) : null
       });
@@ -220,6 +228,7 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
         dropdown1Date: false,
         dropdown2Date: false,
         dropdown3Date: false,
+        dropdown4Date: false,
         ogOpenADate: false,
         ogCloseADate: false
       });
@@ -373,11 +382,11 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
             <div className="space-y-4">
               <h3 className="text-lg font-bold">Part 1 Fields</h3>
               
-              {/* INTRO 1, 2, 3 Dropdowns */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* INTRO 1 */}
+              {/* MONTHLY OPEN, MONTHLY CLOSE, WEEKLY OPEN, WEEKLY CLOSE Dropdowns */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* MONTHLY OPEN */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-bold">INTRO 1</Label>
+                  <Label className="text-sm font-bold">MONTHLY OPEN</Label>
                   <div className="flex gap-2">
                     <Select 
                       value={dropdowns.dropdown1Main}
@@ -459,9 +468,9 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
                   </div>
                 </div>
 
-                {/* INTRO 2 */}
+                {/* MONTHLY CLOSE */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-bold">INTRO 2</Label>
+                  <Label className="text-sm font-bold">MONTHLY CLOSE</Label>
                   <div className="flex gap-2">
                     <Select 
                       value={dropdowns.dropdown2Main}
@@ -474,8 +483,8 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
                         <SelectValue placeholder="" />
                       </SelectTrigger>
                       <SelectContent className="bg-card z-[100]">
-                        <SelectItem value="WG" className="text-lg font-bold">WG</SelectItem>
-                        <SelectItem value="ER" className="text-lg font-bold">ER</SelectItem>
+                        <SelectItem value="MG" className="text-lg font-bold">MG</SelectItem>
+                        <SelectItem value="MR" className="text-lg font-bold">MR</SelectItem>
                       </SelectContent>
                     </Select>
                     <Select 
@@ -543,9 +552,9 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
                   </div>
                 </div>
 
-                {/* INTRO 3 */}
+                {/* WEEKLY OPEN */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-bold">INTRO 3</Label>
+                  <Label className="text-sm font-bold">WEEKLY OPEN</Label>
                   <div className="flex gap-2">
                     <Select 
                       value={dropdowns.dropdown3Main}
@@ -558,8 +567,8 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
                         <SelectValue placeholder="" />
                       </SelectTrigger>
                       <SelectContent className="bg-card z-[100]">
-                        <SelectItem value="DG" className="text-lg font-bold">DG</SelectItem>
-                        <SelectItem value="DR" className="text-lg font-bold">DR</SelectItem>
+                        <SelectItem value="WG" className="text-lg font-bold">WG</SelectItem>
+                        <SelectItem value="WR" className="text-lg font-bold">WR</SelectItem>
                       </SelectContent>
                     </Select>
                     <Select 
@@ -620,6 +629,90 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
                       }}
                       className={cn(
                         !selectedDates.dropdown3Date ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
+                      )}
+                    >
+                      NILL
+                    </Button>
+                  </div>
+                </div>
+
+                {/* WEEKLY CLOSE */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-bold">WEEKLY CLOSE</Label>
+                  <div className="flex gap-2">
+                    <Select 
+                      value={dropdowns.dropdown4Main}
+                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Main: value }))}
+                    >
+                      <SelectTrigger 
+                        className="text-lg font-bold"
+                        style={{ backgroundColor: dropdowns.dropdown4Main ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="WG" className="text-lg font-bold">WG</SelectItem>
+                        <SelectItem value="WR" className="text-lg font-bold">WR</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select 
+                      value={dropdowns.dropdown4Sub}
+                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Sub: value }))}
+                    >
+                      <SelectTrigger 
+                        className="text-lg font-bold"
+                        style={{ backgroundColor: dropdowns.dropdown4Sub ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                        <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                        <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                        <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                        <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex gap-2">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className={cn(
+                            "flex-1 justify-start text-left font-normal",
+                            (!selectedDates.dropdown4Date || dateChanged.dropdown4Date) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {selectedDates.dropdown4Date ? format(selectedDates.dropdown4Date, "PPP") : <span>No date (NILL)</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={selectedDates.dropdown4Date || undefined}
+                          onSelect={(date) => {
+                            if (date) {
+                              setSelectedDates(prev => ({ ...prev, dropdown4Date: date }));
+                              setDateChanged(prev => ({ ...prev, dropdown4Date: true }));
+                            }
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedDates(prev => ({ ...prev, dropdown4Date: null }));
+                        setDateChanged(prev => ({ ...prev, dropdown4Date: false }));
+                      }}
+                      className={cn(
+                        !selectedDates.dropdown4Date ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
                       )}
                     >
                       NILL
