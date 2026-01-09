@@ -738,7 +738,7 @@ const StockSearch: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-bold">OG CANDLE</Label>
+                <Label className="text-sm font-bold">OPEN</Label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Select 
                     value={searchData.ogCandle.split(' ')[0] + ' ' + searchData.ogCandle.split(' ')[1] || ''}
@@ -1238,7 +1238,7 @@ const StockSearch: React.FC = () => {
             </div>
 
             <div className="space-y-2 mb-4">
-              <Label className="text-sm font-bold">OG CANDLE</Label>
+              <Label className="text-sm font-bold">OPEN</Label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Select 
                   value={searchData.ogCandle.split(' ')[0] + ' ' + searchData.ogCandle.split(' ')[1] || ''}

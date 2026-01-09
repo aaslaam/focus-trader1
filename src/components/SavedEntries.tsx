@@ -403,11 +403,11 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
             </div>
           )}
 
-          {/* OG CANDLE */}
+          {/* OPEN */}
           {entry.ogCandle && (
             <div className="mt-4">
               <div className="px-3 py-2 rounded bg-purple-50 border border-purple-200">
-                <div className="text-sm font-bold text-purple-700 mb-1">OG CANDLE</div>
+                <div className="text-sm font-bold text-purple-700 mb-1">OPEN</div>
                 <span className="text-lg font-bold">{entry.ogCandle}</span>
               </div>
             </div>
