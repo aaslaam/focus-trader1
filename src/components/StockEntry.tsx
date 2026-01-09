@@ -981,6 +981,188 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               </div>
             </div>
 
+            {/* Weekly Open and Weekly Close Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-sm font-bold text-foreground">WEEKLY OPEN</Label>
+                <div className="flex gap-2 items-center">
+                  <div className="flex-1">
+                    <Select 
+                      value={dropdowns.dropdown3Main}
+                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown3Main: value }))}
+                    >
+                      <SelectTrigger 
+                        className="text-lg font-bold z-50"
+                        style={{ backgroundColor: dropdowns.dropdown3Main ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="WG" className="text-lg font-bold">WG</SelectItem>
+                        <SelectItem value="WR" className="text-lg font-bold">WR</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex-1">
+                    <Select 
+                      value={dropdowns.dropdown3Sub}
+                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown3Sub: value }))}
+                    >
+                      <SelectTrigger 
+                        className="text-lg font-bold z-50"
+                        style={{ backgroundColor: dropdowns.dropdown3Sub ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                        <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                        <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                        <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                        <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className={cn(
+                          "flex-1 justify-start text-left font-normal",
+                          (!selectedDates.dropdown3Date || dateChanged.dropdown3Date) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200",
+                          !selectedDates.dropdown3Date && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {selectedDates.dropdown3Date ? format(selectedDates.dropdown3Date, "PPP") : <span>No date (NILL)</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={selectedDates.dropdown3Date || undefined}
+                        onSelect={(date) => {
+                          if (date) {
+                            setSelectedDates(prev => ({ ...prev, dropdown3Date: date }));
+                            setDateChanged(prev => ({ ...prev, dropdown3Date: true }));
+                          }
+                        }}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedDates(prev => ({ ...prev, dropdown3Date: null }));
+                      setDateChanged(prev => ({ ...prev, dropdown3Date: false }));
+                    }}
+                    className={cn(
+                      !selectedDates.dropdown3Date ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
+                    )}
+                  >
+                    NILL
+                  </Button>
+                </div>
+              </div>
+
+              {/* Dropdown 4 - Weekly Close */}
+              <div className="space-y-2">
+                <Label className="text-sm font-bold text-foreground">WEEKLY CLOSE</Label>
+                <div className="flex gap-2 items-center">
+                  <div className="flex-1">
+                    <Select 
+                      value={dropdowns.dropdown4Main}
+                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Main: value }))}
+                    >
+                      <SelectTrigger 
+                        className="text-lg font-bold z-50"
+                        style={{ backgroundColor: dropdowns.dropdown4Main ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="WG" className="text-lg font-bold">WG</SelectItem>
+                        <SelectItem value="WR" className="text-lg font-bold">WR</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex-1">
+                    <Select 
+                      value={dropdowns.dropdown4Sub}
+                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Sub: value }))}
+                    >
+                      <SelectTrigger 
+                        className="text-lg font-bold z-50"
+                        style={{ backgroundColor: dropdowns.dropdown4Sub ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                        <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                        <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                        <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                        <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className={cn(
+                          "flex-1 justify-start text-left font-normal",
+                          (!selectedDates.dropdown4Date || dateChanged.dropdown4Date) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200",
+                          !selectedDates.dropdown4Date && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {selectedDates.dropdown4Date ? format(selectedDates.dropdown4Date, "PPP") : <span>No date (NILL)</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={selectedDates.dropdown4Date || undefined}
+                        onSelect={(date) => {
+                          if (date) {
+                            setSelectedDates(prev => ({ ...prev, dropdown4Date: date }));
+                            setDateChanged(prev => ({ ...prev, dropdown4Date: true }));
+                          }
+                        }}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedDates(prev => ({ ...prev, dropdown4Date: null }));
+                      setDateChanged(prev => ({ ...prev, dropdown4Date: false }));
+                    }}
+                    className={cn(
+                      !selectedDates.dropdown4Date ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
+                    )}
+                  >
+                    NILL
+                  </Button>
+                </div>
+              </div>
+            </div>
+
             {/* Daily Open and Daily Close Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Dropdown 5 - Daily Open */}
@@ -1156,188 +1338,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                     }}
                     className={cn(
                       !selectedDates.dropdown6Date ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
-                    )}
-                  >
-                    NILL
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* Weekly Open and Weekly Close Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label className="text-sm font-bold text-foreground">WEEKLY OPEN</Label>
-                <div className="flex gap-2 items-center">
-                  <div className="flex-1">
-                    <Select 
-                      value={dropdowns.dropdown3Main}
-                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown3Main: value }))}
-                    >
-                      <SelectTrigger 
-                        className="text-lg font-bold z-50"
-                        style={{ backgroundColor: dropdowns.dropdown3Main ? '#dcfce7' : '#ffe3e2' }}
-                      >
-                        <SelectValue placeholder="" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-card z-[100]">
-                        <SelectItem value="WG" className="text-lg font-bold">WG</SelectItem>
-                        <SelectItem value="WR" className="text-lg font-bold">WR</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex-1">
-                    <Select 
-                      value={dropdowns.dropdown3Sub}
-                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown3Sub: value }))}
-                    >
-                      <SelectTrigger 
-                        className="text-lg font-bold z-50"
-                        style={{ backgroundColor: dropdowns.dropdown3Sub ? '#dcfce7' : '#ffe3e2' }}
-                      >
-                        <SelectValue placeholder="" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-card z-[100]">
-                        <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
-                        <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
-                        <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
-                        <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
-                        <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className={cn(
-                          "flex-1 justify-start text-left font-normal",
-                          (!selectedDates.dropdown3Date || dateChanged.dropdown3Date) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200",
-                          !selectedDates.dropdown3Date && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {selectedDates.dropdown3Date ? format(selectedDates.dropdown3Date, "PPP") : <span>No date (NILL)</span>}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={selectedDates.dropdown3Date || undefined}
-                        onSelect={(date) => {
-                          if (date) {
-                            setSelectedDates(prev => ({ ...prev, dropdown3Date: date }));
-                            setDateChanged(prev => ({ ...prev, dropdown3Date: true }));
-                          }
-                        }}
-                        initialFocus
-                        className={cn("p-3 pointer-events-auto")}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setSelectedDates(prev => ({ ...prev, dropdown3Date: null }));
-                      setDateChanged(prev => ({ ...prev, dropdown3Date: false }));
-                    }}
-                    className={cn(
-                      !selectedDates.dropdown3Date ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
-                    )}
-                  >
-                    NILL
-                  </Button>
-                </div>
-              </div>
-
-              {/* Dropdown 4 - Weekly Close */}
-              <div className="space-y-2">
-                <Label className="text-sm font-bold text-foreground">WEEKLY CLOSE</Label>
-                <div className="flex gap-2 items-center">
-                  <div className="flex-1">
-                    <Select 
-                      value={dropdowns.dropdown4Main}
-                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Main: value }))}
-                    >
-                      <SelectTrigger 
-                        className="text-lg font-bold z-50"
-                        style={{ backgroundColor: dropdowns.dropdown4Main ? '#dcfce7' : '#ffe3e2' }}
-                      >
-                        <SelectValue placeholder="" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-card z-[100]">
-                        <SelectItem value="WG" className="text-lg font-bold">WG</SelectItem>
-                        <SelectItem value="WR" className="text-lg font-bold">WR</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex-1">
-                    <Select 
-                      value={dropdowns.dropdown4Sub}
-                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown4Sub: value }))}
-                    >
-                      <SelectTrigger 
-                        className="text-lg font-bold z-50"
-                        style={{ backgroundColor: dropdowns.dropdown4Sub ? '#dcfce7' : '#ffe3e2' }}
-                      >
-                        <SelectValue placeholder="" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-card z-[100]">
-                        <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
-                        <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
-                        <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
-                        <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
-                        <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className={cn(
-                          "flex-1 justify-start text-left font-normal",
-                          (!selectedDates.dropdown4Date || dateChanged.dropdown4Date) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200",
-                          !selectedDates.dropdown4Date && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {selectedDates.dropdown4Date ? format(selectedDates.dropdown4Date, "PPP") : <span>No date (NILL)</span>}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={selectedDates.dropdown4Date || undefined}
-                        onSelect={(date) => {
-                          if (date) {
-                            setSelectedDates(prev => ({ ...prev, dropdown4Date: date }));
-                            setDateChanged(prev => ({ ...prev, dropdown4Date: true }));
-                          }
-                        }}
-                        initialFocus
-                        className={cn("p-3 pointer-events-auto")}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setSelectedDates(prev => ({ ...prev, dropdown4Date: null }));
-                      setDateChanged(prev => ({ ...prev, dropdown4Date: false }));
-                    }}
-                    className={cn(
-                      !selectedDates.dropdown4Date ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
                     )}
                   >
                     NILL
