@@ -1348,17 +1348,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
           </div>
 
 
-          {/* Part 1 Notes */}
-          <div className="space-y-2">
-            <Label htmlFor="part1Notes" className="text-xl font-bold">NOTES</Label>
-            <Textarea
-              id="part1Notes"
-              placeholder=""
-              value={formData.part1Notes}
-              onChange={(e) => setFormData(prev => ({ ...prev, part1Notes: e.target.value.toUpperCase() }))}
-              className="min-h-[80px]"
-            />
-          </div>
 
           {/* Part 1 Buttons */}
           <div className="flex gap-2">
@@ -1768,6 +1757,48 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   NILL
                 </Button>
               </div>
+            </div>
+          </div>
+          
+          {/* Part 2 Notes with Image */}
+          <div className="space-y-2">
+            <Label htmlFor="notes" className="text-xl font-bold">NOTES</Label>
+            <Textarea
+              id="notes"
+              placeholder=""
+              value={formData.notes}
+              onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value.toUpperCase() }))}
+              className="min-h-[80px]"
+            />
+            
+            {/* Image Upload */}
+            <div className="flex items-center gap-2">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageSelect}
+                className="hidden"
+                id="image-upload"
+              />
+              <label
+                htmlFor="image-upload"
+                className="flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground rounded-md cursor-pointer hover:bg-secondary/80"
+              >
+                <Paperclip className="h-4 w-4" />
+                Attach Image
+              </label>
+              {imagePreview && (
+                <div className="relative">
+                  <img src={imagePreview} alt="Preview" className="h-16 w-16 object-cover rounded" />
+                  <button
+                    type="button"
+                    onClick={removeImage}
+                    className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
           
