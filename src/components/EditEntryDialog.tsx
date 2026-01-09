@@ -1002,6 +1002,94 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
                       <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
                     </SelectContent>
                   </Select>
+              </div>
+              </div>
+
+              {/* 15 Minute Section */}
+              <div className="space-y-2">
+                <Label className="text-lg font-bold">15 Minute</Label>
+                <div className="grid grid-cols-3 gap-4">
+                  <Select 
+                    value={dropdowns.dropdown5Main}
+                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown5Main: value }))}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold"
+                      style={{ backgroundColor: dropdowns.dropdown5Main ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background z-[100]">
+                      <SelectItem value="OG" className="text-lg font-bold">OG</SelectItem>
+                      <SelectItem value="OR" className="text-lg font-bold">OR</SelectItem>
+                      <SelectItem value="CG" className="text-lg font-bold">CG</SelectItem>
+                      <SelectItem value="CR" className="text-lg font-bold">CR</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  
+                  <Select 
+                    value={dropdowns.dropdown5Sub}
+                    onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown5Sub: value }))}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold"
+                      style={{ backgroundColor: dropdowns.dropdown5Sub ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background z-[100]">
+                      <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                      <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                      <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
+                      <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                      <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <div className="flex gap-2">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className={cn(
+                            "flex-1 justify-start text-left font-normal",
+                            (!selectedDates.dropdown5Date || dateChanged.dropdown5Date) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {selectedDates.dropdown5Date ? format(selectedDates.dropdown5Date, "PPP") : <span>NILL</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={selectedDates.dropdown5Date || undefined}
+                          onSelect={(date) => {
+                            if (date) {
+                              setSelectedDates(prev => ({ ...prev, dropdown5Date: date }));
+                              setDateChanged(prev => ({ ...prev, dropdown5Date: true }));
+                            }
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedDates(prev => ({ ...prev, dropdown5Date: null }));
+                        setDateChanged(prev => ({ ...prev, dropdown5Date: false }));
+                      }}
+                      className={cn(
+                        !selectedDates.dropdown5Date ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
+                      )}
+                    >
+                      NILL
+                    </Button>
+                  </div>
                 </div>
               </div>
 
