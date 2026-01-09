@@ -1426,35 +1426,6 @@ const StockSearch: React.FC = () => {
                 </div>
               </div>
 
-              {/* Part 1 - DIRECTION A, COLOUR, B */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <SimpleOptionSelector
-                    label="DIRECTION A"
-                    selectedValue={searchData.stock2}
-                    onValueChange={(value) => setSearchData(prev => ({ ...prev, stock2: value }))}
-                    baseOptions={['CG UP', 'CG IN', 'CG DOWN', 'CR UP', 'CR IN', 'CR DOWN']}
-                    hideModifier={true}
-                  />
-                  <SimpleOptionSelector
-                    label="COLOUR"
-                    selectedValue={searchData.stock2bColor || ''}
-                    onValueChange={(value) => setSearchData(prev => ({ ...prev, stock2bColor: value }))}
-                    baseOptions={['RED', 'GREEN']}
-                    hideModifier={true}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <SimpleOptionSelector
-                    label="B"
-                    selectedValue={searchData.stock2b}
-                    onValueChange={(value) => setSearchData(prev => ({ ...prev, stock2b: value }))}
-                    baseOptions={['CG IN', 'CG DOWN', 'CG UP', 'CR IN', 'CR UP', 'CR DOWN']}
-                    hideModifier={true}
-                    customBackgroundStyle={{ empty: { backgroundColor: '#ffe3e2' }, filled: { backgroundColor: '#dcfce7' } }}
-                  />
-                </div>
-              </div>
 
               {/* Part 2 - OPEN DIRECTION A/B/C/D */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
