@@ -723,7 +723,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Dropdown 1 */}
               <div className="space-y-2">
-                <Label className="text-sm font-bold text-foreground">OPEN</Label>
+                <Label className="text-sm font-bold text-foreground">MONTHLY OPEN</Label>
                 <div className="flex gap-2 items-center">
                   <div className="flex-1">
                     <Select 
@@ -813,7 +813,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
 
               {/* Dropdown 2 */}
               <div className="space-y-2">
-                <Label className="text-sm font-bold text-foreground">CLOSE</Label>
+                <Label className="text-sm font-bold text-foreground">MONTHLY CLOSE</Label>
                 <div className="flex gap-2 items-center">
                   <div className="flex-1">
                     <Select 
