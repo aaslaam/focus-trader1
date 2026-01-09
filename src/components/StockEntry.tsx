@@ -1409,6 +1409,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   <SelectContent className="bg-background">
                     <SelectItem value="OG" className="text-lg font-bold">OG</SelectItem>
                     <SelectItem value="OR" className="text-lg font-bold">OR</SelectItem>
+                    <SelectItem value="CG" className="text-lg font-bold">CG</SelectItem>
+                    <SelectItem value="CR" className="text-lg font-bold">CR</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
