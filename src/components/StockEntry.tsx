@@ -903,7 +903,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
 
               {/* Dropdown 3 */}
               <div className="space-y-2">
-                <Label className="text-sm font-bold text-foreground">INTRO 3</Label>
+                <Label className="text-sm font-bold text-foreground">WEEKLY OPEN</Label>
                 <div className="flex gap-2 items-center">
                   <div className="flex-1">
                     <Select 
@@ -917,8 +917,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                         <SelectValue placeholder="" />
                       </SelectTrigger>
                       <SelectContent className="bg-card z-[100]">
-                        <SelectItem value="DG" className="text-lg font-bold">DG</SelectItem>
-                        <SelectItem value="DR" className="text-lg font-bold">DR</SelectItem>
+                        <SelectItem value="WG" className="text-lg font-bold">WG</SelectItem>
+                        <SelectItem value="WR" className="text-lg font-bold">WR</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
