@@ -740,7 +740,7 @@ const StockSearch: React.FC = () => {
               {/* 15 Minute Section */}
               <div className="space-y-2">
                 <Label className="text-lg font-bold">15 Minute</Label>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   <Select 
                     value={searchData.dropdown1?.split(' ')[0] || ''}
                     onValueChange={(value) => {
@@ -785,44 +785,12 @@ const StockSearch: React.FC = () => {
                       <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
                     </SelectContent>
                   </Select>
-
-                  <div className="flex gap-2">
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className={cn(
-                            "flex-1 justify-start text-left font-normal bg-green-100 hover:bg-green-200"
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          <span>NILL</span>
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <CalendarComponent
-                          mode="single"
-                          initialFocus
-                          className={cn("p-3 pointer-events-auto")}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="bg-green-100 hover:bg-green-200 text-gray-900"
-                    >
-                      NILL
-                    </Button>
-                  </div>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-bold">OPEN</Label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Label className="text-sm font-bold">CANDLE NO'S</Label>
+                <div className="grid grid-cols-2 gap-4">
                   <Select 
                     value={searchData.ogCandle.split(' ')[0] + ' ' + searchData.ogCandle.split(' ')[1] || ''}
                     onValueChange={(value) => {
@@ -871,7 +839,7 @@ const StockSearch: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <SimpleOptionSelector
-                    label="OG OPEN A"
+                    label="OPEN"
                     selectedValue={searchData.ogOpenA}
                     onValueChange={(value) => setSearchData(prev => ({ ...prev, ogOpenA: value }))}
                     baseOptions={['OR-', 'OR+', 'ORB', 'OG-', 'OG+', 'OGB', 'CG-', 'CG+', 'CGB', 'CR-', 'CR+', 'CRB']}

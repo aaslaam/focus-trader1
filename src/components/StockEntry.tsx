@@ -1532,7 +1532,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
           {/* 15 Minute Section */}
           <div className="space-y-2">
             <Label className="text-lg font-bold">15 Minute</Label>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <Select 
                 value={newDropdowns.dropdown5}
                 onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown5: value }))}
@@ -1569,58 +1569,13 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
                 </SelectContent>
               </Select>
-
-              <div className="flex gap-2">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className={cn(
-                        "flex-1 justify-start text-left font-normal",
-                        (!selectedDates.dropdown5Date || dateChanged.dropdown5Date) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200",
-                        !selectedDates.dropdown5Date && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {selectedDates.dropdown5Date ? format(selectedDates.dropdown5Date, "PPP") : <span>NILL</span>}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={selectedDates.dropdown5Date || undefined}
-                      onSelect={(date) => {
-                        setSelectedDates(prev => ({ ...prev, dropdown5Date: date || null }));
-                        setDateChanged(prev => ({ ...prev, dropdown5Date: true }));
-                      }}
-                      initialFocus
-                      className={cn("p-3 pointer-events-auto")}
-                    />
-                  </PopoverContent>
-                </Popover>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedDates(prev => ({ ...prev, dropdown5Date: null }));
-                    setDateChanged(prev => ({ ...prev, dropdown5Date: false }));
-                  }}
-                  className={cn(
-                    !selectedDates.dropdown5Date ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
-                  )}
-                >
-                  NILL
-                </Button>
-              </div>
             </div>
           </div>
           
-          {/* OPEN Section */}
+          {/* CANDLE NO'S Section - Select Candle and Select Colour in same row */}
           <div className="space-y-2">
-            <Label className="text-lg font-bold">OPEN</Label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Label className="text-lg font-bold">CANDLE NO'S</Label>
+            <div className="grid grid-cols-2 gap-4">
               {/* First Dropdown: CANDLE 1-25 */}
               <Select 
                 value={dropdowns.candleMain}
@@ -1660,11 +1615,11 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
             </div>
           </div>
           
-          {/* OG OPEN A and OG CLOSE A Dropdowns in Same Row */}
+          {/* OPEN and OG CLOSE A Dropdowns in Same Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* OG OPEN A */}
+            {/* OPEN */}
             <div className="space-y-2">
-              <Label className="text-lg font-bold">OG OPEN A</Label>
+              <Label className="text-lg font-bold">OPEN</Label>
               <Select 
                 value={formData.ogOpenA}
                 onValueChange={(value) => setFormData(prev => ({ ...prev, ogOpenA: value }))}
