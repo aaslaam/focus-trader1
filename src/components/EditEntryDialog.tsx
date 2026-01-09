@@ -1005,9 +1005,9 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
                 </div>
               </div>
 
-              {/* OG CANDLE */}
+              {/* OPEN */}
               <div className="space-y-2">
-                <Label className="text-sm font-bold">OG CANDLE</Label>
+                <Label className="text-sm font-bold">OPEN</Label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Select 
                     value={dropdowns.candleMain}

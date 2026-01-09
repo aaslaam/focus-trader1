@@ -1529,9 +1529,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
             </div>
           </div>
           
-          {/* OG CANDLE Section */}
+          {/* OPEN Section */}
           <div className="space-y-2">
-            <Label className="text-lg font-bold">OG CANDLE</Label>
+            <Label className="text-lg font-bold">OPEN</Label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* First Dropdown: CANDLE 1-25 */}
               <Select 
