@@ -915,6 +915,70 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
             <div className="space-y-4 border-t pt-4">
               <h3 className="text-lg font-bold underline" style={{ color: '#e1f2ff' }}>PART 2 FIELDS</h3>
               
+              {/* 15 Minute and CANDLE NO'S in same row - moved above Direction fields */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* 15 Minute Section */}
+                <div className="space-y-2">
+                  <Label className="text-lg font-bold">15 Minute</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Select 
+                      value={dropdowns.dropdown5Main}
+                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown5Main: value }))}
+                    >
+                      <SelectTrigger className="text-lg font-bold" style={{ backgroundColor: dropdowns.dropdown5Main ? '#dcfce7' : '#ffe3e2' }}>
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background z-[100]">
+                        <SelectItem value="OG" className="text-lg font-bold">OG</SelectItem>
+                        <SelectItem value="OR" className="text-lg font-bold">OR</SelectItem>
+                        <SelectItem value="CG" className="text-lg font-bold">CG</SelectItem>
+                        <SelectItem value="CR" className="text-lg font-bold">CR</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select 
+                      value={dropdowns.dropdown5Sub}
+                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown5Sub: value }))}
+                    >
+                      <SelectTrigger className="text-lg font-bold" style={{ backgroundColor: dropdowns.dropdown5Sub ? '#dcfce7' : '#ffe3e2' }}>
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background z-[100]">
+                        <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                        <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                        <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
+                        <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                        <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                {/* CANDLE NO'S Section */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-bold">CANDLE NO'S</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Select value={dropdowns.candleMain} onValueChange={(value) => setDropdowns(prev => ({ ...prev, candleMain: value }))}>
+                      <SelectTrigger className="text-lg font-bold" style={{ backgroundColor: dropdowns.candleMain ? '#dcfce7' : '#ffe3e2' }}>
+                        <SelectValue placeholder="Select Candle" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        {Array.from({ length: 25 }, (_, i) => i + 1).map(num => (
+                          <SelectItem key={num} value={`CANDLE ${num}`} className="text-lg font-bold">CANDLE {num}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select value={dropdowns.candleSub} onValueChange={(value) => setDropdowns(prev => ({ ...prev, candleSub: value }))}>
+                      <SelectTrigger className="text-lg font-bold" style={{ backgroundColor: dropdowns.candleSub ? '#dcfce7' : '#ffe3e2' }}>
+                        <SelectValue placeholder="Select Color" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="RED" className="text-lg font-bold">RED</SelectItem>
+                        <SelectItem value="GREEN" className="text-lg font-bold">GREEN</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+
               {/* DIRECTION A, B, C, D */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
@@ -1006,92 +1070,7 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
               </div>
               </div>
 
-              {/* 15 Minute and CANDLE NO'S in same row */}
-              <div className="grid grid-cols-2 gap-4">
-                {/* 15 Minute Section */}
-                <div className="space-y-2">
-                  <Label className="text-lg font-bold">15 Minute</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Select 
-                      value={dropdowns.dropdown5Main}
-                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown5Main: value }))}
-                    >
-                      <SelectTrigger 
-                        className="text-lg font-bold"
-                        style={{ backgroundColor: dropdowns.dropdown5Main ? '#dcfce7' : '#ffe3e2' }}
-                      >
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-background z-[100]">
-                        <SelectItem value="OG" className="text-lg font-bold">OG</SelectItem>
-                        <SelectItem value="OR" className="text-lg font-bold">OR</SelectItem>
-                        <SelectItem value="CG" className="text-lg font-bold">CG</SelectItem>
-                        <SelectItem value="CR" className="text-lg font-bold">CR</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    
-                    <Select 
-                      value={dropdowns.dropdown5Sub}
-                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown5Sub: value }))}
-                    >
-                      <SelectTrigger 
-                        className="text-lg font-bold"
-                        style={{ backgroundColor: dropdowns.dropdown5Sub ? '#dcfce7' : '#ffe3e2' }}
-                      >
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-background z-[100]">
-                        <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
-                        <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
-                        <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
-                        <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
-                        <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                
-                {/* CANDLE NO'S Section */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-bold">CANDLE NO'S</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Select 
-                      value={dropdowns.candleMain}
-                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, candleMain: value }))}
-                    >
-                      <SelectTrigger 
-                        className="text-lg font-bold"
-                        style={{ backgroundColor: dropdowns.candleMain ? '#dcfce7' : '#ffe3e2' }}
-                      >
-                        <SelectValue placeholder="Select Candle" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-card z-[100]">
-                        {Array.from({ length: 25 }, (_, i) => i + 1).map(num => (
-                          <SelectItem key={num} value={`CANDLE ${num}`} className="text-lg font-bold">
-                            CANDLE {num}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    
-                    <Select 
-                      value={dropdowns.candleSub}
-                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, candleSub: value }))}
-                    >
-                      <SelectTrigger 
-                        className="text-lg font-bold"
-                        style={{ backgroundColor: dropdowns.candleSub ? '#dcfce7' : '#ffe3e2' }}
-                      >
-                        <SelectValue placeholder="Select Color" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-card z-[100]">
-                        <SelectItem value="RED" className="text-lg font-bold">RED</SelectItem>
-                        <SelectItem value="GREEN" className="text-lg font-bold">GREEN</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </div>
+
 
               {/* OPEN and OG CLOSE A */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
