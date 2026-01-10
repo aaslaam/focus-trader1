@@ -62,7 +62,9 @@ const StockSearch: React.FC = () => {
     dropdown4: '',
     ogCandle: '',
     ogOpenA: '',
+    sdOpenA: '',
     ogCloseA: '',
+    sdCloseA: '',
     serialNumber: '',
     notes: ''
   });
@@ -696,7 +698,7 @@ const StockSearch: React.FC = () => {
                     type="button"
                     variant="outline"
                     onClick={() => {
-                      setSearchData({ stock1: '', stock2: '', stock2b: '', stock2bColor: '', stock3: '', openb: '', stock4: '', stock4b: '', dropdown1: '', dropdown2: '', dropdown3: '', dropdown4: '', ogCandle: '', ogOpenA: '', ogCloseA: '', serialNumber: '', notes: '' });
+                      setSearchData({ stock1: '', stock2: '', stock2b: '', stock2bColor: '', stock3: '', openb: '', stock4: '', stock4b: '', dropdown1: '', dropdown2: '', dropdown3: '', dropdown4: '', ogCandle: '', ogOpenA: '', sdOpenA: '', ogCloseA: '', sdCloseA: '', serialNumber: '', notes: '' });
                       setFilter('');
                       setSearchResult(null);
                       setAllResults([]);
@@ -964,22 +966,42 @@ const StockSearch: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <SimpleOptionSelector
-                    label="OPEN"
-                    selectedValue={searchData.ogOpenA}
-                    onValueChange={(value) => setSearchData(prev => ({ ...prev, ogOpenA: value }))}
-                    baseOptions={['OR-', 'OR+', 'ORB', 'OG-', 'OG+', 'OGB', 'CG-', 'CG+', 'CGB', 'CR-', 'CR+', 'CRB']}
-                    hideModifier={true}
-                  />
+                  <Label className="text-lg font-bold">OPEN</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <SimpleOptionSelector
+                      label=""
+                      selectedValue={searchData.ogOpenA}
+                      onValueChange={(value) => setSearchData(prev => ({ ...prev, ogOpenA: value }))}
+                      baseOptions={['OR-', 'OR+', 'ORB', 'OG-', 'OG+', 'OGB', 'CG-', 'CG+', 'CGB', 'CR-', 'CR+', 'CRB']}
+                      hideModifier={true}
+                    />
+                    <SimpleOptionSelector
+                      label=""
+                      selectedValue={searchData.sdOpenA}
+                      onValueChange={(value) => setSearchData(prev => ({ ...prev, sdOpenA: value }))}
+                      baseOptions={['SD OR-', 'SD OR+', 'SD ORB', 'SD OG-', 'SD OG+', 'SD OGB', 'SD CG-', 'SD CG+', 'SD CGB', 'SD CR-', 'SD CR+', 'SD CRB']}
+                      hideModifier={true}
+                    />
+                  </div>
                 </div>
                 <div className="space-y-2">
-                  <SimpleOptionSelector
-                    label="OG CLOSE A"
-                    selectedValue={searchData.ogCloseA}
-                    onValueChange={(value) => setSearchData(prev => ({ ...prev, ogCloseA: value }))}
-                    baseOptions={['OR-', 'OR+', 'ORB', 'OG-', 'OG+', 'OGB', 'CG-', 'CG+', 'CGB', 'CR-', 'CR+', 'CRB']}
-                    hideModifier={true}
-                  />
+                  <Label className="text-lg font-bold">CLOSE</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <SimpleOptionSelector
+                      label=""
+                      selectedValue={searchData.ogCloseA}
+                      onValueChange={(value) => setSearchData(prev => ({ ...prev, ogCloseA: value }))}
+                      baseOptions={['OR-', 'OR+', 'ORB', 'OG-', 'OG+', 'OGB', 'CG-', 'CG+', 'CGB', 'CR-', 'CR+', 'CRB']}
+                      hideModifier={true}
+                    />
+                    <SimpleOptionSelector
+                      label=""
+                      selectedValue={searchData.sdCloseA}
+                      onValueChange={(value) => setSearchData(prev => ({ ...prev, sdCloseA: value }))}
+                      baseOptions={['SD OR-', 'SD OR+', 'SD ORB', 'SD OG-', 'SD OG+', 'SD OGB', 'SD CG-', 'SD CG+', 'SD CGB', 'SD CR-', 'SD CR+', 'SD CRB']}
+                      hideModifier={true}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -1044,7 +1066,7 @@ const StockSearch: React.FC = () => {
                     type="button"
                     variant="outline"
                     onClick={() => {
-                      setSearchData({ stock1: '', stock2: '', stock2b: '', stock2bColor: '', stock3: '', openb: '', stock4: '', stock4b: '', dropdown1: '', dropdown2: '', dropdown3: '', dropdown4: '', ogCandle: '', ogOpenA: '', ogCloseA: '', serialNumber: '', notes: '' });
+                      setSearchData({ stock1: '', stock2: '', stock2b: '', stock2bColor: '', stock3: '', openb: '', stock4: '', stock4b: '', dropdown1: '', dropdown2: '', dropdown3: '', dropdown4: '', ogCandle: '', ogOpenA: '', sdOpenA: '', ogCloseA: '', sdCloseA: '', serialNumber: '', notes: '' });
                       setFilter('');
                       setSearchResult(null);
                       setAllResults([]);
@@ -1638,66 +1660,126 @@ const StockSearch: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label className="text-lg font-bold">OPEN</Label>
-                  <Select 
-                    value={searchData.ogOpenA}
-                    onValueChange={(value) => {
-                      setSearchData(prev => ({ ...prev, ogOpenA: value }));
-                      setTimeout(() => performSearch(), 100);
-                    }}
-                  >
-                    <SelectTrigger 
-                      className="text-lg font-bold"
-                      style={{ backgroundColor: searchData.ogOpenA ? '#dcfce7' : '#ffe3e2' }}
+                  <div className="grid grid-cols-2 gap-2">
+                    <Select 
+                      value={searchData.ogOpenA}
+                      onValueChange={(value) => {
+                        setSearchData(prev => ({ ...prev, ogOpenA: value }));
+                        setTimeout(() => performSearch(), 100);
+                      }}
                     >
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
-                      <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
-                      <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
-                      <SelectItem value="OG-" className="text-lg font-bold">OG-</SelectItem>
-                      <SelectItem value="OG+" className="text-lg font-bold">OG+</SelectItem>
-                      <SelectItem value="OGB" className="text-lg font-bold">OGB</SelectItem>
-                      <SelectItem value="CG-" className="text-lg font-bold">CG-</SelectItem>
-                      <SelectItem value="CG+" className="text-lg font-bold">CG+</SelectItem>
-                      <SelectItem value="CGB" className="text-lg font-bold">CGB</SelectItem>
-                      <SelectItem value="CR-" className="text-lg font-bold">CR-</SelectItem>
-                      <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
-                      <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
-                    </SelectContent>
-                  </Select>
+                      <SelectTrigger 
+                        className="text-lg font-bold"
+                        style={{ backgroundColor: searchData.ogOpenA ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
+                        <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
+                        <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
+                        <SelectItem value="OG-" className="text-lg font-bold">OG-</SelectItem>
+                        <SelectItem value="OG+" className="text-lg font-bold">OG+</SelectItem>
+                        <SelectItem value="OGB" className="text-lg font-bold">OGB</SelectItem>
+                        <SelectItem value="CG-" className="text-lg font-bold">CG-</SelectItem>
+                        <SelectItem value="CG+" className="text-lg font-bold">CG+</SelectItem>
+                        <SelectItem value="CGB" className="text-lg font-bold">CGB</SelectItem>
+                        <SelectItem value="CR-" className="text-lg font-bold">CR-</SelectItem>
+                        <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
+                        <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select 
+                      value={searchData.sdOpenA}
+                      onValueChange={(value) => {
+                        setSearchData(prev => ({ ...prev, sdOpenA: value }));
+                        setTimeout(() => performSearch(), 100);
+                      }}
+                    >
+                      <SelectTrigger 
+                        className="text-lg font-bold"
+                        style={{ backgroundColor: searchData.sdOpenA ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="SD" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="SD OR-" className="text-lg font-bold">SD OR-</SelectItem>
+                        <SelectItem value="SD OR+" className="text-lg font-bold">SD OR+</SelectItem>
+                        <SelectItem value="SD ORB" className="text-lg font-bold">SD ORB</SelectItem>
+                        <SelectItem value="SD OG-" className="text-lg font-bold">SD OG-</SelectItem>
+                        <SelectItem value="SD OG+" className="text-lg font-bold">SD OG+</SelectItem>
+                        <SelectItem value="SD OGB" className="text-lg font-bold">SD OGB</SelectItem>
+                        <SelectItem value="SD CG-" className="text-lg font-bold">SD CG-</SelectItem>
+                        <SelectItem value="SD CG+" className="text-lg font-bold">SD CG+</SelectItem>
+                        <SelectItem value="SD CGB" className="text-lg font-bold">SD CGB</SelectItem>
+                        <SelectItem value="SD CR-" className="text-lg font-bold">SD CR-</SelectItem>
+                        <SelectItem value="SD CR+" className="text-lg font-bold">SD CR+</SelectItem>
+                        <SelectItem value="SD CRB" className="text-lg font-bold">SD CRB</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 
                 <div className="space-y-2">
-                  <Label className="text-lg font-bold">OG CLOSE A</Label>
-                  <Select 
-                    value={searchData.ogCloseA}
-                    onValueChange={(value) => {
-                      setSearchData(prev => ({ ...prev, ogCloseA: value }));
-                      setTimeout(() => performSearch(), 100);
-                    }}
-                  >
-                    <SelectTrigger 
-                      className="text-lg font-bold"
-                      style={{ backgroundColor: searchData.ogCloseA ? '#dcfce7' : '#ffe3e2' }}
+                  <Label className="text-lg font-bold">CLOSE</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Select 
+                      value={searchData.ogCloseA}
+                      onValueChange={(value) => {
+                        setSearchData(prev => ({ ...prev, ogCloseA: value }));
+                        setTimeout(() => performSearch(), 100);
+                      }}
                     >
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card z-[100]">
-                      <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
-                      <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
-                      <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
-                      <SelectItem value="OG-" className="text-lg font-bold">OG-</SelectItem>
-                      <SelectItem value="OG+" className="text-lg font-bold">OG+</SelectItem>
-                      <SelectItem value="OGB" className="text-lg font-bold">OGB</SelectItem>
-                      <SelectItem value="CG-" className="text-lg font-bold">CG-</SelectItem>
-                      <SelectItem value="CG+" className="text-lg font-bold">CG+</SelectItem>
-                      <SelectItem value="CGB" className="text-lg font-bold">CGB</SelectItem>
-                      <SelectItem value="CR-" className="text-lg font-bold">CR-</SelectItem>
-                      <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
-                      <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
-                    </SelectContent>
-                  </Select>
+                      <SelectTrigger 
+                        className="text-lg font-bold"
+                        style={{ backgroundColor: searchData.ogCloseA ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
+                        <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
+                        <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
+                        <SelectItem value="OG-" className="text-lg font-bold">OG-</SelectItem>
+                        <SelectItem value="OG+" className="text-lg font-bold">OG+</SelectItem>
+                        <SelectItem value="OGB" className="text-lg font-bold">OGB</SelectItem>
+                        <SelectItem value="CG-" className="text-lg font-bold">CG-</SelectItem>
+                        <SelectItem value="CG+" className="text-lg font-bold">CG+</SelectItem>
+                        <SelectItem value="CGB" className="text-lg font-bold">CGB</SelectItem>
+                        <SelectItem value="CR-" className="text-lg font-bold">CR-</SelectItem>
+                        <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
+                        <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select 
+                      value={searchData.sdCloseA}
+                      onValueChange={(value) => {
+                        setSearchData(prev => ({ ...prev, sdCloseA: value }));
+                        setTimeout(() => performSearch(), 100);
+                      }}
+                    >
+                      <SelectTrigger 
+                        className="text-lg font-bold"
+                        style={{ backgroundColor: searchData.sdCloseA ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="SD" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="SD OR-" className="text-lg font-bold">SD OR-</SelectItem>
+                        <SelectItem value="SD OR+" className="text-lg font-bold">SD OR+</SelectItem>
+                        <SelectItem value="SD ORB" className="text-lg font-bold">SD ORB</SelectItem>
+                        <SelectItem value="SD OG-" className="text-lg font-bold">SD OG-</SelectItem>
+                        <SelectItem value="SD OG+" className="text-lg font-bold">SD OG+</SelectItem>
+                        <SelectItem value="SD OGB" className="text-lg font-bold">SD OGB</SelectItem>
+                        <SelectItem value="SD CG-" className="text-lg font-bold">SD CG-</SelectItem>
+                        <SelectItem value="SD CG+" className="text-lg font-bold">SD CG+</SelectItem>
+                        <SelectItem value="SD CGB" className="text-lg font-bold">SD CGB</SelectItem>
+                        <SelectItem value="SD CR-" className="text-lg font-bold">SD CR-</SelectItem>
+                        <SelectItem value="SD CR+" className="text-lg font-bold">SD CR+</SelectItem>
+                        <SelectItem value="SD CRB" className="text-lg font-bold">SD CRB</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
 
@@ -1762,7 +1844,7 @@ const StockSearch: React.FC = () => {
                 type="button"
                 variant="outline"
                 onClick={() => {
-                  setSearchData({ stock1: '', stock2: '', stock2b: '', stock2bColor: '', stock3: '', openb: '', stock4: '', stock4b: '', dropdown1: '', dropdown2: '', dropdown3: '', dropdown4: '', ogCandle: '', ogOpenA: '', ogCloseA: '', serialNumber: '', notes: '' });
+                  setSearchData({ stock1: '', stock2: '', stock2b: '', stock2bColor: '', stock3: '', openb: '', stock4: '', stock4b: '', dropdown1: '', dropdown2: '', dropdown3: '', dropdown4: '', ogCandle: '', ogOpenA: '', sdOpenA: '', ogCloseA: '', sdCloseA: '', serialNumber: '', notes: '' });
                   setFilter('');
                   setSearchResult(null);
                   setAllResults([]);

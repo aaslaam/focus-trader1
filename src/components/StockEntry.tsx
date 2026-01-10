@@ -96,7 +96,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     classification: '' as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL' | '',
     ogCandle: '',
     ogOpenA: '',
+    sdOpenA: '',
     ogCloseA: '',
+    sdCloseA: '',
     notes: '',
     part1Result: '' as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL' | '',
     part1Notes: '',
@@ -497,7 +499,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       classification: '',
       ogCandle: '',
       ogOpenA: '',
+      sdOpenA: '',
       ogCloseA: '',
+      sdCloseA: '',
       notes: '',
       part1Result: '',
       part1Notes: '',
@@ -575,7 +579,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       classification: '',
       ogCandle: '',
       ogOpenA: '',
+      sdOpenA: '',
       ogCloseA: '',
+      sdCloseA: '',
       notes: '',
       part1Result: '',
       part1Notes: '',
@@ -711,14 +717,16 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         stock3: '',
         stock4: '',
         classification: '',
-      ogCandle: '',
-      ogOpenA: '',
-      ogCloseA: '',
-      notes: '',
-      part1Result: '',
-      part1Notes: '',
-      part2Result: ''
-    });
+        ogCandle: '',
+        ogOpenA: '',
+        sdOpenA: '',
+        ogCloseA: '',
+        sdCloseA: '',
+        notes: '',
+        part1Result: '',
+        part1Notes: '',
+        part2Result: ''
+      });
     setPart1SavedData(null);
     setNewDropdowns({
       dropdown1: '',
@@ -1607,34 +1615,61 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
           </div>
           {/* OPEN and OG CLOSE A Dropdowns in Same Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* OPEN */}
+            {/* OPEN with SD OPEN */}
             <div className="space-y-2">
               <Label className="text-lg font-bold">OPEN</Label>
-              <Select 
-                value={formData.ogOpenA}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, ogOpenA: value }))}
-              >
-                <SelectTrigger 
-                  className="text-lg font-bold"
-                  style={{ backgroundColor: formData.ogOpenA ? '#dcfce7' : '#ffe3e2' }}
+              <div className="grid grid-cols-2 gap-2">
+                <Select 
+                  value={formData.ogOpenA}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, ogOpenA: value }))}
                 >
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent className="bg-card z-[100]">
-                  <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
-                  <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
-                  <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
-                  <SelectItem value="OG-" className="text-lg font-bold">OG-</SelectItem>
-                  <SelectItem value="OG+" className="text-lg font-bold">OG+</SelectItem>
-                  <SelectItem value="OGB" className="text-lg font-bold">OGB</SelectItem>
-                  <SelectItem value="CG-" className="text-lg font-bold">CG-</SelectItem>
-                  <SelectItem value="CG+" className="text-lg font-bold">CG+</SelectItem>
-                  <SelectItem value="CGB" className="text-lg font-bold">CGB</SelectItem>
-                  <SelectItem value="CR-" className="text-lg font-bold">CR-</SelectItem>
-                  <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
-                  <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
-                </SelectContent>
-              </Select>
+                  <SelectTrigger 
+                    className="text-lg font-bold"
+                    style={{ backgroundColor: formData.ogOpenA ? '#dcfce7' : '#ffe3e2' }}
+                  >
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card z-[100]">
+                    <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
+                    <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
+                    <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
+                    <SelectItem value="OG-" className="text-lg font-bold">OG-</SelectItem>
+                    <SelectItem value="OG+" className="text-lg font-bold">OG+</SelectItem>
+                    <SelectItem value="OGB" className="text-lg font-bold">OGB</SelectItem>
+                    <SelectItem value="CG-" className="text-lg font-bold">CG-</SelectItem>
+                    <SelectItem value="CG+" className="text-lg font-bold">CG+</SelectItem>
+                    <SelectItem value="CGB" className="text-lg font-bold">CGB</SelectItem>
+                    <SelectItem value="CR-" className="text-lg font-bold">CR-</SelectItem>
+                    <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
+                    <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select 
+                  value={formData.sdOpenA}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, sdOpenA: value }))}
+                >
+                  <SelectTrigger 
+                    className="text-lg font-bold"
+                    style={{ backgroundColor: formData.sdOpenA ? '#dcfce7' : '#ffe3e2' }}
+                  >
+                    <SelectValue placeholder="SD" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card z-[100]">
+                    <SelectItem value="SD OR-" className="text-lg font-bold">SD OR-</SelectItem>
+                    <SelectItem value="SD OR+" className="text-lg font-bold">SD OR+</SelectItem>
+                    <SelectItem value="SD ORB" className="text-lg font-bold">SD ORB</SelectItem>
+                    <SelectItem value="SD OG-" className="text-lg font-bold">SD OG-</SelectItem>
+                    <SelectItem value="SD OG+" className="text-lg font-bold">SD OG+</SelectItem>
+                    <SelectItem value="SD OGB" className="text-lg font-bold">SD OGB</SelectItem>
+                    <SelectItem value="SD CG-" className="text-lg font-bold">SD CG-</SelectItem>
+                    <SelectItem value="SD CG+" className="text-lg font-bold">SD CG+</SelectItem>
+                    <SelectItem value="SD CGB" className="text-lg font-bold">SD CGB</SelectItem>
+                    <SelectItem value="SD CR-" className="text-lg font-bold">SD CR-</SelectItem>
+                    <SelectItem value="SD CR+" className="text-lg font-bold">SD CR+</SelectItem>
+                    <SelectItem value="SD CRB" className="text-lg font-bold">SD CRB</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="flex gap-2">
                 <Popover>
                   <PopoverTrigger asChild>
@@ -1683,34 +1718,61 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               </div>
             </div>
             
-            {/* OG CLOSE A */}
+            {/* OG CLOSE A with SD CLOSE */}
             <div className="space-y-2">
-              <Label className="text-lg font-bold">OG CLOSE A</Label>
-              <Select 
-                value={formData.ogCloseA}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, ogCloseA: value }))}
-              >
-                <SelectTrigger 
-                  className="text-lg font-bold"
-                  style={{ backgroundColor: formData.ogCloseA ? '#dcfce7' : '#ffe3e2' }}
+              <Label className="text-lg font-bold">CLOSE</Label>
+              <div className="grid grid-cols-2 gap-2">
+                <Select 
+                  value={formData.ogCloseA}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, ogCloseA: value }))}
                 >
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent className="bg-card z-[100]">
-                  <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
-                  <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
-                  <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
-                  <SelectItem value="OG-" className="text-lg font-bold">OG-</SelectItem>
-                  <SelectItem value="OG+" className="text-lg font-bold">OG+</SelectItem>
-                  <SelectItem value="OGB" className="text-lg font-bold">OGB</SelectItem>
-                  <SelectItem value="CG-" className="text-lg font-bold">CG-</SelectItem>
-                  <SelectItem value="CG+" className="text-lg font-bold">CG+</SelectItem>
-                  <SelectItem value="CGB" className="text-lg font-bold">CGB</SelectItem>
-                  <SelectItem value="CR-" className="text-lg font-bold">CR-</SelectItem>
-                  <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
-                  <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
-                </SelectContent>
-              </Select>
+                  <SelectTrigger 
+                    className="text-lg font-bold"
+                    style={{ backgroundColor: formData.ogCloseA ? '#dcfce7' : '#ffe3e2' }}
+                  >
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card z-[100]">
+                    <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
+                    <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
+                    <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
+                    <SelectItem value="OG-" className="text-lg font-bold">OG-</SelectItem>
+                    <SelectItem value="OG+" className="text-lg font-bold">OG+</SelectItem>
+                    <SelectItem value="OGB" className="text-lg font-bold">OGB</SelectItem>
+                    <SelectItem value="CG-" className="text-lg font-bold">CG-</SelectItem>
+                    <SelectItem value="CG+" className="text-lg font-bold">CG+</SelectItem>
+                    <SelectItem value="CGB" className="text-lg font-bold">CGB</SelectItem>
+                    <SelectItem value="CR-" className="text-lg font-bold">CR-</SelectItem>
+                    <SelectItem value="CR+" className="text-lg font-bold">CR+</SelectItem>
+                    <SelectItem value="CRB" className="text-lg font-bold">CRB</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select 
+                  value={formData.sdCloseA}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, sdCloseA: value }))}
+                >
+                  <SelectTrigger 
+                    className="text-lg font-bold"
+                    style={{ backgroundColor: formData.sdCloseA ? '#dcfce7' : '#ffe3e2' }}
+                  >
+                    <SelectValue placeholder="SD" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card z-[100]">
+                    <SelectItem value="SD OR-" className="text-lg font-bold">SD OR-</SelectItem>
+                    <SelectItem value="SD OR+" className="text-lg font-bold">SD OR+</SelectItem>
+                    <SelectItem value="SD ORB" className="text-lg font-bold">SD ORB</SelectItem>
+                    <SelectItem value="SD OG-" className="text-lg font-bold">SD OG-</SelectItem>
+                    <SelectItem value="SD OG+" className="text-lg font-bold">SD OG+</SelectItem>
+                    <SelectItem value="SD OGB" className="text-lg font-bold">SD OGB</SelectItem>
+                    <SelectItem value="SD CG-" className="text-lg font-bold">SD CG-</SelectItem>
+                    <SelectItem value="SD CG+" className="text-lg font-bold">SD CG+</SelectItem>
+                    <SelectItem value="SD CGB" className="text-lg font-bold">SD CGB</SelectItem>
+                    <SelectItem value="SD CR-" className="text-lg font-bold">SD CR-</SelectItem>
+                    <SelectItem value="SD CR+" className="text-lg font-bold">SD CR+</SelectItem>
+                    <SelectItem value="SD CRB" className="text-lg font-bold">SD CRB</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="flex gap-2">
                 <Popover>
                   <PopoverTrigger asChild>
