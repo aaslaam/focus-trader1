@@ -921,9 +921,9 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
               
               {/* 15 Minute and CANDLE NO'S in same row - moved above Direction fields */}
               <div className="grid grid-cols-2 gap-4">
-                {/* 15 Minute Section */}
+                {/* OPENING CANDLE Section */}
                 <div className="space-y-2">
-                  <Label className="text-lg font-bold">15 Minute</Label>
+                  <Label className="text-lg font-bold">OPENING CANDLE</Label>
                   <div className="grid grid-cols-2 gap-2">
                     <Select 
                       value={dropdowns.dropdown5Main}
@@ -1092,6 +1092,7 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
                         <SelectValue placeholder="Select" />
                       </SelectTrigger>
                       <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
                         <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
                         <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
                         <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
@@ -1117,6 +1118,7 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
                         <SelectValue placeholder="SD" />
                       </SelectTrigger>
                       <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
                         <SelectItem value="SD OR-" className="text-lg font-bold">SD OR-</SelectItem>
                         <SelectItem value="SD OR+" className="text-lg font-bold">SD OR+</SelectItem>
                         <SelectItem value="SD ORB" className="text-lg font-bold">SD ORB</SelectItem>
@@ -1192,6 +1194,7 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
                         <SelectValue placeholder="Select" />
                       </SelectTrigger>
                       <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
                         <SelectItem value="OR-" className="text-lg font-bold">OR-</SelectItem>
                         <SelectItem value="OR+" className="text-lg font-bold">OR+</SelectItem>
                         <SelectItem value="ORB" className="text-lg font-bold">ORB</SelectItem>
@@ -1217,6 +1220,7 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
                         <SelectValue placeholder="SD" />
                       </SelectTrigger>
                       <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
                         <SelectItem value="SD OR-" className="text-lg font-bold">SD OR-</SelectItem>
                         <SelectItem value="SD OR+" className="text-lg font-bold">SD OR+</SelectItem>
                         <SelectItem value="SD ORB" className="text-lg font-bold">SD ORB</SelectItem>

@@ -763,9 +763,9 @@ const StockSearch: React.FC = () => {
             <form onSubmit={handleSearch} className="space-y-4">
               {/* 15 Minute and CANDLE NO'S in same row - moved above Direction fields */}
               <div className="grid grid-cols-2 gap-4">
-                {/* 15 Minute Section */}
+                {/* OPENING CANDLE Section */}
                 <div className="space-y-2">
-                  <Label className="text-lg font-bold">15 Minute</Label>
+                  <Label className="text-lg font-bold">OPENING CANDLE</Label>
                   <div className="grid grid-cols-2 gap-2">
                     <Select 
                       value={searchData.stock1?.split(' ')[0] || ''}
@@ -972,14 +972,14 @@ const StockSearch: React.FC = () => {
                       label=""
                       selectedValue={searchData.ogOpenA}
                       onValueChange={(value) => setSearchData(prev => ({ ...prev, ogOpenA: value }))}
-                      baseOptions={['OR-', 'OR+', 'ORB', 'OG-', 'OG+', 'OGB', 'CG-', 'CG+', 'CGB', 'CR-', 'CR+', 'CRB']}
+                      baseOptions={['NILL', 'OR-', 'OR+', 'ORB', 'OG-', 'OG+', 'OGB', 'CG-', 'CG+', 'CGB', 'CR-', 'CR+', 'CRB']}
                       hideModifier={true}
                     />
                     <SimpleOptionSelector
                       label=""
                       selectedValue={searchData.sdOpenA}
                       onValueChange={(value) => setSearchData(prev => ({ ...prev, sdOpenA: value }))}
-                      baseOptions={['SD OR-', 'SD OR+', 'SD ORB', 'SD OG-', 'SD OG+', 'SD OGB', 'SD CG-', 'SD CG+', 'SD CGB', 'SD CR-', 'SD CR+', 'SD CRB']}
+                      baseOptions={['NILL', 'SD OR-', 'SD OR+', 'SD ORB', 'SD OG-', 'SD OG+', 'SD OGB', 'SD CG-', 'SD CG+', 'SD CGB', 'SD CR-', 'SD CR+', 'SD CRB']}
                       hideModifier={true}
                     />
                   </div>
@@ -991,14 +991,14 @@ const StockSearch: React.FC = () => {
                       label=""
                       selectedValue={searchData.ogCloseA}
                       onValueChange={(value) => setSearchData(prev => ({ ...prev, ogCloseA: value }))}
-                      baseOptions={['OR-', 'OR+', 'ORB', 'OG-', 'OG+', 'OGB', 'CG-', 'CG+', 'CGB', 'CR-', 'CR+', 'CRB']}
+                      baseOptions={['NILL', 'OR-', 'OR+', 'ORB', 'OG-', 'OG+', 'OGB', 'CG-', 'CG+', 'CGB', 'CR-', 'CR+', 'CRB']}
                       hideModifier={true}
                     />
                     <SimpleOptionSelector
                       label=""
                       selectedValue={searchData.sdCloseA}
                       onValueChange={(value) => setSearchData(prev => ({ ...prev, sdCloseA: value }))}
-                      baseOptions={['SD OR-', 'SD OR+', 'SD ORB', 'SD OG-', 'SD OG+', 'SD OGB', 'SD CG-', 'SD CG+', 'SD CGB', 'SD CR-', 'SD CR+', 'SD CRB']}
+                      baseOptions={['NILL', 'SD OR-', 'SD OR+', 'SD ORB', 'SD OG-', 'SD OG+', 'SD OGB', 'SD CG-', 'SD CG+', 'SD CGB', 'SD CR-', 'SD CR+', 'SD CRB']}
                       hideModifier={true}
                     />
                   </div>
@@ -1453,9 +1453,9 @@ const StockSearch: React.FC = () => {
 
               {/* 15 Minute and CANDLE NO'S in same row - moved above Direction fields */}
               <div className="grid grid-cols-2 gap-4">
-                {/* 15 Minute Section */}
+                {/* OPENING CANDLE Section */}
                 <div className="space-y-2">
-                  <Label className="text-lg font-bold">15 Minute</Label>
+                  <Label className="text-lg font-bold">OPENING CANDLE</Label>
                   <div className="grid grid-cols-2 gap-2">
                     <Select 
                       value={searchData.stock1.split(' ')[0] || ''}
