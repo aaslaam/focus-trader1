@@ -947,11 +947,15 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
                         <SelectValue placeholder="Select" />
                       </SelectTrigger>
                       <SelectContent className="bg-background z-[100]">
+                        <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
                         <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
                         <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
                         <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
                         <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
                         <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                        <SelectItem value="SD-" className="text-lg font-bold">SD-</SelectItem>
+                        <SelectItem value="SD+" className="text-lg font-bold">SD+</SelectItem>
+                        <SelectItem value="SDB" className="text-lg font-bold">SDB</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
