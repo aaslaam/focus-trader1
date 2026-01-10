@@ -776,10 +776,11 @@ const StockSearch: React.FC = () => {
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent className="bg-background z-[100]">
-                      <SelectItem value="OG" className="text-lg font-bold">OG</SelectItem>
-                      <SelectItem value="OR" className="text-lg font-bold">OR</SelectItem>
-                      <SelectItem value="CG" className="text-lg font-bold">CG</SelectItem>
-                      <SelectItem value="CR" className="text-lg font-bold">CR</SelectItem>
+                      <SelectItem value="FORWARD" className="text-lg font-bold">FORWARD</SelectItem>
+                      <SelectItem value="REVERSE" className="text-lg font-bold">REVERSE</SelectItem>
+                      <SelectItem value="RETURN" className="text-lg font-bold">RETURN</SelectItem>
+                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                      <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -1445,10 +1446,11 @@ const StockSearch: React.FC = () => {
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent className="bg-background z-[100]">
-                      <SelectItem value="OG" className="text-lg font-bold">OG</SelectItem>
-                      <SelectItem value="OR" className="text-lg font-bold">OR</SelectItem>
-                      <SelectItem value="CG" className="text-lg font-bold">CG</SelectItem>
-                      <SelectItem value="CR" className="text-lg font-bold">CR</SelectItem>
+                      <SelectItem value="FORWARD" className="text-lg font-bold">FORWARD</SelectItem>
+                      <SelectItem value="REVERSE" className="text-lg font-bold">REVERSE</SelectItem>
+                      <SelectItem value="RETURN" className="text-lg font-bold">RETURN</SelectItem>
+                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                      <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
