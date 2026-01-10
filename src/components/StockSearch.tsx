@@ -759,6 +759,109 @@ const StockSearch: React.FC = () => {
 
       <TabsContent value="part2">
             <form onSubmit={handleSearch} className="space-y-4">
+              {/* 15 Minute and CANDLE NO'S in same row - moved above Direction fields */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* 15 Minute Section */}
+                <div className="space-y-2">
+                  <Label className="text-lg font-bold">15 Minute</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Select 
+                      value={searchData.stock1?.split(' ')[0] || ''}
+                      onValueChange={(value) => {
+                        const sub = searchData.stock1?.split(' ')[1] || '';
+                        setSearchData(prev => ({ ...prev, stock1: sub ? `${value} ${sub}` : value }));
+                        setTimeout(() => performSearch(), 100);
+                      }}
+                    >
+                      <SelectTrigger 
+                        className="text-lg font-bold"
+                        style={{ backgroundColor: searchData.stock1?.split(' ')[0] ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background z-[100]">
+                        <SelectItem value="OG" className="text-lg font-bold">OG</SelectItem>
+                        <SelectItem value="OR" className="text-lg font-bold">OR</SelectItem>
+                        <SelectItem value="CG" className="text-lg font-bold">CG</SelectItem>
+                        <SelectItem value="CR" className="text-lg font-bold">CR</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    
+                    <Select 
+                      value={searchData.stock1?.split(' ')[1] || ''}
+                      onValueChange={(value) => {
+                        const main = searchData.stock1?.split(' ')[0] || '';
+                        setSearchData(prev => ({ ...prev, stock1: main ? `${main} ${value}` : value }));
+                        setTimeout(() => performSearch(), 100);
+                      }}
+                    >
+                      <SelectTrigger 
+                        className="text-lg font-bold"
+                        style={{ backgroundColor: searchData.stock1?.split(' ')[1] ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background z-[100]">
+                        <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                        <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                        <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
+                        <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                        <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
+                {/* CANDLE NO'S Section */}
+                <div className="space-y-2">
+                  <Label className="text-lg font-bold">CANDLE NO'S</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Select 
+                      value={searchData.ogCandle.split(' ')[0] + ' ' + searchData.ogCandle.split(' ')[1] || ''}
+                      onValueChange={(value) => {
+                        const color = searchData.ogCandle.split(' ')[2] || '';
+                        setSearchData(prev => ({ ...prev, ogCandle: color ? `${value} ${color}` : value }));
+                        setTimeout(() => performSearch(), 100);
+                      }}
+                    >
+                      <SelectTrigger 
+                        className="text-lg font-bold"
+                        style={{ backgroundColor: searchData.ogCandle.includes('CANDLE') ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="Select Candle" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        {Array.from({ length: 25 }, (_, i) => i + 1).map(num => (
+                          <SelectItem key={num} value={`CANDLE ${num}`} className="text-lg font-bold">
+                            CANDLE {num}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    
+                    <Select 
+                      value={searchData.ogCandle.split(' ')[2] || ''}
+                      onValueChange={(value) => {
+                        const candle = `${searchData.ogCandle.split(' ')[0] || ''} ${searchData.ogCandle.split(' ')[1] || ''}`.trim();
+                        setSearchData(prev => ({ ...prev, ogCandle: candle ? `${candle} ${value}` : value }));
+                        setTimeout(() => performSearch(), 100);
+                      }}
+                    >
+                      <SelectTrigger 
+                        className="text-lg font-bold"
+                        style={{ backgroundColor: (searchData.ogCandle.includes('RED') || searchData.ogCandle.includes('GREEN')) ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="Select Color" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="RED" className="text-lg font-bold">RED</SelectItem>
+                        <SelectItem value="GREEN" className="text-lg font-bold">GREEN</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
                   <Label className="text-lg font-bold">DIRECTION A</Label>
@@ -858,108 +961,6 @@ const StockSearch: React.FC = () => {
                 </div>
               </div>
 
-              {/* 15 Minute and CANDLE NO'S in same row */}
-              <div className="grid grid-cols-2 gap-4">
-                {/* 15 Minute Section */}
-                <div className="space-y-2">
-                  <Label className="text-lg font-bold">15 Minute</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Select 
-                      value={searchData.dropdown1?.split(' ')[0] || ''}
-                      onValueChange={(value) => {
-                        const sub = searchData.dropdown1?.split(' ')[1] || '';
-                        setSearchData(prev => ({ ...prev, dropdown1: sub ? `${value} ${sub}` : value }));
-                        setTimeout(() => performSearch(), 100);
-                      }}
-                    >
-                      <SelectTrigger 
-                        className="text-lg font-bold"
-                        style={{ backgroundColor: searchData.dropdown1?.split(' ')[0] ? '#dcfce7' : '#ffe3e2' }}
-                      >
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-background z-[100]">
-                        <SelectItem value="OG" className="text-lg font-bold">OG</SelectItem>
-                        <SelectItem value="OR" className="text-lg font-bold">OR</SelectItem>
-                        <SelectItem value="CG" className="text-lg font-bold">CG</SelectItem>
-                        <SelectItem value="CR" className="text-lg font-bold">CR</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    
-                    <Select 
-                      value={searchData.dropdown1?.split(' ')[1] || ''}
-                      onValueChange={(value) => {
-                        const main = searchData.dropdown1?.split(' ')[0] || '';
-                        setSearchData(prev => ({ ...prev, dropdown1: main ? `${main} ${value}` : value }));
-                        setTimeout(() => performSearch(), 100);
-                      }}
-                    >
-                      <SelectTrigger 
-                        className="text-lg font-bold"
-                        style={{ backgroundColor: searchData.dropdown1?.split(' ')[1] ? '#dcfce7' : '#ffe3e2' }}
-                      >
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-background z-[100]">
-                        <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
-                        <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
-                        <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
-                        <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
-                        <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                
-                {/* CANDLE NO'S Section */}
-                <div className="space-y-2">
-                  <Label className="text-lg font-bold">CANDLE NO'S</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Select 
-                      value={searchData.ogCandle.split(' ')[0] + ' ' + searchData.ogCandle.split(' ')[1] || ''}
-                      onValueChange={(value) => {
-                        const color = searchData.ogCandle.split(' ')[2] || '';
-                        setSearchData(prev => ({ ...prev, ogCandle: color ? `${value} ${color}` : value }));
-                        setTimeout(() => performSearch(), 100);
-                      }}
-                    >
-                      <SelectTrigger 
-                        className="text-lg font-bold"
-                        style={{ backgroundColor: searchData.ogCandle.includes('CANDLE') ? '#dcfce7' : '#ffe3e2' }}
-                      >
-                        <SelectValue placeholder="Select Candle" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-card z-[100]">
-                        {Array.from({ length: 25 }, (_, i) => i + 1).map(num => (
-                          <SelectItem key={num} value={`CANDLE ${num}`} className="text-lg font-bold">
-                            CANDLE {num}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    
-                    <Select 
-                      value={searchData.ogCandle.split(' ')[2] || ''}
-                      onValueChange={(value) => {
-                        const candle = `${searchData.ogCandle.split(' ')[0] || ''} ${searchData.ogCandle.split(' ')[1] || ''}`.trim();
-                        setSearchData(prev => ({ ...prev, ogCandle: candle ? `${candle} ${value}` : value }));
-                        setTimeout(() => performSearch(), 100);
-                      }}
-                    >
-                      <SelectTrigger 
-                        className="text-lg font-bold"
-                        style={{ backgroundColor: (searchData.ogCandle.includes('RED') || searchData.ogCandle.includes('GREEN')) ? '#dcfce7' : '#ffe3e2' }}
-                      >
-                        <SelectValue placeholder="Select Color" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-card z-[100]">
-                        <SelectItem value="RED" className="text-lg font-bold">RED</SelectItem>
-                        <SelectItem value="GREEN" className="text-lg font-bold">GREEN</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -1428,107 +1429,7 @@ const StockSearch: React.FC = () => {
               </div>
 
 
-              {/* Part 2 - DIRECTION A/B/C/D */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="space-y-2">
-                  <Label className="text-lg font-bold">DIRECTION A</Label>
-                  <Select
-                    value={searchData.ogOpenA.split(' ')[0] || ''}
-                    onValueChange={(value) => {
-                      setSearchData(prev => ({ ...prev, ogOpenA: value }));
-                      setTimeout(() => performSearch(), 100);
-                    }}
-                  >
-                    <SelectTrigger 
-                      className="text-lg font-bold"
-                      style={{ backgroundColor: searchData.ogOpenA ? '#dcfce7' : '#ffe3e2' }}
-                    >
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-background z-[100]">
-                      <SelectItem value="FORWARD" className="text-lg font-bold">FORWARD</SelectItem>
-                      <SelectItem value="REVERSE" className="text-lg font-bold">REVERSE</SelectItem>
-                      <SelectItem value="RETURN" className="text-lg font-bold">RETURN</SelectItem>
-                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
-                      <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-lg font-bold">DIRECTION B</Label>
-                  <Select 
-                    value={searchData.ogCloseA.split(' ')[0] || ''}
-                    onValueChange={(value) => {
-                      setSearchData(prev => ({ ...prev, ogCloseA: value }));
-                      setTimeout(() => performSearch(), 100);
-                    }}
-                  >
-                    <SelectTrigger 
-                      className="text-lg font-bold"
-                      style={{ backgroundColor: searchData.ogCloseA ? '#dcfce7' : '#ffe3e2' }}
-                    >
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-background z-[100]">
-                      <SelectItem value="FORWARD" className="text-lg font-bold">FORWARD</SelectItem>
-                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
-                      <SelectItem value="REVERSE" className="text-lg font-bold">REVERSE</SelectItem>
-                      <SelectItem value="RETURN" className="text-lg font-bold">RETURN</SelectItem>
-                      <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-lg font-bold">DIRECTION C</Label>
-                  <Select 
-                    value={searchData.openb.split(' ')[0] || ''}
-                    onValueChange={(value) => {
-                      setSearchData(prev => ({ ...prev, openb: value }));
-                      setTimeout(() => performSearch(), 100);
-                    }}
-                  >
-                    <SelectTrigger 
-                      className="text-lg font-bold"
-                      style={{ backgroundColor: searchData.openb ? '#dcfce7' : '#ffe3e2' }}
-                    >
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-background z-[100]">
-                      <SelectItem value="FORWARD" className="text-lg font-bold">FORWARD</SelectItem>
-                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
-                      <SelectItem value="REVERSE" className="text-lg font-bold">REVERSE</SelectItem>
-                      <SelectItem value="RETURN" className="text-lg font-bold">RETURN</SelectItem>
-                      <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-lg font-bold">DIRECTION D</Label>
-                  <Select 
-                    value={searchData.stock4b.split(' ')[0] || ''}
-                    onValueChange={(value) => {
-                      setSearchData(prev => ({ ...prev, stock4b: value }));
-                      setTimeout(() => performSearch(), 100);
-                    }}
-                  >
-                    <SelectTrigger 
-                      className="text-lg font-bold"
-                      style={{ backgroundColor: searchData.stock4b ? '#dcfce7' : '#ffe3e2' }}
-                    >
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-background z-[100]">
-                      <SelectItem value="FORWARD" className="text-lg font-bold">FORWARD</SelectItem>
-                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
-                      <SelectItem value="REVERSE" className="text-lg font-bold">REVERSE</SelectItem>
-                      <SelectItem value="RETURN" className="text-lg font-bold">RETURN</SelectItem>
-                      <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* 15 Minute and CANDLE NO'S in same row */}
+              {/* 15 Minute and CANDLE NO'S in same row - moved above Direction fields */}
               <div className="grid grid-cols-2 gap-4">
                 {/* 15 Minute Section */}
                 <div className="space-y-2">
@@ -1630,6 +1531,108 @@ const StockSearch: React.FC = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Part 2 - DIRECTION A/B/C/D */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-lg font-bold">DIRECTION A</Label>
+                  <Select
+                    value={searchData.ogOpenA.split(' ')[0] || ''}
+                    onValueChange={(value) => {
+                      setSearchData(prev => ({ ...prev, ogOpenA: value }));
+                      setTimeout(() => performSearch(), 100);
+                    }}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold"
+                      style={{ backgroundColor: searchData.ogOpenA ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background z-[100]">
+                      <SelectItem value="FORWARD" className="text-lg font-bold">FORWARD</SelectItem>
+                      <SelectItem value="REVERSE" className="text-lg font-bold">REVERSE</SelectItem>
+                      <SelectItem value="RETURN" className="text-lg font-bold">RETURN</SelectItem>
+                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                      <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-lg font-bold">DIRECTION B</Label>
+                  <Select 
+                    value={searchData.ogCloseA.split(' ')[0] || ''}
+                    onValueChange={(value) => {
+                      setSearchData(prev => ({ ...prev, ogCloseA: value }));
+                      setTimeout(() => performSearch(), 100);
+                    }}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold"
+                      style={{ backgroundColor: searchData.ogCloseA ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background z-[100]">
+                      <SelectItem value="FORWARD" className="text-lg font-bold">FORWARD</SelectItem>
+                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                      <SelectItem value="REVERSE" className="text-lg font-bold">REVERSE</SelectItem>
+                      <SelectItem value="RETURN" className="text-lg font-bold">RETURN</SelectItem>
+                      <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-lg font-bold">DIRECTION C</Label>
+                  <Select 
+                    value={searchData.openb.split(' ')[0] || ''}
+                    onValueChange={(value) => {
+                      setSearchData(prev => ({ ...prev, openb: value }));
+                      setTimeout(() => performSearch(), 100);
+                    }}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold"
+                      style={{ backgroundColor: searchData.openb ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background z-[100]">
+                      <SelectItem value="FORWARD" className="text-lg font-bold">FORWARD</SelectItem>
+                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                      <SelectItem value="REVERSE" className="text-lg font-bold">REVERSE</SelectItem>
+                      <SelectItem value="RETURN" className="text-lg font-bold">RETURN</SelectItem>
+                      <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-lg font-bold">DIRECTION D</Label>
+                  <Select 
+                    value={searchData.stock4b.split(' ')[0] || ''}
+                    onValueChange={(value) => {
+                      setSearchData(prev => ({ ...prev, stock4b: value }));
+                      setTimeout(() => performSearch(), 100);
+                    }}
+                  >
+                    <SelectTrigger 
+                      className="text-lg font-bold"
+                      style={{ backgroundColor: searchData.stock4b ? '#dcfce7' : '#ffe3e2' }}
+                    >
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background z-[100]">
+                      <SelectItem value="FORWARD" className="text-lg font-bold">FORWARD</SelectItem>
+                      <SelectItem value="IN" className="text-lg font-bold">IN</SelectItem>
+                      <SelectItem value="REVERSE" className="text-lg font-bold">REVERSE</SelectItem>
+                      <SelectItem value="RETURN" className="text-lg font-bold">RETURN</SelectItem>
+                      <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+
 
               {/* OPEN and OG CLOSE A */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
