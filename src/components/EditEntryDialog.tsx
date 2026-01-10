@@ -915,10 +915,10 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
             <div className="space-y-4 border-t pt-4">
               <h3 className="text-lg font-bold underline" style={{ color: '#e1f2ff' }}>PART 2 FIELDS</h3>
               
-              {/* OPEN DIRECTION A, B, C, D */}
+              {/* DIRECTION A, B, C, D */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-sm font-bold">OPEN DIRECTION A</Label>
+                  <Label className="text-sm font-bold">DIRECTION A</Label>
                   <Select 
                     value={ogDirections.dropdown1}
                     onValueChange={(value) => setOgDirections(prev => ({ ...prev, dropdown1: value }))}
@@ -939,7 +939,7 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
                 </div>
                 
                 <div className="space-y-2">
-                  <Label className="text-sm font-bold">OPEN DIRECTION B</Label>
+                  <Label className="text-sm font-bold">DIRECTION B</Label>
                   <Select 
                     value={ogDirections.dropdown2}
                     onValueChange={(value) => setOgDirections(prev => ({ ...prev, dropdown2: value }))}
@@ -961,7 +961,7 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
                 </div>
                 
                 <div className="space-y-2">
-                  <Label className="text-sm font-bold">OPEN DIRECTION C</Label>
+                  <Label className="text-sm font-bold">DIRECTION C</Label>
                   <Select 
                     value={ogDirections.dropdown3}
                     onValueChange={(value) => setOgDirections(prev => ({ ...prev, dropdown3: value }))}
@@ -983,7 +983,7 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
                 </div>
                 
                 <div className="space-y-2">
-                  <Label className="text-sm font-bold">OPEN DIRECTION D</Label>
+                  <Label className="text-sm font-bold">DIRECTION D</Label>
                   <Select 
                     value={ogDirections.dropdown4}
                     onValueChange={(value) => setOgDirections(prev => ({ ...prev, dropdown4: value }))}

@@ -1384,7 +1384,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
           <div className="space-y-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="space-y-2">
-                <Label className="text-lg font-bold">OPEN DIRECTION A</Label>
+                <Label className="text-lg font-bold">DIRECTION A</Label>
                 <Select 
                   value={newDropdowns.dropdown1}
                   onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown1: value }))}
@@ -1405,7 +1405,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               </div>
               
               <div className="space-y-2">
-                <Label className="text-lg font-bold">OPEN DIRECTION B</Label>
+                <Label className="text-lg font-bold">DIRECTION B</Label>
                 <Select 
                   value={newDropdowns.dropdown2}
                   onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown2: value }))}
@@ -1427,7 +1427,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               </div>
               
               <div className="space-y-2">
-                <Label className="text-lg font-bold">OPEN DIRECTION C</Label>
+                <Label className="text-lg font-bold">DIRECTION C</Label>
                 <Select 
                   value={newDropdowns.dropdown3}
                   onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown3: value }))}
@@ -1449,7 +1449,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               </div>
               
               <div className="space-y-2">
-                <Label className="text-lg font-bold">OPEN DIRECTION D</Label>
+                <Label className="text-lg font-bold">DIRECTION D</Label>
                 <Select 
                   value={newDropdowns.dropdown4}
                   onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown4: value }))}

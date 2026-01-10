@@ -761,7 +761,7 @@ const StockSearch: React.FC = () => {
             <form onSubmit={handleSearch} className="space-y-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-lg font-bold">OPEN DIRECTION A</Label>
+                  <Label className="text-lg font-bold">DIRECTION A</Label>
                   <Select 
                     value={searchData.dropdown1}
                     onValueChange={(value) => {
@@ -784,7 +784,7 @@ const StockSearch: React.FC = () => {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-lg font-bold">OPEN DIRECTION B</Label>
+                  <Label className="text-lg font-bold">DIRECTION B</Label>
                   <Select 
                     value={searchData.dropdown2}
                     onValueChange={(value) => {
@@ -808,7 +808,7 @@ const StockSearch: React.FC = () => {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-lg font-bold">OPEN DIRECTION C</Label>
+                  <Label className="text-lg font-bold">DIRECTION C</Label>
                   <Select 
                     value={searchData.dropdown3}
                     onValueChange={(value) => {
@@ -832,7 +832,7 @@ const StockSearch: React.FC = () => {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-lg font-bold">OPEN DIRECTION D</Label>
+                  <Label className="text-lg font-bold">DIRECTION D</Label>
                   <Select 
                     value={searchData.dropdown4}
                     onValueChange={(value) => {
@@ -1427,10 +1427,10 @@ const StockSearch: React.FC = () => {
               </div>
 
 
-              {/* Part 2 - OPEN DIRECTION A/B/C/D */}
+              {/* Part 2 - DIRECTION A/B/C/D */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-lg font-bold">OPEN DIRECTION A</Label>
+                  <Label className="text-lg font-bold">DIRECTION A</Label>
                   <Select
                     value={searchData.ogOpenA.split(' ')[0] || ''}
                     onValueChange={(value) => {
@@ -1453,7 +1453,7 @@ const StockSearch: React.FC = () => {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-lg font-bold">OPEN DIRECTION B</Label>
+                  <Label className="text-lg font-bold">DIRECTION B</Label>
                   <Select 
                     value={searchData.ogCloseA.split(' ')[0] || ''}
                     onValueChange={(value) => {
@@ -1477,7 +1477,7 @@ const StockSearch: React.FC = () => {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-lg font-bold">OPEN DIRECTION C</Label>
+                  <Label className="text-lg font-bold">DIRECTION C</Label>
                   <Select 
                     value={searchData.openb.split(' ')[0] || ''}
                     onValueChange={(value) => {
@@ -1501,7 +1501,7 @@ const StockSearch: React.FC = () => {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-lg font-bold">OPEN DIRECTION D</Label>
+                  <Label className="text-lg font-bold">DIRECTION D</Label>
                   <Select 
                     value={searchData.stock4b.split(' ')[0] || ''}
                     onValueChange={(value) => {

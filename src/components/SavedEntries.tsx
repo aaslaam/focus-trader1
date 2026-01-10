@@ -331,25 +331,25 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                     {entry.dropdown1 && (
                       <div className="px-3 py-2 rounded bg-blue-50 border border-blue-200">
-                        <div className="text-sm font-bold text-blue-700 mb-1">OPEN DIRECTION A</div>
+                        <div className="text-sm font-bold text-blue-700 mb-1">DIRECTION A</div>
                         <span className="text-lg font-bold">{entry.dropdown1}</span>
                       </div>
                     )}
                     {entry.dropdown2 && (
                       <div className="px-3 py-2 rounded bg-green-50 border border-green-200">
-                        <div className="text-sm font-bold text-green-700 mb-1">OPEN DIRECTION B</div>
+                        <div className="text-sm font-bold text-green-700 mb-1">DIRECTION B</div>
                         <span className="text-lg font-bold">{entry.dropdown2}</span>
                       </div>
                     )}
                     {entry.dropdown3 && (
                       <div className="px-3 py-2 rounded bg-purple-50 border border-purple-200">
-                        <div className="text-sm font-bold text-purple-700 mb-1">OPEN DIRECTION C</div>
+                        <div className="text-sm font-bold text-purple-700 mb-1">DIRECTION C</div>
                         <span className="text-lg font-bold">{entry.dropdown3}</span>
                       </div>
                     )}
                     {entry.dropdown4 && (
                       <div className="px-3 py-2 rounded bg-pink-50 border border-pink-200">
-                        <div className="text-sm font-bold text-pink-700 mb-1">OPEN DIRECTION D</div>
+                        <div className="text-sm font-bold text-pink-700 mb-1">DIRECTION D</div>
                         <span className="text-lg font-bold">{entry.dropdown4}</span>
                       </div>
                     )}
@@ -358,7 +358,7 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
                   {entry.dropdown1Date && (
                     <div className="flex items-center gap-2 px-3 py-2 rounded bg-slate-100 border border-slate-300">
                       <Calendar className="h-4 w-4 text-slate-600" />
-                      <span className="text-sm font-semibold">OPEN DIRECTION Date: {format(new Date(entry.dropdown1Date), "d/M/yyyy")}</span>
+                      <span className="text-sm font-semibold">DIRECTION Date: {format(new Date(entry.dropdown1Date), "d/M/yyyy")}</span>
                     </div>
                   )}
                 </div>
