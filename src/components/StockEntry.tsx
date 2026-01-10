@@ -1181,8 +1181,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                         <SelectValue placeholder="" />
                       </SelectTrigger>
                       <SelectContent className="bg-card z-[100]">
-                        <SelectItem value="MG" className="text-lg font-bold">MG</SelectItem>
-                        <SelectItem value="MR" className="text-lg font-bold">MR</SelectItem>
+                        <SelectItem value="DG" className="text-lg font-bold">DG</SelectItem>
+                        <SelectItem value="DR" className="text-lg font-bold">DR</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -1271,8 +1271,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                         <SelectValue placeholder="" />
                       </SelectTrigger>
                       <SelectContent className="bg-card z-[100]">
-                        <SelectItem value="MG" className="text-lg font-bold">MG</SelectItem>
-                        <SelectItem value="MR" className="text-lg font-bold">MR</SelectItem>
+                        <SelectItem value="DG" className="text-lg font-bold">DG</SelectItem>
+                        <SelectItem value="DR" className="text-lg font-bold">DR</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
