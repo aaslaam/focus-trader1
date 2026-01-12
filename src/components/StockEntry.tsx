@@ -352,77 +352,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     onEntryAdded();
   };
 
-  const handlePart2Submit = async () => {
-    // Part 2 is optional - can save with or without data
-    setUploading(true);
-
-    const existingEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
-
-    const newEntry: StockEntryData = {
-      stock1: '',
-      stock2: '',
-      stock2b: '',
-      stock3: '',
-      stock4: '',
-      stock1Date: null,
-      stock2Date: null,
-      stock3Date: null,
-      stock4Date: null,
-      classification: formData.part2Result as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL',
-      dropdown1: newDropdowns.dropdown1,
-      dropdown2: newDropdowns.dropdown2,
-      dropdown3: newDropdowns.dropdown3,
-      dropdown4: newDropdowns.dropdown4,
-      dropdown1Date: selectedDates.dropdown1Date,
-      dropdown2Date: selectedDates.dropdown2Date,
-      dropdown3Date: selectedDates.dropdown3Date,
-      ogCandle: formData.ogCandle,
-      ogOpenA: formData.ogOpenA,
-      ogCloseA: formData.ogCloseA,
-      ogOpenADate: selectedDates.ogOpenADate,
-      ogCloseADate: selectedDates.ogCloseADate,
-      part2Result: formData.part2Result,
-      timestamp: Date.now(),
-      type: 'part2'
-    };
-
-    const updatedEntries = [...existingEntries, newEntry];
-    localStorage.setItem('stockEntries', JSON.stringify(updatedEntries));
-    
-    toast({
-      title: "Part 2 Saved",
-      description: "Part 2 entry has been saved and is visible in PART 2 tab.",
-      variant: "default"
-    });
-
-    onEntryAdded();
-
-    // Reset Part 2 fields
-    setFormData(prev => ({
-      ...prev,
-      ogCandle: '',
-      ogOpenA: '',
-      ogCloseA: '',
-      part2Result: ''
-    }));
-    setNewDropdowns({
-      dropdown1: '',
-      dropdown2: '',
-      dropdown3: '',
-      dropdown4: '',
-      dropdown5: '',
-      dropdown6: ''
-    });
-    setDropdowns(prev => ({
-      ...prev,
-      candleMain: '',
-      candleSub: ''
-    }));
-
-    setUploading(false);
-    onEntryAdded();
-  };
-
   const getLatestPart1FromLocalStorage = (): Part1Data | null => {
     try {
       const raw = localStorage.getItem('stockEntries');
@@ -1887,16 +1816,14 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
           {/* Part 2 Notes with Image */}
           <div className="space-y-2">
             <Label htmlFor="notes" className="text-xl font-bold">NOTES</Label>
-            <Textarea
-              id="notes"
-              placeholder=""
-              value={formData.notes}
-              onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value.toUpperCase() }))}
-              className="min-h-[80px]"
-            />
-            
-            {/* Image Upload */}
-            <div className="flex items-center gap-2">
+            <div className="relative">
+              <Textarea
+                id="notes"
+                placeholder=""
+                value={formData.notes}
+                onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value.toUpperCase() }))}
+                className="min-h-[80px] pr-10"
+              />
               <input
                 type="file"
                 accept="image/*"
@@ -1906,24 +1833,23 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               />
               <label
                 htmlFor="image-upload"
-                className="flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground rounded-md cursor-pointer hover:bg-secondary/80"
+                className="absolute top-2 right-2 cursor-pointer text-gray-400 hover:text-gray-600"
               >
-                <Paperclip className="h-4 w-4" />
-                Attach Image
+                <Paperclip className="h-5 w-5" />
               </label>
-              {imagePreview && (
-                <div className="relative">
-                  <img src={imagePreview} alt="Preview" className="h-16 w-16 object-cover rounded" />
-                  <button
-                    type="button"
-                    onClick={removeImage}
-                    className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </div>
-              )}
             </div>
+            {imagePreview && (
+              <div className="relative inline-block">
+                <img src={imagePreview} alt="Preview" className="h-16 w-16 object-cover rounded" />
+                <button
+                  type="button"
+                  onClick={removeImage}
+                  className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </div>
+            )}
           </div>
           
           {/* Part 2 RESULT */}
@@ -1967,12 +1893,40 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
           <div className="flex gap-2">
             <Button 
               type="button"
-              onClick={handlePart2Submit}
+              onClick={() => {
+                // Refresh only Part 2 values
+                setFormData(prev => ({
+                  ...prev,
+                  ogCandle: '',
+                  ogOpenA: '',
+                  sdOpenA: '',
+                  ogCloseA: '',
+                  sdCloseA: '',
+                  notes: '',
+                  part2Result: ''
+                }));
+                setDropdowns(prev => ({
+                  ...prev,
+                  candleMain: '',
+                  candleSub: ''
+                }));
+                setSelectedDates(prev => ({
+                  ...prev,
+                  ogOpenADate: new Date(),
+                  ogCloseADate: new Date()
+                }));
+                setDateChanged(prev => ({
+                  ...prev,
+                  ogOpenADate: false,
+                  ogCloseADate: false
+                }));
+                setSelectedImage(null);
+                setImagePreview(null);
+              }}
               className="flex-1"
-              variant="default"
-              disabled={uploading}
+              variant="outline"
             >
-              {uploading ? 'Saving...' : 'Part 2 Save (Optional)'}
+              Refresh Part 2
             </Button>
             <Button 
               type="button"
