@@ -1921,7 +1921,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
             <Button 
               type="button"
               onClick={() => {
-                // Refresh only Part 2 values
+                // Refresh only Part 2 values (Opening Candle, Direction A/B/C/D, Candle No's, OG fields)
                 setFormData(prev => ({
                   ...prev,
                   ogCandle: '',
@@ -1932,6 +1932,15 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   notes: '',
                   part2Result: ''
                 }));
+                // Reset Opening Candle (dropdown5, dropdown6), Direction A/B/C/D (dropdown1-4 in Part 2), and Candle No's
+                setNewDropdowns({
+                  dropdown1: '',
+                  dropdown2: '',
+                  dropdown3: '',
+                  dropdown4: '',
+                  dropdown5: '',
+                  dropdown6: ''
+                });
                 setDropdowns(prev => ({
                   ...prev,
                   candleMain: '',
