@@ -478,20 +478,73 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
   };
 
   const handleCommonSave = async () => {
-    const effectivePart1 = part1SavedData ?? getLatestPart1FromLocalStorage();
+    // First, check if we can build Part 1 from current form data
+    const isFieldMissing = (value: string) => {
+      if (!value || value.trim() === '') return true;
+      return false;
+    };
 
-    if (!effectivePart1) {
-      toast({
-        title: "Error",
-        description: "Please save Part 1 first.",
-        variant: "destructive"
-      });
-      return;
+    // Check if Part 1 required fields are filled in the form
+    const part1FormFilled = !isFieldMissing(formData.stock2) && 
+                            !isFieldMissing(formData.stock2b) && 
+                            !isFieldMissing(formData.stock3) && 
+                            !isFieldMissing(formData.stock4) && 
+                            formData.part1Result;
+
+    let effectivePart1: Part1Data | null = part1SavedData;
+
+    // If Part 1 wasn't explicitly saved but form is filled, use form data
+    if (!effectivePart1 && part1FormFilled) {
+      effectivePart1 = {
+        stock1: formData.stock1,
+        stock2: formData.stock2,
+        stock2b: formData.stock2b,
+        stock2bColor: formData.stock2bColor,
+        stock3: formData.stock3,
+        stock4: formData.stock4,
+        stock1Date: selectedDates.stock1Date,
+        stock2Date: selectedDates.stock2Date,
+        stock3Date: selectedDates.stock3Date,
+        stock4Date: selectedDates.stock4Date,
+        dropdown1: newDropdowns.dropdown1,
+        dropdown2: newDropdowns.dropdown2,
+        dropdown3: newDropdowns.dropdown3,
+        dropdown4: newDropdowns.dropdown4,
+        dropdown5: newDropdowns.dropdown5,
+        dropdown6: newDropdowns.dropdown6,
+        dropdown1Date: selectedDates.dropdown1Date,
+        dropdown2Date: selectedDates.dropdown2Date,
+        dropdown3Date: selectedDates.dropdown3Date,
+        dropdown4Date: selectedDates.dropdown4Date,
+        dropdown5Date: selectedDates.dropdown5Date,
+        dropdown6Date: selectedDates.dropdown6Date,
+        part1Result: formData.part1Result,
+        part1Notes: formData.part1Notes,
+        timestamp: Date.now()
+      };
     }
 
-    // If the user refreshed the page, Part 1 might exist in localStorage but not in state.
-    if (!part1SavedData) {
-      setPart1SavedData(effectivePart1);
+    // Fallback to localStorage if still not found
+    if (!effectivePart1) {
+      effectivePart1 = getLatestPart1FromLocalStorage();
+    }
+
+    if (!effectivePart1) {
+      // Show which Part 1 fields are missing
+      const missing: string[] = [];
+      if (isFieldMissing(formData.stock2)) missing.push("A DIRECTION");
+      if (isFieldMissing(formData.stock2b)) missing.push("B");
+      if (isFieldMissing(formData.stock3)) missing.push("OPEN A");
+      if (isFieldMissing(formData.stock4)) missing.push("CLOSE A");
+      if (!formData.part1Result) missing.push("Part 1 RESULT");
+      
+      setMissingFields(missing.length > 0 ? missing : ["Part 1 data"]);
+      setShowMissingInfo(true);
+      setTimeout(() => {
+        setShowMissingInfo(false);
+        setMissingFields([]);
+      }, 5000);
+      return;
     }
 
     if (!formData.part2Result) {
