@@ -1474,7 +1474,47 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
             </div>
           </div>
 
+          {/* Part 1 Result + Notes */}
+          <div className="space-y-3">
+            <div className="space-y-2">
+              <Label className="text-sm font-bold text-foreground">PART 1 RESULT</Label>
+              <Select
+                value={formData.part1Result}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    part1Result: value as any,
+                  }))
+                }
+              >
+                <SelectTrigger className="text-lg font-bold">
+                  <SelectValue placeholder="Select result" />
+                </SelectTrigger>
+                <SelectContent className="bg-card z-[100]">
+                  <SelectItem value="Act" className="text-lg font-bold">Act</SelectItem>
+                  <SelectItem value="Front Act" className="text-lg font-bold">Front Act</SelectItem>
+                  <SelectItem value="Consolidation Act" className="text-lg font-bold">Consolidation Act</SelectItem>
+                  <SelectItem value="Consolidation Front Act" className="text-lg font-bold">Consolidation Front Act</SelectItem>
+                  <SelectItem value="Consolidation Close" className="text-lg font-bold">Consolidation Close</SelectItem>
+                  <SelectItem value="Act doubt" className="text-lg font-bold">Act doubt</SelectItem>
+                  <SelectItem value="3rd act" className="text-lg font-bold">3rd act</SelectItem>
+                  <SelectItem value="4th act" className="text-lg font-bold">4th act</SelectItem>
+                  <SelectItem value="5th act" className="text-lg font-bold">5th act</SelectItem>
+                  <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
+            <div className="space-y-2">
+              <Label className="text-sm font-bold text-foreground">PART 1 NOTES</Label>
+              <Textarea
+                value={formData.part1Notes}
+                onChange={(e) => setFormData((prev) => ({ ...prev, part1Notes: e.target.value }))}
+                placeholder="Write notes..."
+                className="min-h-[96px]"
+              />
+            </div>
+          </div>
 
           {/* Part 1 Buttons */}
           <div className="flex gap-2">
