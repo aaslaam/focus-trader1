@@ -36,7 +36,7 @@ export interface StockEntryData {
   imageUrl?: string;
   timestamp: number;
   part2Result?: string;
-  type: 'part1' | 'part2' | 'common';
+  type?: 'part1' | 'part2' | 'common';
 }
 
 // Database row format (snake_case)

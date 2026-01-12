@@ -589,6 +589,15 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
   };
 
   const handleSetAllNill = async () => {
+    if (!user) {
+      toast({
+        title: "Not Authenticated",
+        description: "Please sign in to save entries.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     // Set all field values to NILL including direction A, B, colour, and classification
     setFormData(prev => ({
       ...prev,
@@ -603,49 +612,48 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     // Wait a bit for state to update, then submit
     setTimeout(async () => {
       setUploading(true);
-      
-      const existingEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
 
-      let imageUrl: string | undefined;
-      if (selectedImage) {
-        imageUrl = (await uploadImage(selectedImage)) || undefined;
-      }
+      try {
+        let imageUrl: string | undefined;
+        if (selectedImage) {
+          imageUrl = (await uploadImage(selectedImage)) || undefined;
+        }
 
-      const newEntry: StockEntryData = {
-        stock1: formData.stock1,
-        stock2: 'NILL',
-        stock2b: 'NILL',
-        stock2bColor: 'NILL',
-        stock3: 'NILL',
-        stock4: 'NILL',
-        ...selectedDates,
-        classification: 'NILL',
-        ogCandle: 'NILL',
-        notes: formData.notes,
-        imageUrl,
-        timestamp: Date.now(),
-        type: 'part1'
-      };
+        const newEntry: StockEntryData = {
+          stock1: formData.stock1,
+          stock2: 'NILL',
+          stock2b: 'NILL',
+          stock2bColor: 'NILL',
+          stock3: 'NILL',
+          stock4: 'NILL',
+          ...selectedDates,
+          classification: 'NILL',
+          ogCandle: 'NILL',
+          notes: formData.notes,
+          imageUrl,
+          timestamp: Date.now(),
+          type: 'part1'
+        };
 
-      const updatedEntries = [...existingEntries, newEntry];
-      localStorage.setItem('stockEntries', JSON.stringify(updatedEntries));
-      
-      toast({
-        title: "Entry Added",
-        description: `Entry saved with all fields set to NILL`,
-        variant: "default"
-      });
+        // Save to database
+        await createEntry(newEntry, user.id);
+        
+        toast({
+          title: "Entry Added",
+          description: `Entry saved with all fields set to NILL`,
+          variant: "default"
+        });
 
-      // Show entry saved message with serial number
-      setLastSavedEntry(newEntry);
-      setEntrySerialNumber(updatedEntries.length);
-      setShowEntrySaved(true);
-      setTimeout(() => {
-        setShowEntrySaved(false);
-        setLastSavedEntry(null);
-      }, 5000);
+        // Show entry saved message with serial number
+        setLastSavedEntry(newEntry);
+        setEntrySerialNumber(nextEntryNumber);
+        setShowEntrySaved(true);
+        setTimeout(() => {
+          setShowEntrySaved(false);
+          setLastSavedEntry(null);
+        }, 5000);
 
-      // Reset form
+        // Reset form
       setFormData({
         stock1: '',
         stock2: '',
@@ -715,11 +723,20 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         ogOpenADate: false,
         ogCloseADate: false
       });
-      setSelectedImage(null);
-      setImagePreview(null);
-      setUploading(false);
+        setSelectedImage(null);
+        setImagePreview(null);
+        setUploading(false);
 
-      onEntryAdded();
+        onEntryAdded();
+      } catch (error) {
+        console.error('Error saving NILL entry:', error);
+        toast({
+          title: "Save Failed",
+          description: "Could not save entry. Please try again.",
+          variant: "destructive"
+        });
+        setUploading(false);
+      }
     }, 100);
   };
 

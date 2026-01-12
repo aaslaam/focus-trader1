@@ -12,41 +12,9 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import SimpleOptionSelector from '@/components/SimpleOptionSelector';
-
-interface StockEntryData {
-  stock1: string;
-  stock2: string;
-  stock2b: string;
-  stock2bColor?: string;
-  stock3: string;
-  stock4: string;
-  stock1Date: Date | null;
-  stock2Date: Date | null;
-  stock3Date: Date | null;
-  stock4Date: Date | null;
-  classification: 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL';
-  dropdown1?: string;
-  dropdown2?: string;
-  dropdown3?: string;
-  dropdown4?: string;
-  dropdown5?: string;
-  dropdown6?: string;
-  dropdown1Date?: Date | null;
-  dropdown2Date?: Date | null;
-  dropdown3Date?: Date | null;
-  dropdown4Date?: Date | null;
-  dropdown5Date?: Date | null;
-  dropdown6Date?: Date | null;
-  ogCandle?: string;
-  ogOpenA?: string;
-  ogCloseA?: string;
-  ogOpenADate?: Date | null;
-  ogCloseADate?: Date | null;
-  notes?: string;
-  imageUrl?: string;
-  timestamp: number;
-  type?: 'part1' | 'part2' | 'common';
-}
+import { useAuth } from '@/contexts/AuthContext';
+import { updateEntry, createEntry } from '@/services/stockEntriesService';
+import { StockEntryData } from '@/types/stockEntry';
 
 interface EditEntryDialogProps {
   entry: StockEntryData;
@@ -56,6 +24,7 @@ interface EditEntryDialogProps {
 }
 
 const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialNumber, onEntryUpdated }) => {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     stock1: '',
     stock2: '',
@@ -297,90 +266,105 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!user) {
+      toast({
+        title: "Not Authenticated",
+        description: "Please sign in to update entries.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setUploading(true);
 
-    let imageUrl = entry.imageUrl;
-    if (selectedImage) {
-      imageUrl = (await uploadImage(selectedImage)) || entry.imageUrl;
-    }
-
-    // Combine dropdown values
-    const dropdown1 = `${dropdowns.dropdown1Main} ${dropdowns.dropdown1Sub}`.trim();
-    const dropdown2 = `${dropdowns.dropdown2Main} ${dropdowns.dropdown2Sub}`.trim();
-    const dropdown3 = `${dropdowns.dropdown3Main} ${dropdowns.dropdown3Sub}`.trim();
-    const ogCandle = `${dropdowns.candleMain} ${dropdowns.candleSub}`.trim();
-
-    // Check if this was a Part 1 entry and Part 2 values are now added
-    const wasPart1Entry = entry.type === 'part1';
-    const hasPart2Values = !!(
-      ogDirections.dropdown1 || 
-      ogDirections.dropdown2 || 
-      ogDirections.dropdown3 || 
-      ogDirections.dropdown4 || 
-      ogCandle || 
-      formData.ogOpenA || 
-      formData.ogCloseA
-    );
-
-    const existingEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
-    
-    if (wasPart1Entry && hasPart2Values) {
-      // Keep original Part 1 entry unchanged
-      // Create NEW combined entry in Common with next serial number
-      const newCombinedEntry: StockEntryData = {
-        ...formData,
-        ...selectedDates,
-        classification: formData.classification as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL',
-        dropdown1,
-        dropdown2,
-        dropdown3,
-        dropdown4: ogDirections.dropdown4,
-        ogCandle,
-        imageUrl,
-        timestamp: Date.now(), // New serial number
-        type: 'common'
-      };
-      
-      existingEntries.push(newCombinedEntry);
-      localStorage.setItem('stockEntries', JSON.stringify(existingEntries));
-      
-      toast({
-        title: "Combined Entry Created",
-        description: `Original Part 1 entry preserved. New combined entry created in Common with serial #${existingEntries.length}`,
-        variant: "default"
-      });
-    } else {
-      // Regular update (keep same serial number and position)
-      const updatedEntry: StockEntryData = {
-        ...formData,
-        ...selectedDates,
-        classification: formData.classification as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL',
-        dropdown1,
-        dropdown2,
-        dropdown3,
-        dropdown4: ogDirections.dropdown4,
-        ogCandle,
-        imageUrl,
-        timestamp: entry.timestamp,
-        type: entry.type
-      };
-      
-      const entryIndex = existingEntries.findIndex(e => e.timestamp === entry.timestamp);
-      if (entryIndex !== -1) {
-        existingEntries[entryIndex] = updatedEntry;
-        localStorage.setItem('stockEntries', JSON.stringify(existingEntries));
+    try {
+      let imageUrl = entry.imageUrl;
+      if (selectedImage) {
+        imageUrl = (await uploadImage(selectedImage)) || entry.imageUrl;
       }
-      
-      toast({
-        title: "Entry Updated",
-        description: `Entry updated successfully`,
-        variant: "default"
-      });
-    }
 
-    setOpen(false);
-    setUploading(false);
-    onEntryUpdated();
+      // Combine dropdown values
+      const dropdown1 = `${dropdowns.dropdown1Main} ${dropdowns.dropdown1Sub}`.trim();
+      const dropdown2 = `${dropdowns.dropdown2Main} ${dropdowns.dropdown2Sub}`.trim();
+      const dropdown3 = `${dropdowns.dropdown3Main} ${dropdowns.dropdown3Sub}`.trim();
+      const ogCandle = `${dropdowns.candleMain} ${dropdowns.candleSub}`.trim();
+
+      // Check if this was a Part 1 entry and Part 2 values are now added
+      const wasPart1Entry = entry.type === 'part1';
+      const hasPart2Values = !!(
+        ogDirections.dropdown1 || 
+        ogDirections.dropdown2 || 
+        ogDirections.dropdown3 || 
+        ogDirections.dropdown4 || 
+        ogCandle || 
+        formData.ogOpenA || 
+        formData.ogCloseA
+      );
+      
+      if (wasPart1Entry && hasPart2Values) {
+        // Create NEW combined entry in Common
+        const newCombinedEntry: StockEntryData = {
+          ...formData,
+          ...selectedDates,
+          classification: formData.classification as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL',
+          dropdown1,
+          dropdown2,
+          dropdown3,
+          dropdown4: ogDirections.dropdown4,
+          ogCandle,
+          imageUrl,
+          timestamp: Date.now(),
+          type: 'common'
+        };
+        
+        await createEntry(newCombinedEntry, user.id);
+        
+        toast({
+          title: "Combined Entry Created",
+          description: "Original Part 1 entry preserved. New combined entry created.",
+          variant: "default"
+        });
+      } else {
+        // Regular update
+        if (!entry.id) {
+          throw new Error('Entry ID is required for update');
+        }
+        
+        const updatedEntryData: Partial<StockEntryData> = {
+          ...formData,
+          ...selectedDates,
+          classification: formData.classification as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL',
+          dropdown1,
+          dropdown2,
+          dropdown3,
+          dropdown4: ogDirections.dropdown4,
+          ogCandle,
+          imageUrl,
+          type: entry.type
+        };
+        
+        await updateEntry(entry.id, updatedEntryData, user.id);
+        
+        toast({
+          title: "Entry Updated",
+          description: "Entry updated successfully",
+          variant: "default"
+        });
+      }
+
+      setOpen(false);
+      onEntryUpdated();
+    } catch (error) {
+      console.error('Error updating entry:', error);
+      toast({
+        title: "Update Failed",
+        description: "Could not update entry. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
