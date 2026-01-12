@@ -1,103 +1,47 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Database, Trash2, TrendingUp, TrendingDown, Calendar, Download, Upload } from 'lucide-react';
+import { Database, Trash2, TrendingUp, TrendingDown, Calendar, Download, Upload, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import EditEntryDialog from './EditEntryDialog';
-import { getVisualStyle } from '@/utils/visualIndicators';
 import { cn } from '@/lib/utils';
-import { formatValue } from '@/utils/valueFormatter';
-
-interface StockEntryData {
-  stock1: string;
-  stock2: string;
-  stock2b: string;
-  stock2bColor?: string;
-  stock3: string;
-  stock4: string;
-  stock1Date: Date | null;
-  stock2Date: Date | null;
-  stock3Date: Date | null;
-  stock4Date: Date | null;
-  classification: 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL';
-  dropdown1?: string;
-  dropdown2?: string;
-  dropdown3?: string;
-  dropdown4?: string;
-  dropdown5?: string;
-  dropdown6?: string;
-  dropdown1Date?: Date | null;
-  dropdown2Date?: Date | null;
-  dropdown3Date?: Date | null;
-  dropdown4Date?: Date | null;
-  dropdown5Date?: Date | null;
-  dropdown6Date?: Date | null;
-  ogCandle?: string;
-  ogOpenA?: string;
-  ogCloseA?: string;
-  ogOpenADate?: Date | null;
-  ogCloseADate?: Date | null;
-  notes?: string;
-  imageUrl?: string;
-  timestamp: number;
-  type: 'part1' | 'part2' | 'common';
-  part2Result?: string;
-}
+import { useRealtimeEntries } from '@/hooks/useRealtimeEntries';
+import { useAuth } from '@/contexts/AuthContext';
+import { deleteEntry as deleteEntryService, migrateLocalStorageEntries } from '@/services/stockEntriesService';
+import { StockEntryData } from '@/types/stockEntry';
 
 interface SavedEntriesProps {
   refreshTrigger: number;
 }
 
 const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
-  const [entries, setEntries] = useState<StockEntryData[]>([]);
+  const { entries, loading, refetch } = useRealtimeEntries();
+  const { user } = useAuth();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const loadEntries = () => {
+  const handleDeleteEntry = async (entry: StockEntryData) => {
+    if (!user || !entry.id) return;
+    
     try {
-      const rawData = localStorage.getItem('stockEntries');
-      console.log('SavedEntries - Raw localStorage data:', rawData);
-      const savedEntries = JSON.parse(rawData || '[]') as StockEntryData[];
-      console.log('SavedEntries - Parsed entries:', savedEntries.length, 'entries found');
-      console.log('SavedEntries - First entry:', savedEntries[0]);
-      const sortedEntries = savedEntries.sort((a, b) => b.timestamp - a.timestamp);
-      console.log('SavedEntries - Setting state with entries:', sortedEntries.length);
-      setEntries(sortedEntries);
-      console.log('SavedEntries - State should now have', sortedEntries.length, 'entries');
-    } catch (error) {
-      console.error('SavedEntries - Error loading entries:', error);
-      setEntries([]);
+      await deleteEntryService(entry.id, user.id);
       toast({
-        title: "Error Loading Entries",
-        description: "Failed to load saved entries. Data may be corrupted.",
+        title: "Entry Deleted",
+        description: "Stock entry has been removed.",
+        variant: "default"
+      });
+      refetch();
+    } catch (error) {
+      console.error('Error deleting entry:', error);
+      toast({
+        title: "Delete Failed",
+        description: "Failed to delete entry. Please try again.",
         variant: "destructive"
       });
     }
-  };
-
-  useEffect(() => {
-    console.log('SavedEntries - useEffect triggered with refreshTrigger:', refreshTrigger);
-    loadEntries();
-  }, [refreshTrigger]);
-
-  useEffect(() => {
-    console.log('SavedEntries - Entries state updated, length:', entries.length);
-  }, [entries]);
-
-  const deleteEntry = (indexToDelete: number) => {
-    const updatedEntries = entries.filter((_, index) => index !== indexToDelete);
-    localStorage.setItem('stockEntries', JSON.stringify(updatedEntries));
-    setEntries(updatedEntries);
-    
-    toast({
-      title: "Entry Deleted",
-      description: "Stock entry has been removed.",
-      variant: "default"
-    });
   };
 
   const exportData = () => {
@@ -118,12 +62,12 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
     });
   };
 
-  const importData = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const importData = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file) return;
+    if (!file || !user) return;
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
         const importedData = JSON.parse(e.target?.result as string) as StockEntryData[];
         
@@ -131,12 +75,15 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
           throw new Error('Invalid data format');
         }
 
+        // Store in localStorage temporarily and trigger migration
         localStorage.setItem('stockEntries', JSON.stringify(importedData));
-        setEntries(importedData.sort((a, b) => b.timestamp - a.timestamp));
+        const count = await migrateLocalStorageEntries(user.id);
+        
+        refetch();
         
         toast({
           title: "Backup Restored",
-          description: `${importedData.length} entries imported successfully.`,
+          description: `${count} entries imported successfully.`,
         });
       } catch (error) {
         toast({
@@ -148,7 +95,6 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
     };
     reader.readAsText(file);
     
-    // Reset input
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -171,9 +117,7 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
   });
 
   const renderEntry = (entry: StockEntryData, index: number) => {
-    // Calculate serial number based on position in all entries (continuous numbering)
-    const entryIndexInAll = entries.findIndex(e => e.timestamp === entry.timestamp);
-    const serialNumber = entries.length - entryIndexInAll;
+    const serialNumber = filteredEntries.length - index;
     const entryType = entry.type || 'common';
     
     return (
@@ -186,160 +130,6 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
           </div>
           
           <div className="space-y-4">
-            {/* Part 1 Fields - Display in same order as Entry Form */}
-            {entryType === 'part1' && (
-              <>
-                {/* Monthly Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {entry.dropdown1 && (
-                    <div className="px-3 py-2 rounded bg-blue-50 border border-blue-200">
-                      <div className="text-sm font-bold text-blue-700 mb-1">MONTHLY OPEN</div>
-                      <span className="text-lg font-bold">{entry.dropdown1}</span>
-                      {entry.dropdown1Date && (
-                        <div className="text-xs text-blue-600 mt-1">
-                          {format(new Date(entry.dropdown1Date), "d/M/yyyy")}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  {entry.dropdown2 && (
-                    <div className="px-3 py-2 rounded bg-green-50 border border-green-200">
-                      <div className="text-sm font-bold text-green-700 mb-1">MONTHLY CLOSE</div>
-                      <span className="text-lg font-bold">{entry.dropdown2}</span>
-                      {entry.dropdown2Date && (
-                        <div className="text-xs text-green-600 mt-1">
-                          {format(new Date(entry.dropdown2Date), "d/M/yyyy")}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-                {/* Weekly Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {entry.dropdown3 && (
-                    <div className="px-3 py-2 rounded bg-purple-50 border border-purple-200">
-                      <div className="text-sm font-bold text-purple-700 mb-1">WEEKLY OPEN</div>
-                      <span className="text-lg font-bold">{entry.dropdown3}</span>
-                      {entry.dropdown3Date && (
-                        <div className="text-xs text-purple-600 mt-1">
-                          {format(new Date(entry.dropdown3Date), "d/M/yyyy")}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  {entry.dropdown4 && (
-                    <div className="px-3 py-2 rounded bg-pink-50 border border-pink-200">
-                      <div className="text-sm font-bold text-pink-700 mb-1">WEEKLY CLOSE</div>
-                      <span className="text-lg font-bold">{entry.dropdown4}</span>
-                      {entry.dropdown4Date && (
-                        <div className="text-xs text-pink-600 mt-1">
-                          {format(new Date(entry.dropdown4Date), "d/M/yyyy")}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-                {/* Daily Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {entry.dropdown5 && (
-                    <div className="px-3 py-2 rounded bg-orange-50 border border-orange-200">
-                      <div className="text-sm font-bold text-orange-700 mb-1">DAILY OPEN</div>
-                      <span className="text-lg font-bold">{entry.dropdown5}</span>
-                      {entry.dropdown5Date && (
-                        <div className="text-xs text-orange-600 mt-1">
-                          {format(new Date(entry.dropdown5Date), "d/M/yyyy")}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  {entry.dropdown6 && (
-                    <div className="px-3 py-2 rounded bg-teal-50 border border-teal-200">
-                      <div className="text-sm font-bold text-teal-700 mb-1">DAILY CLOSE</div>
-                      <span className="text-lg font-bold">{entry.dropdown6}</span>
-                      {entry.dropdown6Date && (
-                        <div className="text-xs text-teal-600 mt-1">
-                          {format(new Date(entry.dropdown6Date), "d/M/yyyy")}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-
-            {/* Part 2 Fields - Display in same order as Entry Form */}
-            {entryType === 'part2' && (
-              <>
-                {/* Opening Candle and Candle No's Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {(entry.dropdown5 || entry.dropdown6) && (
-                    <div className="px-3 py-2 rounded bg-purple-50 border border-purple-200">
-                      <div className="text-sm font-bold text-purple-700 mb-1">OPENING CANDLE</div>
-                      <span className="text-lg font-bold">{[entry.dropdown5, entry.dropdown6].filter(Boolean).join(' ')}</span>
-                    </div>
-                  )}
-                  {entry.ogCandle && (
-                    <div className="px-3 py-2 rounded bg-indigo-50 border border-indigo-200">
-                      <div className="text-sm font-bold text-indigo-700 mb-1">CANDLE NO'S</div>
-                      <span className="text-lg font-bold">{entry.ogCandle}</span>
-                    </div>
-                  )}
-                </div>
-                {/* Direction Row */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                  {entry.dropdown1 && (
-                    <div className="px-3 py-2 rounded bg-blue-50 border border-blue-200">
-                      <div className="text-sm font-bold text-blue-700 mb-1">DIRECTION A</div>
-                      <span className="text-lg font-bold">{entry.dropdown1}</span>
-                    </div>
-                  )}
-                  {entry.dropdown2 && (
-                    <div className="px-3 py-2 rounded bg-green-50 border border-green-200">
-                      <div className="text-sm font-bold text-green-700 mb-1">DIRECTION B</div>
-                      <span className="text-lg font-bold">{entry.dropdown2}</span>
-                    </div>
-                  )}
-                  {entry.dropdown3 && (
-                    <div className="px-3 py-2 rounded bg-purple-50 border border-purple-200">
-                      <div className="text-sm font-bold text-purple-700 mb-1">DIRECTION C</div>
-                      <span className="text-lg font-bold">{entry.dropdown3}</span>
-                    </div>
-                  )}
-                  {entry.dropdown4 && (
-                    <div className="px-3 py-2 rounded bg-pink-50 border border-pink-200">
-                      <div className="text-sm font-bold text-pink-700 mb-1">DIRECTION D</div>
-                      <span className="text-lg font-bold">{entry.dropdown4}</span>
-                    </div>
-                  )}
-                </div>
-                {/* OG OPEN A and OG CLOSE A */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {entry.ogOpenA && (
-                    <div className="px-3 py-2 rounded bg-indigo-50 border border-indigo-200">
-                      <div className="text-sm font-bold text-indigo-700 mb-1">OG OPEN A</div>
-                      <span className="text-lg font-bold">{entry.ogOpenA}</span>
-                      {entry.ogOpenADate && (
-                        <div className="text-xs text-indigo-600 mt-1">
-                          {format(new Date(entry.ogOpenADate), "d/M/yyyy")}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  {entry.ogCloseA && (
-                    <div className="px-3 py-2 rounded bg-pink-50 border border-pink-200">
-                      <div className="text-sm font-bold text-pink-700 mb-1">OG CLOSE A</div>
-                      <span className="text-lg font-bold">{entry.ogCloseA}</span>
-                      {entry.ogCloseADate && (
-                        <div className="text-xs text-pink-600 mt-1">
-                          {format(new Date(entry.ogCloseADate), "d/M/yyyy")}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-
             {/* Common Entry Fields - Combines Part 1 and Part 2 in order */}
             {entryType === 'common' && (
               <>
@@ -485,7 +275,7 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
               ) : (
                 <TrendingDown className="h-6 w-6 mr-2" />
               )}
-              {entry.classification.toUpperCase()}
+              {entry.classification?.toUpperCase() || 'N/A'}
             </Badge>
           </div>
           {entry.notes && (
@@ -511,9 +301,9 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
         <div className="flex gap-1">
           <EditEntryDialog 
             entry={entry} 
-            index={entries.findIndex(e => e.timestamp === entry.timestamp)}
+            index={index}
             serialNumber={serialNumber}
-            onEntryUpdated={loadEntries}
+            onEntryUpdated={refetch}
           />
           <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -534,7 +324,10 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={() => deleteEntry(entries.findIndex(e => e.timestamp === entry.timestamp))} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                <AlertDialogAction 
+                  onClick={() => handleDeleteEntry(entry)} 
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
                   Delete
                 </AlertDialogAction>
               </AlertDialogFooter>
@@ -584,7 +377,12 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
         </div>
       </CardHeader>
       <CardContent className="p-6">
-        {filteredEntries.length === 0 ? (
+        {loading ? (
+          <div className="text-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+            <p className="text-sm text-muted-foreground mt-2">Loading entries...</p>
+          </div>
+        ) : filteredEntries.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <Database className="h-12 w-12 mx-auto mb-3 opacity-50" />
             <p className="text-lg font-medium mb-1">No entries yet</p>
@@ -594,7 +392,7 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
           <div className="space-y-3">
             {filteredEntries.map((entry, index) => (
               <div
-                key={entry.timestamp}
+                key={entry.id || entry.timestamp}
                 className="flex items-center justify-between p-4 rounded-lg hover:bg-accent/20 transition-colors animate-fade-in"
                 style={{ animationDelay: `${index * 50}ms` }}
               >

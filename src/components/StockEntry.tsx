@@ -15,8 +15,11 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import SimpleOptionSelector from '@/components/SimpleOptionSelector';
+import { useAuth } from '@/contexts/AuthContext';
+import { createEntry } from '@/services/stockEntriesService';
+import { StockEntryData } from '@/types/stockEntry';
 
-interface StockEntryData {
+interface StockEntryDataLocal {
   stock1: string;
   stock2: string;
   stock2b: string;
@@ -86,6 +89,7 @@ interface StockEntryProps {
 }
 
 const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }) => {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     stock1: '',
     stock2: '',
@@ -407,7 +411,15 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     setUploading(true);
 
     try {
-      const existingEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
+      if (!user) {
+        toast({
+          title: "Not Authenticated",
+          description: "Please sign in to save entries.",
+          variant: "destructive"
+        });
+        setUploading(false);
+        return;
+      }
 
       let imageUrl: string | undefined;
       if (selectedImage) {
@@ -435,12 +447,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         type: 'common'
       };
 
-      const updatedEntries = [...existingEntries, combinedEntry];
-      localStorage.setItem('stockEntries', JSON.stringify(updatedEntries));
+      // Save to database
+      await createEntry(combinedEntry, user.id);
 
       // Set last saved entry for display
       setLastSavedEntry(combinedEntry);
-      setEntrySerialNumber(updatedEntries.length);
+      setEntrySerialNumber(nextEntryNumber);
       setShowEntrySaved(true);
 
       toast({
