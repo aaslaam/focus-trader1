@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Database, Trash2, TrendingUp, TrendingDown, Calendar, Download, Upload } from 'lucide-react';
@@ -54,7 +54,6 @@ interface SavedEntriesProps {
 
 const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
   const [entries, setEntries] = useState<StockEntryData[]>([]);
-  const [activeTab, setActiveTab] = useState<string>('part1');
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -165,11 +164,10 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
     });
   };
 
-  // Filter entries based on active tab
+  // Filter entries - show only common entries (combined Part 1 + Part 2)
   const filteredEntries = entries.filter(entry => {
-    // For backward compatibility, treat entries without type as 'common'
     const entryType = entry.type || 'common';
-    return entryType === activeTab;
+    return entryType === 'common';
   });
 
   const renderEntry = (entry: StockEntryData, index: number) => {
@@ -586,79 +584,25 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
         </div>
       </CardHeader>
       <CardContent className="p-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="part1" className="font-bold">PART 1</TabsTrigger>
-            <TabsTrigger value="part2" className="font-bold">PART 2</TabsTrigger>
-            <TabsTrigger value="common" className="font-bold">COMMON</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="part1">
-            {filteredEntries.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <Database className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                <p className="text-lg font-medium mb-1">No Part 1 entries yet</p>
-                <p className="text-sm">Save Part 1 form to see entries here</p>
+        {filteredEntries.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            <Database className="h-12 w-12 mx-auto mb-3 opacity-50" />
+            <p className="text-lg font-medium mb-1">No entries yet</p>
+            <p className="text-sm">Save entries to see them here</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {filteredEntries.map((entry, index) => (
+              <div
+                key={entry.timestamp}
+                className="flex items-center justify-between p-4 rounded-lg hover:bg-accent/20 transition-colors animate-fade-in"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                {renderEntry(entry, index)}
               </div>
-            ) : (
-              <div className="space-y-3">
-                {filteredEntries.map((entry, index) => (
-                  <div
-                    key={entry.timestamp}
-                    className="flex items-center justify-between p-4 rounded-lg hover:bg-accent/20 transition-colors animate-fade-in"
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
-                    {renderEntry(entry, index)}
-                  </div>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-          
-          <TabsContent value="part2">
-            {filteredEntries.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <Database className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                <p className="text-lg font-medium mb-1">No Part 2 entries yet</p>
-                <p className="text-sm">Save Part 2 form to see entries here</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {filteredEntries.map((entry, index) => (
-                  <div
-                    key={entry.timestamp}
-                    className="flex items-center justify-between p-4 rounded-lg hover:bg-accent/20 transition-colors animate-fade-in"
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
-                    {renderEntry(entry, index)}
-                  </div>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-          
-          <TabsContent value="common">
-            {filteredEntries.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <Database className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                <p className="text-lg font-medium mb-1">No Common entries yet</p>
-                <p className="text-sm">Save using Common Save to see entries here</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {filteredEntries.map((entry, index) => (
-                  <div
-                    key={entry.timestamp}
-                    className="flex items-center justify-between p-4 rounded-lg hover:bg-accent/20 transition-colors animate-fade-in"
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
-                    {renderEntry(entry, index)}
-                  </div>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   );
