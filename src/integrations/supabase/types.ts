@@ -14,7 +14,132 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      stock_entries: {
+        Row: {
+          classification: string | null
+          created_at: string | null
+          dropdown1: string | null
+          dropdown1_date: string | null
+          dropdown2: string | null
+          dropdown2_date: string | null
+          dropdown3: string | null
+          dropdown3_date: string | null
+          dropdown4: string | null
+          dropdown4_date: string | null
+          dropdown5: string | null
+          dropdown5_date: string | null
+          dropdown6: string | null
+          dropdown6_date: string | null
+          entry_type: string | null
+          id: string
+          image_url: string | null
+          legacy_timestamp: number | null
+          notes: string | null
+          og_candle: string | null
+          og_close_a: string | null
+          og_close_a_date: string | null
+          og_open_a: string | null
+          og_open_a_date: string | null
+          part2_result: string | null
+          sd_close_a: string | null
+          sd_open_a: string | null
+          stock1: string | null
+          stock1_date: string | null
+          stock2: string | null
+          stock2_date: string | null
+          stock2b: string | null
+          stock2b_color: string | null
+          stock3: string | null
+          stock3_date: string | null
+          stock4: string | null
+          stock4_date: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          classification?: string | null
+          created_at?: string | null
+          dropdown1?: string | null
+          dropdown1_date?: string | null
+          dropdown2?: string | null
+          dropdown2_date?: string | null
+          dropdown3?: string | null
+          dropdown3_date?: string | null
+          dropdown4?: string | null
+          dropdown4_date?: string | null
+          dropdown5?: string | null
+          dropdown5_date?: string | null
+          dropdown6?: string | null
+          dropdown6_date?: string | null
+          entry_type?: string | null
+          id?: string
+          image_url?: string | null
+          legacy_timestamp?: number | null
+          notes?: string | null
+          og_candle?: string | null
+          og_close_a?: string | null
+          og_close_a_date?: string | null
+          og_open_a?: string | null
+          og_open_a_date?: string | null
+          part2_result?: string | null
+          sd_close_a?: string | null
+          sd_open_a?: string | null
+          stock1?: string | null
+          stock1_date?: string | null
+          stock2?: string | null
+          stock2_date?: string | null
+          stock2b?: string | null
+          stock2b_color?: string | null
+          stock3?: string | null
+          stock3_date?: string | null
+          stock4?: string | null
+          stock4_date?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          classification?: string | null
+          created_at?: string | null
+          dropdown1?: string | null
+          dropdown1_date?: string | null
+          dropdown2?: string | null
+          dropdown2_date?: string | null
+          dropdown3?: string | null
+          dropdown3_date?: string | null
+          dropdown4?: string | null
+          dropdown4_date?: string | null
+          dropdown5?: string | null
+          dropdown5_date?: string | null
+          dropdown6?: string | null
+          dropdown6_date?: string | null
+          entry_type?: string | null
+          id?: string
+          image_url?: string | null
+          legacy_timestamp?: number | null
+          notes?: string | null
+          og_candle?: string | null
+          og_close_a?: string | null
+          og_close_a_date?: string | null
+          og_open_a?: string | null
+          og_open_a_date?: string | null
+          part2_result?: string | null
+          sd_close_a?: string | null
+          sd_open_a?: string | null
+          stock1?: string | null
+          stock1_date?: string | null
+          stock2?: string | null
+          stock2_date?: string | null
+          stock2b?: string | null
+          stock2b_color?: string | null
+          stock3?: string | null
+          stock3_date?: string | null
+          stock4?: string | null
+          stock4_date?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
