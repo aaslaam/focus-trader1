@@ -505,6 +505,11 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       const updatedEntries = [...existingEntries, combinedEntry];
       localStorage.setItem('stockEntries', JSON.stringify(updatedEntries));
 
+      // Set last saved entry for display
+      setLastSavedEntry(combinedEntry);
+      setEntrySerialNumber(updatedEntries.length);
+      setShowEntrySaved(true);
+
       toast({
         title: "Combined Entry Saved",
         description: "Part 1 and Part 2 have been combined and saved.",
@@ -1383,7 +1388,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                 >
                   <SelectTrigger 
                     className="text-lg font-bold"
-                    style={{ backgroundColor: newDropdowns.dropdown5 ? '#dcfce7' : '#ffe3e2' }}
+                    style={{ backgroundColor: newDropdowns.dropdown5 ? '#ddfde7' : '#fee2e2' }}
                   >
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
@@ -1401,7 +1406,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                 >
                   <SelectTrigger 
                     className="text-lg font-bold"
-                    style={{ backgroundColor: newDropdowns.dropdown6 ? '#dcfce7' : '#ffe3e2' }}
+                    style={{ backgroundColor: newDropdowns.dropdown6 ? '#ddfde7' : '#fee2e2' }}
                   >
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
@@ -1428,9 +1433,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   value={dropdowns.candleMain}
                   onValueChange={(value) => setDropdowns(prev => ({ ...prev, candleMain: value }))}
                 >
-                  <SelectTrigger 
+                <SelectTrigger 
                     className="text-lg font-bold"
-                    style={{ backgroundColor: dropdowns.candleMain ? '#dcfce7' : '#ffe3e2' }}
+                    style={{ backgroundColor: dropdowns.candleMain ? '#ddfde7' : '#fee2e2' }}
                   >
                     <SelectValue placeholder="Select Candle" />
                   </SelectTrigger>
@@ -1449,7 +1454,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                 >
                   <SelectTrigger 
                     className="text-lg font-bold"
-                    style={{ backgroundColor: dropdowns.candleSub ? '#dcfce7' : '#ffe3e2' }}
+                    style={{ backgroundColor: dropdowns.candleSub ? '#ddfde7' : '#fee2e2' }}
                   >
                     <SelectValue placeholder="Select Color" />
                   </SelectTrigger>
@@ -1473,7 +1478,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                 >
                   <SelectTrigger 
                     className="text-lg font-bold"
-                    style={{ backgroundColor: newDropdowns.dropdown1 ? '#dcfce7' : '#ffe3e2' }}
+                    style={{ backgroundColor: newDropdowns.dropdown1 ? '#ddfde7' : '#fee2e2' }}
                   >
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
@@ -1495,7 +1500,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                 >
                   <SelectTrigger 
                     className="text-lg font-bold"
-                    style={{ backgroundColor: newDropdowns.dropdown2 ? '#dcfce7' : '#ffe3e2' }}
+                    style={{ backgroundColor: newDropdowns.dropdown2 ? '#ddfde7' : '#fee2e2' }}
                   >
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
@@ -1517,7 +1522,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                 >
                   <SelectTrigger 
                     className="text-lg font-bold"
-                    style={{ backgroundColor: newDropdowns.dropdown3 ? '#dcfce7' : '#ffe3e2' }}
+                    style={{ backgroundColor: newDropdowns.dropdown3 ? '#ddfde7' : '#fee2e2' }}
                   >
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
@@ -1539,7 +1544,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                 >
                   <SelectTrigger 
                     className="text-lg font-bold"
-                    style={{ backgroundColor: newDropdowns.dropdown4 ? '#dcfce7' : '#ffe3e2' }}
+                    style={{ backgroundColor: newDropdowns.dropdown4 ? '#ddfde7' : '#fee2e2' }}
                   >
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
@@ -1813,6 +1818,28 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
             </div>
           </div>
           
+          {/* Saved Entry Summary Box */}
+          {showEntrySaved && lastSavedEntry && (
+            <div className="p-4 bg-red-100 border-2 border-red-500 rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-2xl font-bold text-red-800">Entry #{entrySerialNumber} Saved</span>
+                <button 
+                  onClick={() => setShowEntrySaved(false)}
+                  className="text-red-600 hover:text-red-800"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+              <div className="text-lg font-bold text-red-700 space-y-1">
+                <div>Opening Candle: {lastSavedEntry.ogCandle || 'NILL'} | Candle No's: {formData.ogCandle || lastSavedEntry.ogCandle || 'NILL'}</div>
+                <div>Direction A: {lastSavedEntry.dropdown1 || 'NILL'} | Direction B: {lastSavedEntry.dropdown2 || 'NILL'}</div>
+                <div>Direction C: {lastSavedEntry.dropdown3 || 'NILL'} | Direction D: {lastSavedEntry.dropdown4 || 'NILL'}</div>
+                <div>OG Open A: {lastSavedEntry.ogOpenA || 'NILL'} | OG Close A: {lastSavedEntry.ogCloseA || 'NILL'}</div>
+                <div>Result: {lastSavedEntry.part2Result || 'NILL'}</div>
+              </div>
+            </div>
+          )}
+
           {/* Part 2 Notes with Image */}
           <div className="space-y-2">
             <Label htmlFor="notes" className="text-xl font-bold">NOTES</Label>
