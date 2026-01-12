@@ -284,74 +284,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     return urlData.publicUrl;
   };
 
-  const handlePart1Submit = async () => {
-    // Validate Part 1 required fields - check actual dropdown states
-    const isFieldMissing = (value: string) => {
-      if (!value || value.trim() === '') return true;
-      return false;
-    };
-    
-    // Check the actual dropdown values (newDropdowns is built from dropdowns state)
-    if (isFieldMissing(newDropdowns.dropdown1) || isFieldMissing(newDropdowns.dropdown2) || isFieldMissing(newDropdowns.dropdown3) || isFieldMissing(newDropdowns.dropdown4)) {
-      const missing = [];
-      if (isFieldMissing(newDropdowns.dropdown1)) missing.push("MONTHLY OPEN");
-      if (isFieldMissing(newDropdowns.dropdown2)) missing.push("MONTHLY CLOSE");
-      if (isFieldMissing(newDropdowns.dropdown3)) missing.push("WEEKLY OPEN");
-      if (isFieldMissing(newDropdowns.dropdown4)) missing.push("WEEKLY CLOSE");
-      
-      setMissingFields(missing);
-      setShowMissingInfo(true);
-      setTimeout(() => {
-        setShowMissingInfo(false);
-        setMissingFields([]);
-      }, 5000);
-      return;
-    }
-
-    const part1Data: Part1Data = {
-      stock1: formData.stock1,
-      stock2: formData.stock2,
-      stock2b: formData.stock2b,
-      stock2bColor: formData.stock2bColor,
-      stock3: formData.stock3,
-      stock4: formData.stock4,
-      stock1Date: selectedDates.stock1Date,
-      stock2Date: selectedDates.stock2Date,
-      stock3Date: selectedDates.stock3Date,
-      stock4Date: selectedDates.stock4Date,
-      dropdown1: newDropdowns.dropdown1,
-      dropdown2: newDropdowns.dropdown2,
-      dropdown3: newDropdowns.dropdown3,
-      dropdown4: newDropdowns.dropdown4,
-      dropdown1Date: selectedDates.dropdown1Date,
-      dropdown2Date: selectedDates.dropdown2Date,
-      dropdown3Date: selectedDates.dropdown3Date,
-      dropdown4Date: selectedDates.dropdown4Date,
-      timestamp: Date.now()
-    };
-
-    // Save to component state for Common Save
-    setPart1SavedData(part1Data);
-
-    // Also save to localStorage as a Part 1 entry
-    const existingEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
-    const part1Entry: StockEntryData = {
-      ...part1Data,
-      classification: 'NILL' as const,
-      type: 'part1'
-    };
-    const updatedEntries = [...existingEntries, part1Entry];
-    localStorage.setItem('stockEntries', JSON.stringify(updatedEntries));
-    
-    toast({
-      title: "Part 1 Saved",
-      description: "Part 1 entry has been saved and is visible in PART 1 tab.",
-      variant: "default"
-    });
-
-    onEntryAdded();
-  };
-
   const getLatestPart1FromLocalStorage = (): Part1Data | null => {
     try {
       const raw = localStorage.getItem('stockEntries');
@@ -1355,23 +1287,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
             >
               REFRESH
             </Button>
-            <Button 
-              type="button"
-              onClick={handlePart1Submit}
-              className="flex-1"
-              variant="default"
-            >
-              Save Part 1
-            </Button>
           </div>
-
-            {part1SavedData && (
-              <div className="p-4 bg-green-100 border-2 border-green-500 rounded-lg">
-                <div className="text-sm font-bold text-green-800">
-                  ✓ Part 1 Saved! You can now fill Part 2.
-                </div>
-              </div>
-            )}
           </TabsContent>
 
           {/* Part 2 Tab */}
@@ -1959,10 +1875,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                 setSelectedImage(null);
                 setImagePreview(null);
               }}
-              className="flex-1"
-              variant="outline"
+              className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold"
             >
-              Refresh Part 2
+              PART 2 REFRESH
             </Button>
             <Button 
               type="button"
