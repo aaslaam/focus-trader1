@@ -9,7 +9,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, CalendarIcon, Paperclip, X } from 'lucide-react';
+import { Plus, CalendarIcon, Paperclip, X, RefreshCw } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
@@ -1279,14 +1280,37 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
 
           {/* Part 1 Buttons */}
           <div className="flex gap-2">
-            <Button 
-              type="button" 
-              onClick={handleRefresh} 
-              className="flex-1 bg-white text-green-600 border border-border hover:bg-white hover:text-green-700 font-bold" 
-              variant="outline"
-            >
-              REFRESH
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  type="button"
+                  className="flex-1 bg-white text-green-600 border border-green-600 hover:bg-gray-50 hover:text-green-700 font-bold" 
+                  variant="outline"
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  PART 1 REFRESH
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="max-w-md">
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="text-3xl font-extrabold text-center">
+                    CONFIRM REFRESH
+                  </AlertDialogTitle>
+                  <AlertDialogDescription className="text-xl font-bold text-center text-foreground">
+                    This will clear all Part 1 fields. Are you sure?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter className="flex gap-2 justify-center sm:justify-center">
+                  <AlertDialogCancel className="text-lg font-bold">Cancel</AlertDialogCancel>
+                  <AlertDialogAction 
+                    onClick={handleRefresh}
+                    className="bg-green-600 hover:bg-green-700 text-white text-lg font-bold"
+                  >
+                    Yes, Refresh
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
           </TabsContent>
 
