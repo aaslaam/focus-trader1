@@ -461,9 +461,11 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         variant: "default"
       });
 
-      // Reset only Part 2 form data - keep Part 1 values intact
+      // Reset ONLY Part 2 form data - preserve all Part 1 values
       setFormData(prev => ({
         ...prev,
+        // Keep Part 1 values: stock1, stock2, stock2b, stock2bColor, stock3, stock4, classification
+        // Reset only Part 2 values:
         ogCandle: '',
         ogOpenA: '',
         sdOpenA: '',
@@ -472,13 +474,15 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         notes: '',
         part2Result: ''
       }));
-      // Keep Part 1 dropdowns (dropdown1-6), only reset candle dropdowns
+      // Keep ALL Part 1 dropdowns (dropdown1-6), only reset candle dropdowns for Part 2
       setDropdowns(prev => ({
         ...prev,
+        // Preserve dropdown1-6 (Part 1)
+        // Reset only candle (Part 2)
         candleMain: '',
         candleSub: ''
       }));
-      // Keep Part 1 dates, only reset Part 2 dates
+      // Keep Part 1 dates, only reset Part 2 dates (ogOpenA, ogCloseA)
       setSelectedDates(prev => ({
         ...prev,
         ogOpenADate: new Date(),
@@ -491,7 +495,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       }));
       setSelectedImage(null);
       setImagePreview(null);
-      // Keep part1SavedData intact so Part 1 values persist
+      // Keep part1SavedData and newDropdowns intact so Part 1 values persist
+      // Do NOT reset: part1SavedData, newDropdowns, dropdown1-6 values, stock dates
 
       onEntryAdded();
     } catch (error) {
