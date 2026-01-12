@@ -1,28 +1,74 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import StockEntry from '@/components/StockEntry';
 import StockSearch from '@/components/StockSearch';
 import SavedEntries from '@/components/SavedEntries';
-import { TrendingUp, BarChart3, X, Download, Upload } from 'lucide-react';
+import { TrendingUp, BarChart3, X, Download, Upload, LogOut, Cloud, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRealtimeEntries } from '@/hooks/useRealtimeEntries';
+import { migrateLocalStorageEntries } from '@/services/stockEntriesService';
 
 const Index = () => {
+  const navigate = useNavigate();
+  const { user, loading: authLoading, signOut } = useAuth();
+  const { entries, loading: entriesLoading, refetch } = useRealtimeEntries();
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [migrating, setMigrating] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-  
-  // Calculate next entry number based on existing entries
-  const entries = JSON.parse(localStorage.getItem('stockEntries') || '[]');
-  const nextEntryNumber = entries.length + 1;
+
+  // Redirect to auth if not logged in
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate('/auth');
+    }
+  }, [user, authLoading, navigate]);
+
+  // Migrate localStorage entries on first login
+  useEffect(() => {
+    const migrateEntries = async () => {
+      if (!user) return;
+      
+      const localData = localStorage.getItem('stockEntries');
+      if (!localData) return;
+      
+      const localEntries = JSON.parse(localData);
+      if (localEntries.length === 0) return;
+      
+      setMigrating(true);
+      try {
+        const count = await migrateLocalStorageEntries(user.id);
+        if (count > 0) {
+          toast({
+            title: 'Data Migrated',
+            description: `${count} entries have been synced to the cloud.`,
+          });
+          refetch();
+        }
+      } catch (error) {
+        console.error('Migration error:', error);
+        toast({
+          title: 'Migration Failed',
+          description: 'Some entries could not be migrated. They remain in local storage.',
+          variant: 'destructive',
+        });
+      } finally {
+        setMigrating(false);
+      }
+    };
+
+    migrateEntries();
+  }, [user]);
 
   const handleEntryAdded = () => {
     setRefreshTrigger(prev => prev + 1);
+    refetch();
   };
 
   const handleExit = () => {
-    // Attempt to close the window (works in some contexts like mobile apps or windows opened by JS)
     window.close();
-    // If window.close() doesn't work (most browsers), show a message
     setTimeout(() => {
       toast({
         title: "Cannot close browser",
@@ -32,10 +78,14 @@ const Index = () => {
     }, 100);
   };
 
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/auth');
+  };
+
   const handleExport = () => {
     try {
-      const stockEntries = localStorage.getItem('stockEntries') || '[]';
-      const dataStr = JSON.stringify(JSON.parse(stockEntries), null, 2);
+      const dataStr = JSON.stringify(entries, null, 2);
       const dataBlob = new Blob([dataStr], { type: 'application/json' });
       const url = URL.createObjectURL(dataBlob);
       const link = document.createElement('a');
@@ -48,7 +98,7 @@ const Index = () => {
       
       toast({
         title: "Export Successful",
-        description: "Your stock entries have been exported successfully",
+        description: `${entries.length} entries have been exported successfully`,
       });
     } catch (error) {
       toast({
@@ -59,27 +109,29 @@ const Index = () => {
     }
   };
 
-  const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file) return;
+    if (!file || !user) return;
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
         const content = e.target?.result as string;
         const data = JSON.parse(content);
         
-        // Validate that it's an array
         if (!Array.isArray(data)) {
           throw new Error('Invalid data format');
         }
 
+        // Store temporarily in localStorage and trigger migration
         localStorage.setItem('stockEntries', JSON.stringify(data));
-        setRefreshTrigger(prev => prev + 1);
+        const count = await migrateLocalStorageEntries(user.id);
+        
+        refetch();
         
         toast({
           title: "Import Successful",
-          description: `Imported ${data.length} entries successfully`,
+          description: `Imported ${count} entries successfully`,
         });
       } catch (error) {
         toast({
@@ -91,14 +143,37 @@ const Index = () => {
     };
     reader.readAsText(file);
     
-    // Reset input
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
+  // Show loading while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // Don't render if not authenticated
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Migration overlay */}
+      {migrating && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
+            <p className="text-lg font-medium">Syncing your data to the cloud...</p>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <header className="bg-gradient-hero text-primary-foreground shadow-elegant">
         <div className="container mx-auto px-4 py-8">
@@ -108,6 +183,12 @@ const Index = () => {
               <h1 className="text-4xl font-bold">Final App.</h1>
             </div>
             <div className="flex items-center gap-2">
+              {/* Sync status indicator */}
+              <div className="flex items-center gap-2 mr-2 text-sm">
+                <Cloud className="h-4 w-4" />
+                <span className="hidden sm:inline">{entriesLoading ? 'Syncing...' : 'Synced'}</span>
+              </div>
+              
               <Button
                 variant="outline"
                 size="sm"
@@ -129,6 +210,15 @@ const Index = () => {
               <Button
                 variant="outline"
                 size="sm"
+                onClick={handleSignOut}
+                className="bg-white/10 text-white border-white/20 hover:bg-white/20"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">Sign Out</span>
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={handleExit}
                 className="bg-red-500/20 text-white border-red-500/50 hover:bg-red-500/30"
               >
@@ -144,6 +234,10 @@ const Index = () => {
               />
             </div>
           </div>
+          {/* User info */}
+          <div className="text-sm opacity-75">
+            Logged in as: {user.email}
+          </div>
         </div>
       </header>
 
@@ -152,7 +246,7 @@ const Index = () => {
         <div className="grid gap-8 lg:grid-cols-2 xl:grid-cols-3">
           {/* Add Entry Form */}
           <div className="lg:col-span-1">
-            <StockEntry onEntryAdded={handleEntryAdded} nextEntryNumber={nextEntryNumber} />
+            <StockEntry onEntryAdded={handleEntryAdded} nextEntryNumber={entries.length + 1} />
           </div>
 
           {/* Search Form */}
@@ -176,10 +270,10 @@ const Index = () => {
             </p>
           </div>
           <div className="bg-card border rounded-lg p-6 text-center shadow-card">
-            <BarChart3 className="h-8 w-8 mx-auto mb-3 text-primary" />
-            <h3 className="text-lg font-semibold mb-1">Local Storage</h3>
+            <Cloud className="h-8 w-8 mx-auto mb-3 text-primary" />
+            <h3 className="text-lg font-semibold mb-1">Cloud Sync</h3>
             <p className="text-sm text-muted-foreground">
-              Your data persists between browser sessions
+              Your data syncs automatically across all devices
             </p>
           </div>
           <div className="bg-card border rounded-lg p-6 text-center shadow-card">
