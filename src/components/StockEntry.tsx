@@ -49,7 +49,6 @@ interface StockEntryData {
   notes?: string;
   imageUrl?: string;
   timestamp: number;
-  part1Result?: string;
   part2Result?: string;
   type: 'part1' | 'part2' | 'common';
 }
@@ -77,8 +76,6 @@ interface Part1Data {
   dropdown4Date?: Date | null;
   dropdown5Date?: Date | null;
   dropdown6Date?: Date | null;
-  part1Result: string;
-  part1Notes: string;
   timestamp: number;
 }
 
@@ -102,8 +99,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     ogCloseA: '',
     sdCloseA: '',
     notes: '',
-    part1Result: '' as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL' | '',
-    part1Notes: '',
     part2Result: '' as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL' | ''
   });
   const [part1SavedData, setPart1SavedData] = useState<Part1Data | null>(null);
@@ -332,8 +327,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       dropdown2Date: selectedDates.dropdown2Date,
       dropdown3Date: selectedDates.dropdown3Date,
       dropdown4Date: selectedDates.dropdown4Date,
-      part1Result: formData.part1Result,
-      part1Notes: formData.part1Notes,
       timestamp: Date.now()
     };
 
@@ -344,8 +337,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     const existingEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
     const part1Entry: StockEntryData = {
       ...part1Data,
-      classification: part1Data.part1Result as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL',
-      notes: part1Data.part1Notes,
+      classification: 'NILL' as const,
       type: 'part1'
     };
     const updatedEntries = [...existingEntries, part1Entry];
@@ -466,8 +458,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         dropdown4Date: toDate(latest.dropdown4Date),
         dropdown5Date: toDate(latest.dropdown5Date),
         dropdown6Date: toDate(latest.dropdown6Date),
-        part1Result: String(latest.part1Result ?? latest.classification ?? ''),
-        part1Notes: String(latest.part1Notes ?? latest.notes ?? ''),
         timestamp: typeof latest.timestamp === 'number' ? latest.timestamp : Date.now(),
       };
     } catch (e) {
@@ -516,8 +506,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         dropdown4Date: selectedDates.dropdown4Date,
         dropdown5Date: selectedDates.dropdown5Date,
         dropdown6Date: selectedDates.dropdown6Date,
-        part1Result: formData.part1Result,
-        part1Notes: formData.part1Notes,
         timestamp: Date.now()
       };
     }
@@ -578,8 +566,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         sdCloseA: formData.sdCloseA,
         ogOpenADate: selectedDates.ogOpenADate,
         ogCloseADate: selectedDates.ogCloseADate,
-        notes: effectivePart1.part1Notes,
-        part1Result: effectivePart1.part1Result,
+        notes: formData.notes,
         part2Result: formData.part2Result,
         imageUrl,
         timestamp: Date.now(),
@@ -610,8 +597,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         ogCloseA: '',
         sdCloseA: '',
         notes: '',
-        part1Result: '',
-        part1Notes: '',
         part2Result: ''
       });
       setNewDropdowns({
@@ -699,8 +684,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       ogCloseA: '',
       sdCloseA: '',
       notes: '',
-      part1Result: '',
-      part1Notes: '',
       part2Result: ''
     });
     setPart1SavedData(null);
@@ -839,8 +822,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         ogCloseA: '',
         sdCloseA: '',
         notes: '',
-        part1Result: '',
-        part1Notes: '',
         part2Result: ''
       });
     setPart1SavedData(null);

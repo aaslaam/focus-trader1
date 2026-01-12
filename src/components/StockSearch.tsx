@@ -41,8 +41,8 @@ interface StockEntryData {
   notes?: string;
   imageUrl?: string;
   timestamp: number;
-  part1Result?: string;
   part2Result?: string;
+  type?: 'part1' | 'part2' | 'common';
 }
 
 const StockSearch: React.FC = () => {
@@ -104,13 +104,15 @@ const StockSearch: React.FC = () => {
     
     // Filter by tab (Part 1, Part 2, or Common)
     if (activeTab === 'part1') {
-      // Only entries with part1Result and NO part2Result
-      matchingEntries = matchingEntries.filter(entry => entry.part1Result && !entry.part2Result);
+      // Only entries with type 'part1'
+      matchingEntries = matchingEntries.filter(entry => entry.type === 'part1');
     } else if (activeTab === 'part2') {
-      // Only entries with part2Result and NO part1Result
-      matchingEntries = matchingEntries.filter(entry => entry.part2Result && !entry.part1Result);
+      // Only entries with type 'part2'
+      matchingEntries = matchingEntries.filter(entry => entry.type === 'part2');
+    } else if (activeTab === 'common') {
+      // Only entries with type 'common'
+      matchingEntries = matchingEntries.filter(entry => entry.type === 'common');
     }
-    // For 'common', show all entries (no additional filtering)
     
     // Filter by serial number if provided
     if (hasSerialNumber) {
