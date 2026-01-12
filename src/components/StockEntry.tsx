@@ -290,19 +290,19 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
   };
 
   const handlePart1Submit = async () => {
-    // Validate Part 1 required fields
+    // Validate Part 1 required fields - check actual dropdown states
     const isFieldMissing = (value: string) => {
       if (!value || value.trim() === '') return true;
-      if (value.toUpperCase() === 'NILL') return false;
       return false;
     };
     
-    if (isFieldMissing(formData.stock2) || isFieldMissing(formData.stock2b) || isFieldMissing(formData.stock3) || isFieldMissing(formData.stock4) || !formData.part1Result) {
+    // Check the actual dropdown values (newDropdowns is built from dropdowns state)
+    if (isFieldMissing(newDropdowns.dropdown1) || isFieldMissing(newDropdowns.dropdown2) || isFieldMissing(newDropdowns.dropdown3) || isFieldMissing(newDropdowns.dropdown4) || !formData.part1Result) {
       const missing = [];
-      if (isFieldMissing(formData.stock2)) missing.push("A DIRECTION");
-      if (isFieldMissing(formData.stock2b)) missing.push("B");
-      if (isFieldMissing(formData.stock3)) missing.push("OPEN A");
-      if (isFieldMissing(formData.stock4)) missing.push("CLOSE A");
+      if (isFieldMissing(newDropdowns.dropdown1)) missing.push("MONTHLY OPEN");
+      if (isFieldMissing(newDropdowns.dropdown2)) missing.push("MONTHLY CLOSE");
+      if (isFieldMissing(newDropdowns.dropdown3)) missing.push("WEEKLY OPEN");
+      if (isFieldMissing(newDropdowns.dropdown4)) missing.push("WEEKLY CLOSE");
       if (!formData.part1Result) missing.push("Part 1 RESULT");
       
       setMissingFields(missing);
@@ -484,11 +484,11 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       return false;
     };
 
-    // Check if Part 1 required fields are filled in the form
-    const part1FormFilled = !isFieldMissing(formData.stock2) && 
-                            !isFieldMissing(formData.stock2b) && 
-                            !isFieldMissing(formData.stock3) && 
-                            !isFieldMissing(formData.stock4) && 
+    // Check if Part 1 required fields are filled - use actual dropdown states
+    const part1FormFilled = !isFieldMissing(newDropdowns.dropdown1) && 
+                            !isFieldMissing(newDropdowns.dropdown2) && 
+                            !isFieldMissing(newDropdowns.dropdown3) && 
+                            !isFieldMissing(newDropdowns.dropdown4) && 
                             formData.part1Result;
 
     let effectivePart1: Part1Data | null = part1SavedData;
@@ -497,11 +497,11 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     if (!effectivePart1 && part1FormFilled) {
       effectivePart1 = {
         stock1: formData.stock1,
-        stock2: formData.stock2,
-        stock2b: formData.stock2b,
+        stock2: newDropdowns.dropdown1,
+        stock2b: newDropdowns.dropdown2,
         stock2bColor: formData.stock2bColor,
-        stock3: formData.stock3,
-        stock4: formData.stock4,
+        stock3: newDropdowns.dropdown3,
+        stock4: newDropdowns.dropdown4,
         stock1Date: selectedDates.stock1Date,
         stock2Date: selectedDates.stock2Date,
         stock3Date: selectedDates.stock3Date,
@@ -532,10 +532,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     if (!effectivePart1) {
       // Show which Part 1 fields are missing
       const missing: string[] = [];
-      if (isFieldMissing(formData.stock2)) missing.push("A DIRECTION");
-      if (isFieldMissing(formData.stock2b)) missing.push("B");
-      if (isFieldMissing(formData.stock3)) missing.push("OPEN A");
-      if (isFieldMissing(formData.stock4)) missing.push("CLOSE A");
+      if (isFieldMissing(newDropdowns.dropdown1)) missing.push("MONTHLY OPEN");
+      if (isFieldMissing(newDropdowns.dropdown2)) missing.push("MONTHLY CLOSE");
+      if (isFieldMissing(newDropdowns.dropdown3)) missing.push("WEEKLY OPEN");
+      if (isFieldMissing(newDropdowns.dropdown4)) missing.push("WEEKLY CLOSE");
       if (!formData.part1Result) missing.push("Part 1 RESULT");
       
       setMissingFields(missing.length > 0 ? missing : ["Part 1 data"]);
