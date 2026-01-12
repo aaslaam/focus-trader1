@@ -1875,7 +1875,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                 setSelectedImage(null);
                 setImagePreview(null);
               }}
-              className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold"
+              className="flex-1 bg-white hover:bg-gray-50 text-green-600 font-bold border border-green-600"
             >
               PART 2 REFRESH
             </Button>
