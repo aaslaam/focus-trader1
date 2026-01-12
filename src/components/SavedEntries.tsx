@@ -8,17 +8,17 @@ import { Database, Trash2, TrendingUp, TrendingDown, Calendar, Download, Upload,
 import { format } from 'date-fns';
 import EditEntryDialog from './EditEntryDialog';
 import { cn } from '@/lib/utils';
-import { useRealtimeEntries } from '@/hooks/useRealtimeEntries';
 import { useAuth } from '@/contexts/AuthContext';
 import { deleteEntry as deleteEntryService, migrateLocalStorageEntries } from '@/services/stockEntriesService';
 import { StockEntryData } from '@/types/stockEntry';
 
 interface SavedEntriesProps {
-  refreshTrigger: number;
+  entries: StockEntryData[];
+  loading: boolean;
+  onRefetch: () => void;
 }
 
-const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
-  const { entries, loading, refetch } = useRealtimeEntries();
+const SavedEntries: React.FC<SavedEntriesProps> = ({ entries, loading, onRefetch }) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -33,7 +33,7 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
         description: "Stock entry has been removed.",
         variant: "default"
       });
-      refetch();
+      onRefetch();
     } catch (error) {
       console.error('Error deleting entry:', error);
       toast({
@@ -79,7 +79,7 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
         localStorage.setItem('stockEntries', JSON.stringify(importedData));
         const count = await migrateLocalStorageEntries(user.id);
         
-        refetch();
+        onRefetch();
         
         toast({
           title: "Backup Restored",
@@ -303,7 +303,7 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
             entry={entry} 
             index={index}
             serialNumber={serialNumber}
-            onEntryUpdated={refetch}
+            onEntryUpdated={onRefetch}
           />
           <AlertDialog>
             <AlertDialogTrigger asChild>
