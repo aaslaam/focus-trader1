@@ -297,13 +297,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     };
     
     // Check the actual dropdown values (newDropdowns is built from dropdowns state)
-    if (isFieldMissing(newDropdowns.dropdown1) || isFieldMissing(newDropdowns.dropdown2) || isFieldMissing(newDropdowns.dropdown3) || isFieldMissing(newDropdowns.dropdown4) || !formData.part1Result) {
+    if (isFieldMissing(newDropdowns.dropdown1) || isFieldMissing(newDropdowns.dropdown2) || isFieldMissing(newDropdowns.dropdown3) || isFieldMissing(newDropdowns.dropdown4)) {
       const missing = [];
       if (isFieldMissing(newDropdowns.dropdown1)) missing.push("MONTHLY OPEN");
       if (isFieldMissing(newDropdowns.dropdown2)) missing.push("MONTHLY CLOSE");
       if (isFieldMissing(newDropdowns.dropdown3)) missing.push("WEEKLY OPEN");
       if (isFieldMissing(newDropdowns.dropdown4)) missing.push("WEEKLY CLOSE");
-      if (!formData.part1Result) missing.push("Part 1 RESULT");
       
       setMissingFields(missing);
       setShowMissingInfo(true);
@@ -488,8 +487,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     const part1FormFilled = !isFieldMissing(newDropdowns.dropdown1) && 
                             !isFieldMissing(newDropdowns.dropdown2) && 
                             !isFieldMissing(newDropdowns.dropdown3) && 
-                            !isFieldMissing(newDropdowns.dropdown4) && 
-                            formData.part1Result;
+                            !isFieldMissing(newDropdowns.dropdown4);
 
     let effectivePart1: Part1Data | null = part1SavedData;
 
@@ -536,7 +534,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       if (isFieldMissing(newDropdowns.dropdown2)) missing.push("MONTHLY CLOSE");
       if (isFieldMissing(newDropdowns.dropdown3)) missing.push("WEEKLY OPEN");
       if (isFieldMissing(newDropdowns.dropdown4)) missing.push("WEEKLY CLOSE");
-      if (!formData.part1Result) missing.push("Part 1 RESULT");
       
       setMissingFields(missing.length > 0 ? missing : ["Part 1 data"]);
       setShowMissingInfo(true);
@@ -1471,48 +1468,6 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   </Button>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Part 1 Result + Notes */}
-          <div className="space-y-3">
-            <div className="space-y-2">
-              <Label className="text-sm font-bold text-foreground">PART 1 RESULT</Label>
-              <Select
-                value={formData.part1Result}
-                onValueChange={(value) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    part1Result: value as any,
-                  }))
-                }
-              >
-                <SelectTrigger className="text-lg font-bold">
-                  <SelectValue placeholder="Select result" />
-                </SelectTrigger>
-                <SelectContent className="bg-card z-[100]">
-                  <SelectItem value="Act" className="text-lg font-bold">Act</SelectItem>
-                  <SelectItem value="Front Act" className="text-lg font-bold">Front Act</SelectItem>
-                  <SelectItem value="Consolidation Act" className="text-lg font-bold">Consolidation Act</SelectItem>
-                  <SelectItem value="Consolidation Front Act" className="text-lg font-bold">Consolidation Front Act</SelectItem>
-                  <SelectItem value="Consolidation Close" className="text-lg font-bold">Consolidation Close</SelectItem>
-                  <SelectItem value="Act doubt" className="text-lg font-bold">Act doubt</SelectItem>
-                  <SelectItem value="3rd act" className="text-lg font-bold">3rd act</SelectItem>
-                  <SelectItem value="4th act" className="text-lg font-bold">4th act</SelectItem>
-                  <SelectItem value="5th act" className="text-lg font-bold">5th act</SelectItem>
-                  <SelectItem value="NILL" className="text-lg font-bold">NILL</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-sm font-bold text-foreground">PART 1 NOTES</Label>
-              <Textarea
-                value={formData.part1Notes}
-                onChange={(e) => setFormData((prev) => ({ ...prev, part1Notes: e.target.value }))}
-                placeholder="Write notes..."
-                className="min-h-[96px]"
-              />
             </div>
           </div>
 
