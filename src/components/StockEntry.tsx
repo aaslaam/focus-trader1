@@ -533,92 +533,13 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
   };
 
   const handleRefresh = () => {
-    // Clear all form data
-    setFormData({
-      stock1: '',
-      stock2: '',
-      stock2b: '',
-      stock2bColor: '',
-      stock3: '',
-      stock4: '',
-      classification: '',
-      ogCandle: '',
-      ogOpenA: '',
-      sdOpenA: '',
-      ogCloseA: '',
-      sdCloseA: '',
-      notes: '',
-      part2Result: ''
-    });
-    setPart1SavedData(null);
-    setNewDropdowns({
-      dropdown1: '',
-      dropdown2: '',
-      dropdown3: '',
-      dropdown4: '',
-      dropdown5: '',
-      dropdown6: ''
-    });
-    setDropdowns({
-      dropdown1Main: '',
-      dropdown1Sub: '',
-      dropdown2Main: '',
-      dropdown2Sub: '',
-      dropdown3Main: '',
-      dropdown3Sub: '',
-      dropdown4Main: '',
-      dropdown4Sub: '',
-      dropdown5Main: '',
-      dropdown5Sub: '',
-      dropdown6Main: '',
-      dropdown6Sub: '',
-      candleMain: '',
-      candleSub: ''
-    });
-    setSelectedDates({
-      stock1Date: new Date(),
-      stock2Date: new Date(),
-      stock3Date: new Date(),
-      stock4Date: new Date(),
-      dropdown1Date: new Date(),
-      dropdown2Date: new Date(),
-      dropdown3Date: new Date(),
-      dropdown4Date: new Date(),
-      dropdown5Date: new Date(),
-      dropdown6Date: new Date(),
-      ogOpenADate: new Date(),
-      ogCloseADate: new Date()
-    });
-    setDateChanged({
-      stock1Date: false,
-      stock2Date: false,
-      stock3Date: false,
-      stock4Date: false,
-      dropdown1Date: false,
-      dropdown2Date: false,
-      dropdown3Date: false,
-      dropdown4Date: false,
-      dropdown5Date: false,
-      dropdown6Date: false,
-      ogOpenADate: false,
-      ogCloseADate: false
-    });
-    setSelectedImage(null);
-    setImagePreview(null);
-    setUploading(false);
-    // Reset Part 2 dropdowns
-    setPart2Dropdowns({
-      openingCandle1: '',
-      openingCandle2: '',
-      directionA: '',
-      directionB: '',
-      directionC: '',
-      directionD: ''
-    });
-    
+    // Refresh saved entries WITHOUT clearing any Part 1 / form values.
+    // Users use this to pull in newly saved entries while continuing to work in Part 1.
+    onEntryAdded();
+
     toast({
-      title: "Form Cleared",
-      description: "All fields have been reset.",
+      title: "Entries Refreshed",
+      description: "Your saved entries list has been updated.",
       variant: "default"
     });
   };
@@ -1352,7 +1273,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   variant="outline"
                 >
                   <RefreshCw className="h-4 w-4" />
-                  <span className="text-green-600 font-bold">PART 1 REFRESH</span>
+                  <span className="text-green-600 font-bold">REFRESH ENTRIES</span>
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent className="max-w-md">
@@ -1361,7 +1282,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                     CONFIRM REFRESH
                   </AlertDialogTitle>
                   <AlertDialogDescription className="text-xl font-bold text-center text-foreground">
-                    This will clear all Part 1 fields. Are you sure?
+                    This will refresh your saved entries list without clearing Part 1.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter className="flex gap-2 justify-center sm:justify-center">
