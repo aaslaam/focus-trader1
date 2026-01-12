@@ -14,7 +14,6 @@ const Index = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading, signOut } = useAuth();
   const { entries, loading: entriesLoading, refetch } = useRealtimeEntries();
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [migrating, setMigrating] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -256,7 +255,7 @@ const Index = () => {
 
           {/* Saved Entries List */}
           <div className="lg:col-span-2 xl:col-span-1">
-            <SavedEntries refreshTrigger={refreshTrigger} />
+            <SavedEntries entries={entries} loading={entriesLoading} onRefetch={refetch} />
           </div>
         </div>
 
