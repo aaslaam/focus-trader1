@@ -551,7 +551,7 @@ const SavedEntries: React.FC<SavedEntriesProps> = ({ refreshTrigger }) => {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-accent-foreground text-3xl font-bold">
             <Database className="h-6 w-6" />
-            Saved Entries ({entries.length})
+            Saved Entries ({filteredEntries.length})
           </CardTitle>
           <div className="flex gap-2">
             <Button
