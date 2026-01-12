@@ -1284,12 +1284,11 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               <AlertDialogTrigger asChild>
                 <Button 
                   type="button"
-                  size="sm"
-                  className="bg-white text-green-600 border border-green-600 hover:bg-gray-50 hover:text-green-700 font-bold" 
+                  className="flex items-center gap-2 border-border bg-white text-green-600 hover:bg-white hover:text-green-700" 
                   variant="outline"
                 >
-                  <RefreshCw className="h-3 w-3 mr-1" />
-                  PART 1 REFRESH
+                  <RefreshCw className="h-4 w-4" />
+                  <span className="text-green-600 font-bold">PART 1 REFRESH</span>
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent className="max-w-md">
