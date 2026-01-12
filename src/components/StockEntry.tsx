@@ -43,7 +43,9 @@ interface StockEntryData {
   dropdown6?: string;
   ogCandle?: string;
   ogOpenA?: string;
+  sdOpenA?: string;
   ogCloseA?: string;
+  sdCloseA?: string;
   notes?: string;
   imageUrl?: string;
   timestamp: number;
@@ -468,7 +470,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       dropdown4: newDropdowns.dropdown4,
       ogCandle: formData.ogCandle,
       ogOpenA: formData.ogOpenA,
+      sdOpenA: formData.sdOpenA,
       ogCloseA: formData.ogCloseA,
+      sdCloseA: formData.sdCloseA,
       ogOpenADate: selectedDates.ogOpenADate,
       ogCloseADate: selectedDates.ogCloseADate,
       notes: part1SavedData.part1Notes,
