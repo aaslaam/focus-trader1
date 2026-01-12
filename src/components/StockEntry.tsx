@@ -116,6 +116,15 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     dropdown5: '',
     dropdown6: ''
   });
+  // Part 2 specific dropdowns - separate from Part 1 to avoid inheriting values
+  const [part2Dropdowns, setPart2Dropdowns] = useState({
+    openingCandle1: '',
+    openingCandle2: '',
+    directionA: '',
+    directionB: '',
+    directionC: '',
+    directionD: ''
+  });
   const [dropdowns, setDropdowns] = useState({
     dropdown1Main: '',
     dropdown1Sub: '',
@@ -429,10 +438,13 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       const combinedEntry: StockEntryData = {
         ...effectivePart1,
         classification: formData.part2Result as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL',
-        dropdown1: newDropdowns.dropdown1,
-        dropdown2: newDropdowns.dropdown2,
-        dropdown3: newDropdowns.dropdown3,
-        dropdown4: newDropdowns.dropdown4,
+        // Use Part 2 specific dropdowns for directions
+        dropdown1: part2Dropdowns.directionA,
+        dropdown2: part2Dropdowns.directionB,
+        dropdown3: part2Dropdowns.directionC,
+        dropdown4: part2Dropdowns.directionD,
+        dropdown5: part2Dropdowns.openingCandle1,
+        dropdown6: part2Dropdowns.openingCandle2,
         ogCandle: formData.ogCandle,
         ogOpenA: formData.ogOpenA,
         sdOpenA: formData.sdOpenA,
@@ -495,6 +507,15 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       }));
       setSelectedImage(null);
       setImagePreview(null);
+      // Reset Part 2 dropdowns (directions and opening candle)
+      setPart2Dropdowns({
+        openingCandle1: '',
+        openingCandle2: '',
+        directionA: '',
+        directionB: '',
+        directionC: '',
+        directionD: ''
+      });
       // Keep part1SavedData and newDropdowns intact so Part 1 values persist
       // Do NOT reset: part1SavedData, newDropdowns, dropdown1-6 values, stock dates
 
@@ -585,6 +606,15 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     setSelectedImage(null);
     setImagePreview(null);
     setUploading(false);
+    // Reset Part 2 dropdowns
+    setPart2Dropdowns({
+      openingCandle1: '',
+      openingCandle2: '',
+      directionA: '',
+      directionB: '',
+      directionC: '',
+      directionD: ''
+    });
     
     toast({
       title: "Form Cleared",
@@ -1357,12 +1387,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               <Label className="text-lg font-bold">OPENING CANDLE</Label>
               <div className="grid grid-cols-2 gap-2">
                 <Select 
-                  value={newDropdowns.dropdown5}
-                  onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown5: value }))}
+                  value={part2Dropdowns.openingCandle1}
+                  onValueChange={(value) => setPart2Dropdowns(prev => ({ ...prev, openingCandle1: value }))}
                 >
                   <SelectTrigger 
                     className="text-lg font-bold"
-                    style={{ backgroundColor: newDropdowns.dropdown5 ? '#ddfde7' : '#fee2e2' }}
+                    style={{ backgroundColor: part2Dropdowns.openingCandle1 ? '#ddfde7' : '#fee2e2' }}
                   >
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
@@ -1375,12 +1405,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                 </Select>
                 
                 <Select 
-                  value={newDropdowns.dropdown6}
-                  onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown6: value }))}
+                  value={part2Dropdowns.openingCandle2}
+                  onValueChange={(value) => setPart2Dropdowns(prev => ({ ...prev, openingCandle2: value }))}
                 >
                   <SelectTrigger 
                     className="text-lg font-bold"
-                    style={{ backgroundColor: newDropdowns.dropdown6 ? '#ddfde7' : '#fee2e2' }}
+                    style={{ backgroundColor: part2Dropdowns.openingCandle2 ? '#ddfde7' : '#fee2e2' }}
                   >
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
@@ -1447,12 +1477,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               <div className="space-y-2">
                 <Label className="text-lg font-bold">DIRECTION A</Label>
                 <Select 
-                  value={newDropdowns.dropdown1}
-                  onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown1: value }))}
+                  value={part2Dropdowns.directionA}
+                  onValueChange={(value) => setPart2Dropdowns(prev => ({ ...prev, directionA: value }))}
                 >
                   <SelectTrigger 
                     className="text-lg font-bold"
-                    style={{ backgroundColor: newDropdowns.dropdown1 ? '#ddfde7' : '#fee2e2' }}
+                    style={{ backgroundColor: part2Dropdowns.directionA ? '#ddfde7' : '#fee2e2' }}
                   >
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
@@ -1469,12 +1499,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               <div className="space-y-2">
                 <Label className="text-lg font-bold">DIRECTION B</Label>
                 <Select 
-                  value={newDropdowns.dropdown2}
-                  onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown2: value }))}
+                  value={part2Dropdowns.directionB}
+                  onValueChange={(value) => setPart2Dropdowns(prev => ({ ...prev, directionB: value }))}
                 >
                   <SelectTrigger 
                     className="text-lg font-bold"
-                    style={{ backgroundColor: newDropdowns.dropdown2 ? '#ddfde7' : '#fee2e2' }}
+                    style={{ backgroundColor: part2Dropdowns.directionB ? '#ddfde7' : '#fee2e2' }}
                   >
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
@@ -1491,12 +1521,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               <div className="space-y-2">
                 <Label className="text-lg font-bold">DIRECTION C</Label>
                 <Select 
-                  value={newDropdowns.dropdown3}
-                  onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown3: value }))}
+                  value={part2Dropdowns.directionC}
+                  onValueChange={(value) => setPart2Dropdowns(prev => ({ ...prev, directionC: value }))}
                 >
                   <SelectTrigger 
                     className="text-lg font-bold"
-                    style={{ backgroundColor: newDropdowns.dropdown3 ? '#ddfde7' : '#fee2e2' }}
+                    style={{ backgroundColor: part2Dropdowns.directionC ? '#ddfde7' : '#fee2e2' }}
                   >
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
@@ -1513,12 +1543,12 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               <div className="space-y-2">
                 <Label className="text-lg font-bold">DIRECTION D</Label>
                 <Select 
-                  value={newDropdowns.dropdown4}
-                  onValueChange={(value) => setNewDropdowns(prev => ({ ...prev, dropdown4: value }))}
+                  value={part2Dropdowns.directionD}
+                  onValueChange={(value) => setPart2Dropdowns(prev => ({ ...prev, directionD: value }))}
                 >
                   <SelectTrigger 
                     className="text-lg font-bold"
-                    style={{ backgroundColor: newDropdowns.dropdown4 ? '#ddfde7' : '#fee2e2' }}
+                    style={{ backgroundColor: part2Dropdowns.directionD ? '#ddfde7' : '#fee2e2' }}
                   >
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
