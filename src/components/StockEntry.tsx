@@ -432,14 +432,66 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     onEntryAdded();
   };
 
+  const getLatestPart1FromLocalStorage = (): Part1Data | null => {
+    try {
+      const raw = localStorage.getItem('stockEntries');
+      const parsed = JSON.parse(raw || '[]') as any[];
+      const latest = [...parsed]
+        .reverse()
+        .find((e) => (e?.type || 'common') === 'part1');
+
+      if (!latest) return null;
+
+      const toDate = (v: any): Date | null => (v ? new Date(v) : null);
+
+      return {
+        stock1: String(latest.stock1 ?? ''),
+        stock2: String(latest.stock2 ?? ''),
+        stock2b: String(latest.stock2b ?? ''),
+        stock2bColor: latest.stock2bColor ? String(latest.stock2bColor) : undefined,
+        stock3: String(latest.stock3 ?? ''),
+        stock4: String(latest.stock4 ?? ''),
+        stock1Date: toDate(latest.stock1Date),
+        stock2Date: toDate(latest.stock2Date),
+        stock3Date: toDate(latest.stock3Date),
+        stock4Date: toDate(latest.stock4Date),
+        dropdown1: latest.dropdown1 ?? '',
+        dropdown2: latest.dropdown2 ?? '',
+        dropdown3: latest.dropdown3 ?? '',
+        dropdown4: latest.dropdown4 ?? '',
+        dropdown5: latest.dropdown5 ?? '',
+        dropdown6: latest.dropdown6 ?? '',
+        dropdown1Date: toDate(latest.dropdown1Date),
+        dropdown2Date: toDate(latest.dropdown2Date),
+        dropdown3Date: toDate(latest.dropdown3Date),
+        dropdown4Date: toDate(latest.dropdown4Date),
+        dropdown5Date: toDate(latest.dropdown5Date),
+        dropdown6Date: toDate(latest.dropdown6Date),
+        part1Result: String(latest.part1Result ?? latest.classification ?? ''),
+        part1Notes: String(latest.part1Notes ?? latest.notes ?? ''),
+        timestamp: typeof latest.timestamp === 'number' ? latest.timestamp : Date.now(),
+      };
+    } catch (e) {
+      console.error('Common Save - Failed to load Part 1 from localStorage', e);
+      return null;
+    }
+  };
+
   const handleCommonSave = async () => {
-    if (!part1SavedData) {
+    const effectivePart1 = part1SavedData ?? getLatestPart1FromLocalStorage();
+
+    if (!effectivePart1) {
       toast({
         title: "Error",
         description: "Please save Part 1 first.",
         variant: "destructive"
       });
       return;
+    }
+
+    // If the user refreshed the page, Part 1 might exist in localStorage but not in state.
+    if (!part1SavedData) {
+      setPart1SavedData(effectivePart1);
     }
 
     if (!formData.part2Result) {
@@ -454,121 +506,131 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
 
     setUploading(true);
 
-    const existingEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
+    try {
+      const existingEntries = JSON.parse(localStorage.getItem('stockEntries') || '[]') as StockEntryData[];
 
-    let imageUrl: string | undefined;
-    if (selectedImage) {
-      imageUrl = (await uploadImage(selectedImage)) || undefined;
+      let imageUrl: string | undefined;
+      if (selectedImage) {
+        imageUrl = (await uploadImage(selectedImage)) || undefined;
+      }
+
+      const combinedEntry: StockEntryData = {
+        ...effectivePart1,
+        classification: formData.part2Result as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL',
+        dropdown1: newDropdowns.dropdown1,
+        dropdown2: newDropdowns.dropdown2,
+        dropdown3: newDropdowns.dropdown3,
+        dropdown4: newDropdowns.dropdown4,
+        ogCandle: formData.ogCandle,
+        ogOpenA: formData.ogOpenA,
+        sdOpenA: formData.sdOpenA,
+        ogCloseA: formData.ogCloseA,
+        sdCloseA: formData.sdCloseA,
+        ogOpenADate: selectedDates.ogOpenADate,
+        ogCloseADate: selectedDates.ogCloseADate,
+        notes: effectivePart1.part1Notes,
+        part1Result: effectivePart1.part1Result,
+        part2Result: formData.part2Result,
+        imageUrl,
+        timestamp: Date.now(),
+        type: 'common'
+      };
+
+      const updatedEntries = [...existingEntries, combinedEntry];
+      localStorage.setItem('stockEntries', JSON.stringify(updatedEntries));
+
+      toast({
+        title: "Combined Entry Saved",
+        description: "Part 1 and Part 2 have been combined and saved.",
+        variant: "default"
+      });
+
+      // Reset all form data
+      setFormData({
+        stock1: '',
+        stock2: '',
+        stock2b: '',
+        stock2bColor: '',
+        stock3: '',
+        stock4: '',
+        classification: '',
+        ogCandle: '',
+        ogOpenA: '',
+        sdOpenA: '',
+        ogCloseA: '',
+        sdCloseA: '',
+        notes: '',
+        part1Result: '',
+        part1Notes: '',
+        part2Result: ''
+      });
+      setNewDropdowns({
+        dropdown1: '',
+        dropdown2: '',
+        dropdown3: '',
+        dropdown4: '',
+        dropdown5: '',
+        dropdown6: ''
+      });
+      setDropdowns({
+        dropdown1Main: '',
+        dropdown1Sub: '',
+        dropdown2Main: '',
+        dropdown2Sub: '',
+        dropdown3Main: '',
+        dropdown3Sub: '',
+        dropdown4Main: '',
+        dropdown4Sub: '',
+        dropdown5Main: '',
+        dropdown5Sub: '',
+        dropdown6Main: '',
+        dropdown6Sub: '',
+        candleMain: '',
+        candleSub: ''
+      });
+      setSelectedDates({
+        stock1Date: new Date(),
+        stock2Date: new Date(),
+        stock3Date: new Date(),
+        stock4Date: new Date(),
+        dropdown1Date: new Date(),
+        dropdown2Date: new Date(),
+        dropdown3Date: new Date(),
+        dropdown4Date: new Date(),
+        dropdown5Date: new Date(),
+        dropdown6Date: new Date(),
+        ogOpenADate: new Date(),
+        ogCloseADate: new Date()
+      });
+      setDateChanged({
+        stock1Date: false,
+        stock2Date: false,
+        stock3Date: false,
+        stock4Date: false,
+        dropdown1Date: false,
+        dropdown2Date: false,
+        dropdown3Date: false,
+        dropdown4Date: false,
+        dropdown5Date: false,
+        dropdown6Date: false,
+        ogOpenADate: false,
+        ogCloseADate: false
+      });
+      setSelectedImage(null);
+      setImagePreview(null);
+      setPart1SavedData(null);
+
+      onEntryAdded();
+    } catch (error) {
+      console.error('Common Save - Failed', error);
+      toast({
+        title: "Common Save Failed",
+        description: "Could not save the common entry. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setUploading(false);
     }
-
-    const combinedEntry: StockEntryData = {
-      ...part1SavedData,
-      classification: formData.part2Result as 'Act' | 'Front Act' | 'Consolidation Act' | 'Consolidation Front Act' | 'Consolidation Close' | 'Act doubt' | '3rd act' | '4th act' | '5th act' | 'NILL',
-      dropdown1: newDropdowns.dropdown1,
-      dropdown2: newDropdowns.dropdown2,
-      dropdown3: newDropdowns.dropdown3,
-      dropdown4: newDropdowns.dropdown4,
-      ogCandle: formData.ogCandle,
-      ogOpenA: formData.ogOpenA,
-      sdOpenA: formData.sdOpenA,
-      ogCloseA: formData.ogCloseA,
-      sdCloseA: formData.sdCloseA,
-      ogOpenADate: selectedDates.ogOpenADate,
-      ogCloseADate: selectedDates.ogCloseADate,
-      notes: part1SavedData.part1Notes,
-      part1Result: part1SavedData.part1Result,
-      part2Result: formData.part2Result,
-      imageUrl,
-      timestamp: Date.now(),
-      type: 'common'
-    };
-
-    const updatedEntries = [...existingEntries, combinedEntry];
-    localStorage.setItem('stockEntries', JSON.stringify(updatedEntries));
-    
-    toast({
-      title: "Combined Entry Saved",
-      description: "Part 1 and Part 2 have been combined and saved.",
-      variant: "default"
-    });
-
-    // Reset all form data
-    setFormData({
-      stock1: '',
-      stock2: '',
-      stock2b: '',
-      stock2bColor: '',
-      stock3: '',
-      stock4: '',
-      classification: '',
-      ogCandle: '',
-      ogOpenA: '',
-      sdOpenA: '',
-      ogCloseA: '',
-      sdCloseA: '',
-      notes: '',
-      part1Result: '',
-      part1Notes: '',
-      part2Result: ''
-    });
-    setNewDropdowns({
-      dropdown1: '',
-      dropdown2: '',
-      dropdown3: '',
-      dropdown4: '',
-      dropdown5: '',
-      dropdown6: ''
-    });
-    setDropdowns({
-      dropdown1Main: '',
-      dropdown1Sub: '',
-      dropdown2Main: '',
-      dropdown2Sub: '',
-      dropdown3Main: '',
-      dropdown3Sub: '',
-      dropdown4Main: '',
-      dropdown4Sub: '',
-      dropdown5Main: '',
-      dropdown5Sub: '',
-      dropdown6Main: '',
-      dropdown6Sub: '',
-      candleMain: '',
-      candleSub: ''
-    });
-    setSelectedDates({
-      stock1Date: new Date(),
-      stock2Date: new Date(),
-      stock3Date: new Date(),
-      stock4Date: new Date(),
-      dropdown1Date: new Date(),
-      dropdown2Date: new Date(),
-      dropdown3Date: new Date(),
-      dropdown4Date: new Date(),
-      dropdown5Date: new Date(),
-      dropdown6Date: new Date(),
-      ogOpenADate: new Date(),
-      ogCloseADate: new Date()
-    });
-    setDateChanged({
-      stock1Date: false,
-      stock2Date: false,
-      stock3Date: false,
-      stock4Date: false,
-      dropdown1Date: false,
-      dropdown2Date: false,
-      dropdown3Date: false,
-      dropdown4Date: false,
-      dropdown5Date: false,
-      dropdown6Date: false,
-      ogOpenADate: false,
-      ogCloseADate: false
-    });
-    setSelectedImage(null);
-    setImagePreview(null);
-    setPart1SavedData(null);
-    setUploading(false);
-
-    onEntryAdded();
   };
 
   const handleRefresh = () => {
@@ -1929,7 +1991,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
               onClick={handleCommonSave}
               className="flex-1"
               variant="default"
-              disabled={uploading || !part1SavedData}
+              disabled={uploading}
             >
               {uploading ? 'Saving...' : 'Common Save'}
             </Button>
