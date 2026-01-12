@@ -63,8 +63,8 @@ const Index = () => {
   }, [user]);
 
   const handleEntryAdded = () => {
-    // Real-time subscription handles updates automatically - no manual refresh needed
-    // This callback is kept for any future UI feedback needs
+    // Refetch to ensure new entry appears immediately (realtime can have slight delay)
+    refetch();
   };
 
   const handleExit = () => {
