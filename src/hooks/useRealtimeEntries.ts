@@ -42,7 +42,7 @@ const fromDbFormat = (row: StockEntryRow): StockEntryData => {
     imageUrl: row.image_url || undefined,
     timestamp: row.legacy_timestamp || new Date(row.created_at).getTime(),
     part2Result: row.part2_result || undefined,
-    type: (row.entry_type as StockEntryData['type']) || 'common',
+    type: (row.entry_type as StockEntryData['type']) || undefined,
   };
 };
 

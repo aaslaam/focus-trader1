@@ -246,7 +246,7 @@ const Index = () => {
         <div className="grid gap-8 lg:grid-cols-2 xl:grid-cols-3">
           {/* Add Entry Form */}
           <div className="lg:col-span-1">
-            <StockEntry onEntryAdded={handleEntryAdded} nextEntryNumber={entries.filter(e => e.type === 'common' || !e.type).length + 1} />
+            <StockEntry onEntryAdded={handleEntryAdded} nextEntryNumber={entries.filter(e => e.type === 'common').length + 1} />
           </div>
 
           {/* Search Form */}
