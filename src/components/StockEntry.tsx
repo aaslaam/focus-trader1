@@ -582,15 +582,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         variant: "default"
       });
 
-      // Reset all form data
-      setFormData({
-        stock1: '',
-        stock2: '',
-        stock2b: '',
-        stock2bColor: '',
-        stock3: '',
-        stock4: '',
-        classification: '',
+      // Reset only Part 2 form data - keep Part 1 values intact
+      setFormData(prev => ({
+        ...prev,
         ogCandle: '',
         ogOpenA: '',
         sdOpenA: '',
@@ -598,62 +592,27 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         sdCloseA: '',
         notes: '',
         part2Result: ''
-      });
-      setNewDropdowns({
-        dropdown1: '',
-        dropdown2: '',
-        dropdown3: '',
-        dropdown4: '',
-        dropdown5: '',
-        dropdown6: ''
-      });
-      setDropdowns({
-        dropdown1Main: '',
-        dropdown1Sub: '',
-        dropdown2Main: '',
-        dropdown2Sub: '',
-        dropdown3Main: '',
-        dropdown3Sub: '',
-        dropdown4Main: '',
-        dropdown4Sub: '',
-        dropdown5Main: '',
-        dropdown5Sub: '',
-        dropdown6Main: '',
-        dropdown6Sub: '',
+      }));
+      // Keep Part 1 dropdowns (dropdown1-6), only reset candle dropdowns
+      setDropdowns(prev => ({
+        ...prev,
         candleMain: '',
         candleSub: ''
-      });
-      setSelectedDates({
-        stock1Date: new Date(),
-        stock2Date: new Date(),
-        stock3Date: new Date(),
-        stock4Date: new Date(),
-        dropdown1Date: new Date(),
-        dropdown2Date: new Date(),
-        dropdown3Date: new Date(),
-        dropdown4Date: new Date(),
-        dropdown5Date: new Date(),
-        dropdown6Date: new Date(),
+      }));
+      // Keep Part 1 dates, only reset Part 2 dates
+      setSelectedDates(prev => ({
+        ...prev,
         ogOpenADate: new Date(),
         ogCloseADate: new Date()
-      });
-      setDateChanged({
-        stock1Date: false,
-        stock2Date: false,
-        stock3Date: false,
-        stock4Date: false,
-        dropdown1Date: false,
-        dropdown2Date: false,
-        dropdown3Date: false,
-        dropdown4Date: false,
-        dropdown5Date: false,
-        dropdown6Date: false,
+      }));
+      setDateChanged(prev => ({
+        ...prev,
         ogOpenADate: false,
         ogCloseADate: false
-      });
+      }));
       setSelectedImage(null);
       setImagePreview(null);
-      setPart1SavedData(null);
+      // Keep part1SavedData intact so Part 1 values persist
 
       onEntryAdded();
     } catch (error) {
