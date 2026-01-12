@@ -79,52 +79,50 @@ export const useRealtimeEntries = () => {
   useEffect(() => {
     if (!user) return;
 
+    // Subscribe to all events without filter, then filter client-side
+    // This is more reliable for realtime sync across devices
     const channel = supabase
-      .channel('stock_entries_changes')
+      .channel('stock_entries_realtime')
       .on(
         'postgres_changes',
         {
-          event: 'INSERT',
+          event: '*',
           schema: 'public',
-          table: 'stock_entries',
-          filter: `user_id=eq.${user.id}`
+          table: 'stock_entries'
         },
         (payload) => {
-          const newEntry = fromDbFormat(payload.new as StockEntryRow);
-          setEntries(prev => [newEntry, ...prev]);
+          // Filter by user_id on client side for cross-device sync
+          if (payload.eventType === 'INSERT') {
+            const newEntry = payload.new as StockEntryRow;
+            if (newEntry.user_id === user.id) {
+              const entry = fromDbFormat(newEntry);
+              setEntries(prev => {
+                // Avoid duplicates
+                if (prev.some(e => e.id === entry.id)) return prev;
+                return [entry, ...prev];
+              });
+            }
+          } else if (payload.eventType === 'UPDATE') {
+            const updatedRow = payload.new as StockEntryRow;
+            if (updatedRow.user_id === user.id) {
+              const updatedEntry = fromDbFormat(updatedRow);
+              setEntries(prev => 
+                prev.map(entry => 
+                  entry.id === updatedEntry.id ? updatedEntry : entry
+                )
+              );
+            }
+          } else if (payload.eventType === 'DELETE') {
+            const deletedRow = payload.old as { id: string; user_id?: string };
+            if (!deletedRow.user_id || deletedRow.user_id === user.id) {
+              setEntries(prev => prev.filter(entry => entry.id !== deletedRow.id));
+            }
+          }
         }
       )
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'stock_entries',
-          filter: `user_id=eq.${user.id}`
-        },
-        (payload) => {
-          const updatedEntry = fromDbFormat(payload.new as StockEntryRow);
-          setEntries(prev => 
-            prev.map(entry => 
-              entry.id === updatedEntry.id ? updatedEntry : entry
-            )
-          );
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: 'DELETE',
-          schema: 'public',
-          table: 'stock_entries',
-          filter: `user_id=eq.${user.id}`
-        },
-        (payload) => {
-          const deletedId = (payload.old as { id: string }).id;
-          setEntries(prev => prev.filter(entry => entry.id !== deletedId));
-        }
-      )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('Realtime subscription status:', status);
+      });
 
     return () => {
       supabase.removeChannel(channel);
