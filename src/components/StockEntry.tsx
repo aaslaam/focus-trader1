@@ -373,11 +373,23 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       return false;
     };
 
-    // Check if Part 1 required fields are filled - use actual dropdown states
-    const part1FormFilled = !isFieldMissing(newDropdowns.dropdown1) && 
-                            !isFieldMissing(newDropdowns.dropdown2) && 
-                            !isFieldMissing(newDropdowns.dropdown3) && 
-                            !isFieldMissing(newDropdowns.dropdown4);
+    // Build combined dropdown values directly from state (don't rely on useEffect timing)
+    const currentDropdowns = {
+      dropdown1: `${dropdowns.dropdown1Main} ${dropdowns.dropdown1Sub}`.trim(),
+      dropdown2: `${dropdowns.dropdown2Main} ${dropdowns.dropdown2Sub}`.trim(),
+      dropdown3: `${dropdowns.dropdown3Main} ${dropdowns.dropdown3Sub}`.trim(),
+      dropdown4: `${dropdowns.dropdown4Main} ${dropdowns.dropdown4Sub}`.trim(),
+      dropdown5: `${dropdowns.dropdown5Main} ${dropdowns.dropdown5Sub}`.trim(),
+      dropdown6: `${dropdowns.dropdown6Main} ${dropdowns.dropdown6Sub}`.trim(),
+      dropdown7: `${dropdowns.dropdown7Main} ${dropdowns.dropdown7Sub}`.trim(),
+      dropdown8: `${dropdowns.dropdown8Main} ${dropdowns.dropdown8Sub}`.trim()
+    };
+
+    // Check if Part 1 required fields are filled - check if at least the main dropdown is selected
+    const part1FormFilled = (dropdowns.dropdown1Main !== '' || dropdowns.dropdown1Sub !== '') && 
+                            (dropdowns.dropdown2Main !== '' || dropdowns.dropdown2Sub !== '') && 
+                            (dropdowns.dropdown3Main !== '' || dropdowns.dropdown3Sub !== '') && 
+                            (dropdowns.dropdown4Main !== '' || dropdowns.dropdown4Sub !== '');
 
     let effectivePart1: Part1Data | null = part1SavedData;
 
@@ -385,23 +397,23 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     if (!effectivePart1 && part1FormFilled) {
       effectivePart1 = {
         stock1: formData.stock1,
-        stock2: newDropdowns.dropdown1,
-        stock2b: newDropdowns.dropdown2,
+        stock2: currentDropdowns.dropdown1,
+        stock2b: currentDropdowns.dropdown2,
         stock2bColor: formData.stock2bColor,
-        stock3: newDropdowns.dropdown3,
-        stock4: newDropdowns.dropdown4,
+        stock3: currentDropdowns.dropdown3,
+        stock4: currentDropdowns.dropdown4,
         stock1Date: selectedDates.stock1Date,
         stock2Date: selectedDates.stock2Date,
         stock3Date: selectedDates.stock3Date,
         stock4Date: selectedDates.stock4Date,
-        dropdown1: newDropdowns.dropdown1,
-        dropdown2: newDropdowns.dropdown2,
-        dropdown3: newDropdowns.dropdown3,
-        dropdown4: newDropdowns.dropdown4,
-        dropdown5: newDropdowns.dropdown5,
-        dropdown6: newDropdowns.dropdown6,
-        dropdown7: newDropdowns.dropdown7,
-        dropdown8: newDropdowns.dropdown8,
+        dropdown1: currentDropdowns.dropdown1,
+        dropdown2: currentDropdowns.dropdown2,
+        dropdown3: currentDropdowns.dropdown3,
+        dropdown4: currentDropdowns.dropdown4,
+        dropdown5: currentDropdowns.dropdown5,
+        dropdown6: currentDropdowns.dropdown6,
+        dropdown7: currentDropdowns.dropdown7,
+        dropdown8: currentDropdowns.dropdown8,
         dropdown1Date: selectedDates.dropdown1Date,
         dropdown2Date: selectedDates.dropdown2Date,
         dropdown3Date: selectedDates.dropdown3Date,
@@ -422,10 +434,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     if (!effectivePart1) {
       // Show which Part 1 fields are missing
       const missing: string[] = [];
-      if (isFieldMissing(newDropdowns.dropdown1)) missing.push("MONTHLY OPEN");
-      if (isFieldMissing(newDropdowns.dropdown2)) missing.push("MONTHLY CLOSE");
-      if (isFieldMissing(newDropdowns.dropdown3)) missing.push("WEEKLY OPEN");
-      if (isFieldMissing(newDropdowns.dropdown4)) missing.push("WEEKLY CLOSE");
+      if (dropdowns.dropdown1Main === '' && dropdowns.dropdown1Sub === '') missing.push("MONTHLY OPEN");
+      if (dropdowns.dropdown2Main === '' && dropdowns.dropdown2Sub === '') missing.push("MONTHLY CLOSE");
+      if (dropdowns.dropdown3Main === '' && dropdowns.dropdown3Sub === '') missing.push("WEEKLY OPEN");
+      if (dropdowns.dropdown4Main === '' && dropdowns.dropdown4Sub === '') missing.push("WEEKLY CLOSE");
       
       setMissingFields(missing.length > 0 ? missing : ["Part 1 data"]);
       setShowMissingInfo(true);
