@@ -59,6 +59,8 @@ const StockSearch: React.FC = () => {
     dropdown2: '',
     dropdown3: '',
     dropdown4: '',
+    dropdown7: '',
+    dropdown8: '',
     ogCandle: '',
     ogOpenA: '',
     sdOpenA: '',
@@ -85,6 +87,7 @@ const StockSearch: React.FC = () => {
       searchData.stock1, searchData.stock2, searchData.stock2b, searchData.stock2bColor, 
       searchData.stock3, searchData.openb, searchData.stock4, searchData.stock4b,
       searchData.dropdown1, searchData.dropdown2, searchData.dropdown3, searchData.dropdown4,
+      searchData.dropdown7, searchData.dropdown8,
       searchData.ogCandle, searchData.ogOpenA, searchData.ogCloseA
     ].some(field => field.trim() !== '');
     const hasSerialNumber = searchData.serialNumber.trim() !== '';
@@ -134,12 +137,14 @@ const StockSearch: React.FC = () => {
           entry.stock1, entry.stock2, entry.stock2b || '', entry.stock2bColor || '', 
           entry.stock3, entry.openb || '', entry.stock4, entry.stock4b || '',
           entry.dropdown1 || '', entry.dropdown2 || '', entry.dropdown3 || '', entry.dropdown4 || '',
+          (entry as any).dropdown7 || '', (entry as any).dropdown8 || '',
           entry.ogCandle || '', entry.ogOpenA || '', entry.ogCloseA || ''
         ];
         const searchValues = [
           searchData.stock1, searchData.stock2, searchData.stock2b, searchData.stock2bColor, 
           searchData.stock3, searchData.openb, searchData.stock4, searchData.stock4b,
           searchData.dropdown1, searchData.dropdown2, searchData.dropdown3, searchData.dropdown4,
+          searchData.dropdown7, searchData.dropdown8,
           searchData.ogCandle, searchData.ogOpenA, searchData.ogCloseA
         ];
         
@@ -307,7 +312,115 @@ const StockSearch: React.FC = () => {
       </CardHeader>
       <CardContent className="p-6">
         <form onSubmit={handleSearch} className="space-y-4">
-          {/* Part 1 Fields - Monthly/Weekly/Daily */}
+          {/* Part 1 Fields - Yearly/Monthly/Weekly/Daily */}
+              {/* Yearly Open and Yearly Close Row */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* YEARLY OPEN */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-bold text-foreground">YEARLY OPEN</Label>
+                  <div className="flex gap-2 items-center">
+                    <div className="flex-1">
+                      <Select 
+                        value={searchData.dropdown7.split(' ')[0] || ''}
+                        onValueChange={(value) => {
+                          const sub = searchData.dropdown7.split(' ')[1] || '';
+                          setSearchData(prev => ({ ...prev, dropdown7: sub ? `${value} ${sub}` : value }));
+                          setTimeout(() => performSearch(), 100);
+                        }}
+                      >
+                        <SelectTrigger 
+                          className="text-lg font-bold"
+                          style={{ backgroundColor: searchData.dropdown7.split(' ')[0] ? '#dcfce7' : '#ffe3e2' }}
+                        >
+                          <SelectValue placeholder="" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card z-[100]">
+                          <SelectItem value="YG" className="text-lg font-bold">YG</SelectItem>
+                          <SelectItem value="YR" className="text-lg font-bold">YR</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex-1">
+                      <Select 
+                        value={searchData.dropdown7.split(' ')[1] || ''}
+                        onValueChange={(value) => {
+                          const main = searchData.dropdown7.split(' ')[0] || '';
+                          setSearchData(prev => ({ ...prev, dropdown7: main ? `${main} ${value}` : value }));
+                          setTimeout(() => performSearch(), 100);
+                        }}
+                      >
+                        <SelectTrigger 
+                          className="text-lg font-bold"
+                          style={{ backgroundColor: searchData.dropdown7.split(' ')[1] ? '#dcfce7' : '#ffe3e2' }}
+                        >
+                          <SelectValue placeholder="" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card z-[100]">
+                          <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                          <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                          <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                          <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                          <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* YEARLY CLOSE */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-bold text-foreground">YEARLY CLOSE</Label>
+                  <div className="flex gap-2 items-center">
+                    <div className="flex-1">
+                      <Select 
+                        value={searchData.dropdown8.split(' ')[0] || ''}
+                        onValueChange={(value) => {
+                          const sub = searchData.dropdown8.split(' ')[1] || '';
+                          setSearchData(prev => ({ ...prev, dropdown8: sub ? `${value} ${sub}` : value }));
+                          setTimeout(() => performSearch(), 100);
+                        }}
+                      >
+                        <SelectTrigger 
+                          className="text-lg font-bold"
+                          style={{ backgroundColor: searchData.dropdown8.split(' ')[0] ? '#dcfce7' : '#ffe3e2' }}
+                        >
+                          <SelectValue placeholder="" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card z-[100]">
+                          <SelectItem value="YG" className="text-lg font-bold">YG</SelectItem>
+                          <SelectItem value="YR" className="text-lg font-bold">YR</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex-1">
+                      <Select 
+                        value={searchData.dropdown8.split(' ')[1] || ''}
+                        onValueChange={(value) => {
+                          const main = searchData.dropdown8.split(' ')[0] || '';
+                          setSearchData(prev => ({ ...prev, dropdown8: main ? `${main} ${value}` : value }));
+                          setTimeout(() => performSearch(), 100);
+                        }}
+                      >
+                        <SelectTrigger 
+                          className="text-lg font-bold"
+                          style={{ backgroundColor: searchData.dropdown8.split(' ')[1] ? '#dcfce7' : '#ffe3e2' }}
+                        >
+                          <SelectValue placeholder="" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card z-[100]">
+                          <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                          <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                          <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                          <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                          <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Monthly Open and Monthly Close Row */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* MONTHLY OPEN */}
                 <div className="space-y-2">
@@ -1026,7 +1139,7 @@ const StockSearch: React.FC = () => {
                 type="button"
                 variant="outline"
                 onClick={() => {
-                  setSearchData({ stock1: '', stock2: '', stock2b: '', stock2bColor: '', stock3: '', openb: '', stock4: '', stock4b: '', dropdown1: '', dropdown2: '', dropdown3: '', dropdown4: '', ogCandle: '', ogOpenA: '', sdOpenA: '', ogCloseA: '', sdCloseA: '', serialNumber: '', notes: '' });
+                  setSearchData({ stock1: '', stock2: '', stock2b: '', stock2bColor: '', stock3: '', openb: '', stock4: '', stock4b: '', dropdown1: '', dropdown2: '', dropdown3: '', dropdown4: '', dropdown7: '', dropdown8: '', ogCandle: '', ogOpenA: '', sdOpenA: '', ogCloseA: '', sdCloseA: '', serialNumber: '', notes: '' });
                   setFilter('');
                   setSearchResult(null);
                   setAllResults([]);
