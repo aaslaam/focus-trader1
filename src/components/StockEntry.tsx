@@ -154,6 +154,7 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [part2Refreshing, setPart2Refreshing] = useState(false);
   const [showEntrySaved, setShowEntrySaved] = useState(false);
   const [lastSavedEntry, setLastSavedEntry] = useState<StockEntryData | null>(null);
   const [entrySerialNumber, setEntrySerialNumber] = useState<number>(0);
@@ -2068,6 +2069,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
             <Button 
               type="button"
               onClick={() => {
+                // Show visual feedback
+                setPart2Refreshing(true);
+                
                 // Refresh only Part 2 values (Opening Candle, Direction A/B/C/D, Candle No's, OG fields)
                 setFormData(prev => ({
                   ...prev,
@@ -2106,8 +2110,17 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                 }));
                 setSelectedImage(null);
                 setImagePreview(null);
+                
+                // Revert button color after a short delay
+                setTimeout(() => {
+                  setPart2Refreshing(false);
+                }, 500);
               }}
-              className="flex-1 bg-white hover:bg-gray-50 text-green-600 font-bold border border-green-600"
+              className="flex-1 font-bold border border-green-600 transition-colors duration-200"
+              style={{
+                backgroundColor: part2Refreshing ? '#baf6d0' : 'white',
+                color: part2Refreshing ? 'black' : '#16a34a'
+              }}
             >
               PART 2 REFRESH
             </Button>
