@@ -2079,17 +2079,16 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   notes: '',
                   part2Result: ''
                 }));
-                // Reset Opening Candle (dropdown5, dropdown6), Direction A/B/C/D (dropdown1-4 in Part 2), and Candle No's
-                setNewDropdowns({
-                  dropdown1: '',
-                  dropdown2: '',
-                  dropdown3: '',
-                  dropdown4: '',
-                  dropdown5: '',
-                  dropdown6: '',
-                  dropdown7: '',
-                  dropdown8: ''
+                // Reset Part 2 dropdowns (directions and opening candle)
+                setPart2Dropdowns({
+                  openingCandle1: '',
+                  openingCandle2: '',
+                  directionA: '',
+                  directionB: '',
+                  directionC: '',
+                  directionD: ''
                 });
+                // Reset Candle No's
                 setDropdowns(prev => ({
                   ...prev,
                   candleMain: '',
