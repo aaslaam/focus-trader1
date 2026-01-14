@@ -22,12 +22,16 @@ const toDbFormat = (entry: StockEntryData, userId: string): Omit<StockEntryRow, 
     dropdown4: entry.dropdown4 || null,
     dropdown5: entry.dropdown5 || null,
     dropdown6: entry.dropdown6 || null,
+    dropdown7: entry.dropdown7 || null,
+    dropdown8: entry.dropdown8 || null,
     dropdown1_date: entry.dropdown1Date ? new Date(entry.dropdown1Date).toISOString() : null,
     dropdown2_date: entry.dropdown2Date ? new Date(entry.dropdown2Date).toISOString() : null,
     dropdown3_date: entry.dropdown3Date ? new Date(entry.dropdown3Date).toISOString() : null,
     dropdown4_date: entry.dropdown4Date ? new Date(entry.dropdown4Date).toISOString() : null,
     dropdown5_date: entry.dropdown5Date ? new Date(entry.dropdown5Date).toISOString() : null,
     dropdown6_date: entry.dropdown6Date ? new Date(entry.dropdown6Date).toISOString() : null,
+    dropdown7_date: entry.dropdown7Date ? new Date(entry.dropdown7Date).toISOString() : null,
+    dropdown8_date: entry.dropdown8Date ? new Date(entry.dropdown8Date).toISOString() : null,
     og_candle: entry.ogCandle || null,
     og_open_a: entry.ogOpenA || null,
     sd_open_a: entry.sdOpenA || null,
@@ -64,12 +68,16 @@ const fromDbFormat = (row: StockEntryRow): StockEntryData => {
     dropdown4: row.dropdown4 || undefined,
     dropdown5: row.dropdown5 || undefined,
     dropdown6: row.dropdown6 || undefined,
+    dropdown7: row.dropdown7 || undefined,
+    dropdown8: row.dropdown8 || undefined,
     dropdown1Date: row.dropdown1_date ? new Date(row.dropdown1_date) : null,
     dropdown2Date: row.dropdown2_date ? new Date(row.dropdown2_date) : null,
     dropdown3Date: row.dropdown3_date ? new Date(row.dropdown3_date) : null,
     dropdown4Date: row.dropdown4_date ? new Date(row.dropdown4_date) : null,
     dropdown5Date: row.dropdown5_date ? new Date(row.dropdown5_date) : null,
     dropdown6Date: row.dropdown6_date ? new Date(row.dropdown6_date) : null,
+    dropdown7Date: row.dropdown7_date ? new Date(row.dropdown7_date) : null,
+    dropdown8Date: row.dropdown8_date ? new Date(row.dropdown8_date) : null,
     ogCandle: row.og_candle || undefined,
     ogOpenA: row.og_open_a || undefined,
     sdOpenA: row.sd_open_a || undefined,
@@ -141,12 +149,16 @@ export const updateEntry = async (id: string, entry: Partial<StockEntryData>, us
   if (entry.dropdown4 !== undefined) updateData.dropdown4 = entry.dropdown4;
   if (entry.dropdown5 !== undefined) updateData.dropdown5 = entry.dropdown5;
   if (entry.dropdown6 !== undefined) updateData.dropdown6 = entry.dropdown6;
+  if (entry.dropdown7 !== undefined) updateData.dropdown7 = entry.dropdown7;
+  if (entry.dropdown8 !== undefined) updateData.dropdown8 = entry.dropdown8;
   if (entry.dropdown1Date !== undefined) updateData.dropdown1_date = entry.dropdown1Date ? new Date(entry.dropdown1Date).toISOString() : null;
   if (entry.dropdown2Date !== undefined) updateData.dropdown2_date = entry.dropdown2Date ? new Date(entry.dropdown2Date).toISOString() : null;
   if (entry.dropdown3Date !== undefined) updateData.dropdown3_date = entry.dropdown3Date ? new Date(entry.dropdown3Date).toISOString() : null;
   if (entry.dropdown4Date !== undefined) updateData.dropdown4_date = entry.dropdown4Date ? new Date(entry.dropdown4Date).toISOString() : null;
   if (entry.dropdown5Date !== undefined) updateData.dropdown5_date = entry.dropdown5Date ? new Date(entry.dropdown5Date).toISOString() : null;
   if (entry.dropdown6Date !== undefined) updateData.dropdown6_date = entry.dropdown6Date ? new Date(entry.dropdown6Date).toISOString() : null;
+  if (entry.dropdown7Date !== undefined) updateData.dropdown7_date = entry.dropdown7Date ? new Date(entry.dropdown7Date).toISOString() : null;
+  if (entry.dropdown8Date !== undefined) updateData.dropdown8_date = entry.dropdown8Date ? new Date(entry.dropdown8Date).toISOString() : null;
   if (entry.ogCandle !== undefined) updateData.og_candle = entry.ogCandle;
   if (entry.ogOpenA !== undefined) updateData.og_open_a = entry.ogOpenA;
   if (entry.sdOpenA !== undefined) updateData.sd_open_a = entry.sdOpenA;

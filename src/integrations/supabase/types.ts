@@ -30,6 +30,10 @@ export type Database = {
           dropdown5_date: string | null
           dropdown6: string | null
           dropdown6_date: string | null
+          dropdown7: string | null
+          dropdown7_date: string | null
+          dropdown8: string | null
+          dropdown8_date: string | null
           entry_type: string | null
           id: string
           image_url: string | null
@@ -71,6 +75,10 @@ export type Database = {
           dropdown5_date?: string | null
           dropdown6?: string | null
           dropdown6_date?: string | null
+          dropdown7?: string | null
+          dropdown7_date?: string | null
+          dropdown8?: string | null
+          dropdown8_date?: string | null
           entry_type?: string | null
           id?: string
           image_url?: string | null
@@ -112,6 +120,10 @@ export type Database = {
           dropdown5_date?: string | null
           dropdown6?: string | null
           dropdown6_date?: string | null
+          dropdown7?: string | null
+          dropdown7_date?: string | null
+          dropdown8?: string | null
+          dropdown8_date?: string | null
           entry_type?: string | null
           id?: string
           image_url?: string | null

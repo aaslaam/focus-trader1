@@ -53,6 +53,10 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
     dropdown5Sub: '',
     dropdown6Main: '',
     dropdown6Sub: '',
+    dropdown7Main: '',
+    dropdown7Sub: '',
+    dropdown8Main: '',
+    dropdown8Sub: '',
     candleMain: '',
     candleSub: ''
   });
@@ -78,6 +82,8 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
     dropdown4Date: Date | null;
     dropdown5Date: Date | null;
     dropdown6Date: Date | null;
+    dropdown7Date: Date | null;
+    dropdown8Date: Date | null;
     ogOpenADate: Date | null;
     ogCloseADate: Date | null;
   }>({
@@ -91,6 +97,8 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
     dropdown4Date: new Date(),
     dropdown5Date: new Date(),
     dropdown6Date: new Date(),
+    dropdown7Date: new Date(),
+    dropdown8Date: new Date(),
     ogOpenADate: new Date(),
     ogCloseADate: new Date()
   });
@@ -106,6 +114,8 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
     dropdown4Date: boolean;
     dropdown5Date: boolean;
     dropdown6Date: boolean;
+    dropdown7Date: boolean;
+    dropdown8Date: boolean;
     ogOpenADate: boolean;
     ogCloseADate: boolean;
   }>({
@@ -119,6 +129,8 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
     dropdown4Date: false,
     dropdown5Date: false,
     dropdown6Date: false,
+    dropdown7Date: false,
+    dropdown8Date: false,
     ogOpenADate: false,
     ogCloseADate: false
   });
@@ -207,6 +219,8 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
         dropdown4Date: entry.dropdown4Date ? new Date(entry.dropdown4Date) : null,
         dropdown5Date: entry.dropdown5Date ? new Date(entry.dropdown5Date) : null,
         dropdown6Date: entry.dropdown6Date ? new Date(entry.dropdown6Date) : null,
+        dropdown7Date: entry.dropdown7Date ? new Date(entry.dropdown7Date) : null,
+        dropdown8Date: entry.dropdown8Date ? new Date(entry.dropdown8Date) : null,
         ogOpenADate: entry.ogOpenADate ? new Date(entry.ogOpenADate) : null,
         ogCloseADate: entry.ogCloseADate ? new Date(entry.ogCloseADate) : null
       });
@@ -222,6 +236,8 @@ const EditEntryDialog: React.FC<EditEntryDialogProps> = ({ entry, index, serialN
         dropdown4Date: false,
         dropdown5Date: false,
         dropdown6Date: false,
+        dropdown7Date: false,
+        dropdown8Date: false,
         ogOpenADate: false,
         ogCloseADate: false
       });
