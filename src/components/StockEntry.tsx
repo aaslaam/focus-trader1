@@ -74,12 +74,16 @@ interface Part1Data {
   dropdown4?: string;
   dropdown5?: string;
   dropdown6?: string;
+  dropdown7?: string;
+  dropdown8?: string;
   dropdown1Date?: Date | null;
   dropdown2Date?: Date | null;
   dropdown3Date?: Date | null;
   dropdown4Date?: Date | null;
   dropdown5Date?: Date | null;
   dropdown6Date?: Date | null;
+  dropdown7Date?: Date | null;
+  dropdown8Date?: Date | null;
   timestamp: number;
 }
 
@@ -114,7 +118,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     dropdown3: '',
     dropdown4: '',
     dropdown5: '',
-    dropdown6: ''
+    dropdown6: '',
+    dropdown7: '',
+    dropdown8: ''
   });
   // Part 2 specific dropdowns - separate from Part 1 to avoid inheriting values
   const [part2Dropdowns, setPart2Dropdowns] = useState({
@@ -138,6 +144,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     dropdown5Sub: '',
     dropdown6Main: '',
     dropdown6Sub: '',
+    dropdown7Main: '',
+    dropdown7Sub: '',
+    dropdown8Main: '',
+    dropdown8Sub: '',
     candleMain: '',
     candleSub: ''
   });
@@ -162,6 +172,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     dropdown4Date: Date | null;
     dropdown5Date: Date | null;
     dropdown6Date: Date | null;
+    dropdown7Date: Date | null;
+    dropdown8Date: Date | null;
     ogOpenADate: Date | null;
     ogCloseADate: Date | null;
   }>({
@@ -175,6 +187,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     dropdown4Date: new Date(),
     dropdown5Date: new Date(),
     dropdown6Date: new Date(),
+    dropdown7Date: new Date(),
+    dropdown8Date: new Date(),
     ogOpenADate: new Date(),
     ogCloseADate: new Date()
   });
@@ -189,6 +203,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     dropdown4Date: boolean;
     dropdown5Date: boolean;
     dropdown6Date: boolean;
+    dropdown7Date: boolean;
+    dropdown8Date: boolean;
     ogOpenADate: boolean;
     ogCloseADate: boolean;
   }>({
@@ -202,6 +218,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
     dropdown4Date: false,
     dropdown5Date: false,
     dropdown6Date: false,
+    dropdown7Date: false,
+    dropdown8Date: false,
     ogOpenADate: false,
     ogCloseADate: false
   });
@@ -215,12 +233,14 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       dropdown3: `${dropdowns.dropdown3Main} ${dropdowns.dropdown3Sub}`.trim(),
       dropdown4: `${dropdowns.dropdown4Main} ${dropdowns.dropdown4Sub}`.trim(),
       dropdown5: `${dropdowns.dropdown5Main} ${dropdowns.dropdown5Sub}`.trim(),
-      dropdown6: `${dropdowns.dropdown6Main} ${dropdowns.dropdown6Sub}`.trim()
+      dropdown6: `${dropdowns.dropdown6Main} ${dropdowns.dropdown6Sub}`.trim(),
+      dropdown7: `${dropdowns.dropdown7Main} ${dropdowns.dropdown7Sub}`.trim(),
+      dropdown8: `${dropdowns.dropdown8Main} ${dropdowns.dropdown8Sub}`.trim()
     };
     console.log('StockEntry - useEffect updating combined dropdowns:', combined);
     console.log('StockEntry - Individual dropdown states:', dropdowns);
     setNewDropdowns(combined);
-  }, [dropdowns.dropdown1Main, dropdowns.dropdown1Sub, dropdowns.dropdown2Main, dropdowns.dropdown2Sub, dropdowns.dropdown3Main, dropdowns.dropdown3Sub, dropdowns.dropdown4Main, dropdowns.dropdown4Sub, dropdowns.dropdown5Main, dropdowns.dropdown5Sub, dropdowns.dropdown6Main, dropdowns.dropdown6Sub]);
+  }, [dropdowns.dropdown1Main, dropdowns.dropdown1Sub, dropdowns.dropdown2Main, dropdowns.dropdown2Sub, dropdowns.dropdown3Main, dropdowns.dropdown3Sub, dropdowns.dropdown4Main, dropdowns.dropdown4Sub, dropdowns.dropdown5Main, dropdowns.dropdown5Sub, dropdowns.dropdown6Main, dropdowns.dropdown6Sub, dropdowns.dropdown7Main, dropdowns.dropdown7Sub, dropdowns.dropdown8Main, dropdowns.dropdown8Sub]);
   
   // Update combined OG CANDLE value whenever candle dropdowns change
   useEffect(() => {
@@ -327,12 +347,16 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         dropdown4: latest.dropdown4 ?? '',
         dropdown5: latest.dropdown5 ?? '',
         dropdown6: latest.dropdown6 ?? '',
+        dropdown7: latest.dropdown7 ?? '',
+        dropdown8: latest.dropdown8 ?? '',
         dropdown1Date: toDate(latest.dropdown1Date),
         dropdown2Date: toDate(latest.dropdown2Date),
         dropdown3Date: toDate(latest.dropdown3Date),
         dropdown4Date: toDate(latest.dropdown4Date),
         dropdown5Date: toDate(latest.dropdown5Date),
         dropdown6Date: toDate(latest.dropdown6Date),
+        dropdown7Date: toDate(latest.dropdown7Date),
+        dropdown8Date: toDate(latest.dropdown8Date),
         timestamp: typeof latest.timestamp === 'number' ? latest.timestamp : Date.now(),
       };
     } catch (e) {
@@ -375,12 +399,16 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         dropdown4: newDropdowns.dropdown4,
         dropdown5: newDropdowns.dropdown5,
         dropdown6: newDropdowns.dropdown6,
+        dropdown7: newDropdowns.dropdown7,
+        dropdown8: newDropdowns.dropdown8,
         dropdown1Date: selectedDates.dropdown1Date,
         dropdown2Date: selectedDates.dropdown2Date,
         dropdown3Date: selectedDates.dropdown3Date,
         dropdown4Date: selectedDates.dropdown4Date,
         dropdown5Date: selectedDates.dropdown5Date,
         dropdown6Date: selectedDates.dropdown6Date,
+        dropdown7Date: selectedDates.dropdown7Date,
+        dropdown8Date: selectedDates.dropdown8Date,
         timestamp: Date.now()
       };
     }
@@ -633,7 +661,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
       dropdown3: '',
       dropdown4: '',
       dropdown5: '',
-      dropdown6: ''
+      dropdown6: '',
+      dropdown7: '',
+      dropdown8: ''
     });
       setDropdowns({
         dropdown1Main: '',
@@ -648,6 +678,10 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         dropdown5Sub: '',
         dropdown6Main: '',
         dropdown6Sub: '',
+        dropdown7Main: '',
+        dropdown7Sub: '',
+        dropdown8Main: '',
+        dropdown8Sub: '',
         candleMain: '',
         candleSub: ''
       });
@@ -662,6 +696,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         dropdown4Date: new Date(),
         dropdown5Date: new Date(),
         dropdown6Date: new Date(),
+        dropdown7Date: new Date(),
+        dropdown8Date: new Date(),
         ogOpenADate: new Date(),
         ogCloseADate: new Date()
       });
@@ -676,6 +712,8 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
         dropdown4Date: false,
         dropdown5Date: false,
         dropdown6Date: false,
+        dropdown7Date: false,
+        dropdown8Date: false,
         ogOpenADate: false,
         ogCloseADate: false
       });
@@ -715,6 +753,190 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
           <TabsContent value="part1" className="space-y-4">
           {/* 4 Dropdown Pairs Section */}
           <div className="space-y-4 pb-4 mb-4">
+            {/* Yearly Open and Yearly Close Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Dropdown 7 - Yearly Open */}
+              <div className="space-y-2">
+                <Label className="text-sm font-bold text-foreground">YEARLY OPEN</Label>
+                <div className="flex gap-2 items-center">
+                  <div className="flex-1">
+                    <Select 
+                      value={dropdowns.dropdown7Main}
+                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown7Main: value }))}
+                    >
+                      <SelectTrigger 
+                        className="text-lg font-bold z-50"
+                        style={{ backgroundColor: dropdowns.dropdown7Main ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="YG" className="text-lg font-bold">YG</SelectItem>
+                        <SelectItem value="YR" className="text-lg font-bold">YR</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex-1">
+                    <Select 
+                      value={dropdowns.dropdown7Sub}
+                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown7Sub: value }))}
+                    >
+                      <SelectTrigger 
+                        className="text-lg font-bold z-50"
+                        style={{ backgroundColor: dropdowns.dropdown7Sub ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                        <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                        <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                        <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                        <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className={cn(
+                          "flex-1 justify-start text-left font-normal",
+                          (!selectedDates.dropdown7Date || dateChanged.dropdown7Date) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200",
+                          !selectedDates.dropdown7Date && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {selectedDates.dropdown7Date ? format(selectedDates.dropdown7Date, "PPP") : <span>No date (NILL)</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={selectedDates.dropdown7Date || undefined}
+                        onSelect={(date) => {
+                          if (date) {
+                            setSelectedDates(prev => ({ ...prev, dropdown7Date: date }));
+                            setDateChanged(prev => ({ ...prev, dropdown7Date: true }));
+                          }
+                        }}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedDates(prev => ({ ...prev, dropdown7Date: null }));
+                      setDateChanged(prev => ({ ...prev, dropdown7Date: false }));
+                    }}
+                    className={cn(
+                      !selectedDates.dropdown7Date ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
+                    )}
+                  >
+                    NILL
+                  </Button>
+                </div>
+              </div>
+
+              {/* Dropdown 8 - Yearly Close */}
+              <div className="space-y-2">
+                <Label className="text-sm font-bold text-foreground">YEARLY CLOSE</Label>
+                <div className="flex gap-2 items-center">
+                  <div className="flex-1">
+                    <Select 
+                      value={dropdowns.dropdown8Main}
+                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown8Main: value }))}
+                    >
+                      <SelectTrigger 
+                        className="text-lg font-bold z-50"
+                        style={{ backgroundColor: dropdowns.dropdown8Main ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="YG" className="text-lg font-bold">YG</SelectItem>
+                        <SelectItem value="YR" className="text-lg font-bold">YR</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex-1">
+                    <Select 
+                      value={dropdowns.dropdown8Sub}
+                      onValueChange={(value) => setDropdowns(prev => ({ ...prev, dropdown8Sub: value }))}
+                    >
+                      <SelectTrigger 
+                        className="text-lg font-bold z-50"
+                        style={{ backgroundColor: dropdowns.dropdown8Sub ? '#dcfce7' : '#ffe3e2' }}
+                      >
+                        <SelectValue placeholder="" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-[100]">
+                        <SelectItem value="UP" className="text-lg font-bold">UP</SelectItem>
+                        <SelectItem value="DOWN" className="text-lg font-bold">DOWN</SelectItem>
+                        <SelectItem value="+" className="text-lg font-bold">+</SelectItem>
+                        <SelectItem value="-" className="text-lg font-bold">-</SelectItem>
+                        <SelectItem value="B" className="text-lg font-bold">B</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className={cn(
+                          "flex-1 justify-start text-left font-normal",
+                          (!selectedDates.dropdown8Date || dateChanged.dropdown8Date) ? "bg-green-100 hover:bg-green-200" : "bg-sky-100 hover:bg-sky-200",
+                          !selectedDates.dropdown8Date && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {selectedDates.dropdown8Date ? format(selectedDates.dropdown8Date, "PPP") : <span>No date (NILL)</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={selectedDates.dropdown8Date || undefined}
+                        onSelect={(date) => {
+                          if (date) {
+                            setSelectedDates(prev => ({ ...prev, dropdown8Date: date }));
+                            setDateChanged(prev => ({ ...prev, dropdown8Date: true }));
+                          }
+                        }}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedDates(prev => ({ ...prev, dropdown8Date: null }));
+                      setDateChanged(prev => ({ ...prev, dropdown8Date: false }));
+                    }}
+                    className={cn(
+                      !selectedDates.dropdown8Date ? "bg-green-100 hover:bg-green-200 text-gray-900" : "bg-blue-900 hover:bg-blue-800 text-white"
+                    )}
+                  >
+                    NILL
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Monthly Open and Monthly Close Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Dropdown 1 */}
               <div className="space-y-2">
@@ -1864,7 +2086,9 @@ const StockEntry: React.FC<StockEntryProps> = ({ onEntryAdded, nextEntryNumber }
                   dropdown3: '',
                   dropdown4: '',
                   dropdown5: '',
-                  dropdown6: ''
+                  dropdown6: '',
+                  dropdown7: '',
+                  dropdown8: ''
                 });
                 setDropdowns(prev => ({
                   ...prev,
